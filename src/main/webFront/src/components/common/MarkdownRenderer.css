@@ -1,0 +1,8 @@
+.md-thumbnail{
+  width: 100%;
+  height: 400px; /* 썸네일/본문 이미지 크기 제한 */
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  margin: 1rem auto; /* 가운데 정렬 */
+}

@@ -1,0 +1,56 @@
+.tags-menu-min {
+  display: flex;
+  flex-direction: row;
+  gap: 0.5rem;
+  font-size: 14px;
+  overflow-x: scroll;
+  margin-bottom: 3rem;
+  padding: 0 0 1rem 0;
+}
+
+.tags-menu-min-item {
+  border: 1px solid rgb(0,0,0,0.2);
+  padding: 0.2rem 0.3rem;
+  border-radius: 10px;
+  color: rgb(0,0,0,0.4);
+  cursor: pointer;
+
+  /*flex 는 기본값이 flex-shrink:1 이다*/
+  flex: 0 0 auto;            /* (= flex-shrink:0; width:auto) */
+}
+
+.tags-menu-min-item:hover {
+  color: rgb(0,0,0,0.6);
+  border: 1px solid;
+  font-weight: bolder;
+}
+
+.tags-menu-min-item-selected {
+  color: rgb(0,0,0,0.6);
+  border: 1px solid;
+  font-weight: bolder;
+}
+
+/* WebKit 계열 (Chrome, Safari, Edge) */
+.tags-menu-min::-webkit-scrollbar {
+  height: 6px; /* 가로 스크롤바 높이 */
+}
+
+.tags-menu-min::-webkit-scrollbar-track {
+  background: transparent; /* 트랙 배경 */
+}
+
+.tags-menu-min::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.3); /* 스크롤바 색상 */
+  border-radius: 4px;
+}
+
+.tags-menu-min::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* Firefox */
+.tags-menu-min {
+  scrollbar-width: thin; /* 얇게 */
+  scrollbar-color: rgba(0,0,0,0.3) transparent;
+}

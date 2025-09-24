@@ -1,0 +1,73 @@
+/*임시저장글*/
+.temp-list-section {
+  min-height: 150px;
+  /*padding: 1rem;*/
+  display: flex;
+  margin-bottom: 2rem;
+}
+
+.temp-list-img-section {
+  width: 150px;
+  cursor: pointer;
+  position: relative;
+}
+
+
+.temp-list-img-section > img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.temp-list-text-section {
+  padding: 0 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.temp-list-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.temp-list-title {
+  cursor: pointer;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.temp-list-delete-button {
+  font-size: 16px;
+  border: none;
+  border-bottom: 1px solid rgb(0,0,0,0.2);
+  background-color: white;
+  padding: 0.3rem 0.3rem 0 0.3rem;
+  cursor: pointer;
+  color: rgb(0,0,0,0.3);
+  vertical-align: bottom;
+  display: inline-flex;
+  justify-content: center;
+  align-items: end;
+}
+
+.temp-list-delete-button:hover {
+  color: black;
+  transition: 0.2s ease;
+}
+
+
+.temp-list-body {
+  cursor: pointer;
+  /*padding: 2rem 0;*/
+  flex: 1;
+  /*height: 100%;*/
+  display: inline-flex;
+  align-items: center;
+}
+
+.temp-list-createdDate {
+  font-size: 14px;
+}

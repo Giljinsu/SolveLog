@@ -1,0 +1,139 @@
+.post_comment {
+  padding: 1rem 0;
+  /*border-bottom: 1px solid rgb(230, 230, 230);*/
+  /*margin-bottom: 1rem;*/
+}
+
+.post_comment_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.post_comment_header_left {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  gap: 0.4rem;
+
+}
+
+.comment_author {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.comment_author:hover {
+  text-decoration: underline 0.1rem;
+}
+
+
+.post_comment_header_left_right > .comment_date {
+  font-size: 12px;
+  /*color: #6b7280;*/
+  opacity: 0.4;
+  margin-top: 4px;
+}
+
+.comment_delete_button {
+  border: none;
+  background-color: white;
+  border-bottom: 1px solid #6b7280;
+  cursor: pointer;
+  padding: 0 0;
+  color: #6b7280;
+  font-size: 12px;
+}
+
+.comment_delete_button:hover {
+  color: black;
+}
+
+.post_comment_body {
+  padding: 0.5rem 0;
+}
+
+.post_comment_reply_section {
+  margin-top: 10px;
+  display: flex;
+  justify-content: right;
+  padding: 0.5rem 0;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.post_comment_reply_button_section {
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  gap: 0.5rem;
+}
+
+/*.post_comment_reply_view_button {*/
+/*  cursor: pointer;*/
+/*}*/
+
+.post_comment_reply_button {
+  color: #6b7280;
+}
+
+.post_comment_reply_button:hover {
+  color: black;
+}
+
+.post_comment_reply_input_section {
+  padding: 1rem;
+  background-color: #F6F6F6;
+  text-align: right;
+}
+
+.post_comment_reply_comment_section {
+  padding: 1rem;
+}
+
+.post_comment_reply_comment {
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.reply-editor-display {
+  text-align: left;
+  padding: 8px;
+  border: 1px solid black;
+  background-color: white;
+  min-height: 70px;
+  margin-bottom: 0.5rem;
+  resize: none;
+}
+
+.reply-editor-display:focus {
+  outline: none;
+}
+
+.post_comment_reply_input_section > textarea {
+  /*padding 포함 해주는*/
+  box-sizing: border-box;
+  padding: 1rem;
+  width: 100%;
+  min-height: 70px;
+  margin-bottom: 0.5rem;
+  resize: none;
+}
+
+.post_comment_reply_input_section > textarea:focus {
+  outline: none;
+}
+
+.post_comment_reply_input_section > button {
+  padding: 0.6rem 1rem;
+}
+
+.mention {
+  cursor: pointer;
+  color: #007bff;
+  /*background-color: #eef6ff;*/
+  padding: 0 2px;
+  border-radius: 4px;
+}
+

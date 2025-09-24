@@ -1,0 +1,1 @@
+1756728966611|2|statement|connection 13|url jdbc:h2:tcp://localhost/~/dbs/toy_blog|select next value for alarm_type_seq|select next value for alarm_type_seq

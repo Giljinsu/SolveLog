@@ -1,0 +1,61 @@
+.my-page-search-section {
+  text-align: right;
+}
+
+.my-page-search {
+  padding: 2px 0;
+  border-bottom: 1px solid rgb(0,0,0);
+}
+
+.my-page-search > input {
+  /*width: 150px;*/
+  border: none;
+  font-size: 16px;
+}
+
+.my-page-search > input:focus {
+  outline: none;
+}
+
+.my-page-search > button {
+  border: none;
+  background-color: rgb(0,0,0,0);
+  cursor: pointer;
+}
+
+.my-page-search-tab-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 5rem 0;
+}
+
+.my-page-search-tab {
+  display: flex;
+  /*gap: 1rem;*/
+  width: 300px;
+  position: relative;
+}
+
+
+.my-page-search-tab-item {
+  cursor: pointer;
+  font-size: 22px;
+  text-align: center;
+  padding: 0.5rem 0;
+  flex: 1;
+}
+
+.my-page-search-tab-item-selected {
+  font-weight: bolder;
+  /*border-bottom: 1px solid;*/
+}
+
+.underline {
+  position: absolute;
+  border-bottom: 2px solid;
+  width: 50%;
+  left: 0;
+  bottom: 0;
+  transition: 0.3s;
+}
+

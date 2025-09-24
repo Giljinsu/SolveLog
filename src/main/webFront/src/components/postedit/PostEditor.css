@@ -1,0 +1,251 @@
+/* PostEditor.css */
+
+.post-editor-container {
+  width: 100vw;
+  height: 100vh; /* 화면 꽉 차게 */
+  position: relative;
+  left: calc(-50vw + 50%); /* ← 중앙 정렬 해제 트릭 */
+  display: flex;
+  flex-direction: column;
+  padding: 2rem;
+  gap: 1rem;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.post-editor-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.editor-form {
+  flex: 1;
+  display: flex;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+.editor-left {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  overflow-y: auto;
+}
+
+.editor-left input,
+.editor-left select,
+.editor-left textarea {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.editor-left input:focus,
+.editor-left select:focus,
+.editor-left textarea:focus {
+  outline: none;
+}
+
+.editor-summary-section {
+  align-content: center;
+  background-color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+  display: flex;
+  flex: 1;
+}
+
+.editor-summary-section input{
+  flex: 1;
+  border: none;
+}
+
+.editor-summary-section button{
+  border: 1px solid #ebebeb;
+  /*background-color: #fdfdfd;*/
+  background-color: transparent;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  color: #999;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.tagify {
+  /*border: 1px solid #d1d5db;*/
+  --tags-border-color: #d1d5db;
+  border-radius: 6px;
+  width: 100%;
+  background-color: white;
+}
+
+.tagify.tagify--focus {
+  --tags-focus-border-color: #d1d5db;
+}
+
+/* styles.css */
+
+.editor-left textarea {
+  min-height: 16rem;
+  resize: none;
+  font-family: monospace;
+  height: 100%;
+}
+
+.editor-preview-container {
+  width: 50%;
+  height: 100%;
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: white;
+}
+
+
+.markdown-preview {
+  font-family: system-ui, sans-serif;
+  line-height: 1.6;
+}
+
+.markdown-preview h1 {
+  font-size: 1.8rem;
+  margin-top: 1.2rem;
+  margin-bottom: 0.8rem;
+  font-weight: bold;
+}
+
+.markdown-preview h2 {
+  font-size: 1.5rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+}
+
+.markdown-preview pre {
+  /*background: #1e1e1e;*/
+  color: #fff;
+  /*padding: 1rem;*/
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+.markdown-preview code {
+  font-family: monospace;
+}
+
+.markdown-preview p {
+  margin: 0.5rem 0;
+}
+
+.markdown-preview a {
+  color: #1d4ed8;
+  text-decoration: underline;
+}
+
+.post-editor-save-btn {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post-editor-save-btn > button {
+  padding: 0.6rem 1rem;
+}
+
+.post-editor-save-btn-right {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.post-editor-save-btn-right > button{
+  padding: 0.6rem 1rem;
+}
+
+.thumbnail-button-section {
+  display: flex;
+  gap: 1rem;
+  align-content: center;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-family: inherit;
+}
+
+.thumbnail-button-section > div {
+  align-content: center;
+  color: #999;
+}
+
+.thumbnail-button {
+  border: 1px solid #ebebeb;
+  background-color: #fdfdfd;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  color: #999;
+  cursor: pointer;
+}
+
+.thumbnail-button:hover {
+  border: 1px solid;
+  color: black;
+  transition: 0.2s ease;
+}
+
+.editor-alarm-list {
+  position: absolute;
+  top : 3rem;
+  right: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.editor-alarm {
+  display: flex;
+  padding: 1rem;
+  width: 200px;
+  justify-content: space-between;
+  gap: 10px;
+  /*background-color: rgb(100,201,100);*/
+  /*color: white;*/
+  /*border: 1px solid rgb(100,201,100);*/
+}
+
+.editor-alarm-positive {
+  background-color: rgb(100,201,100);
+  color: white;
+  border: 1px solid rgb(100,201,100);
+}
+
+.editor-alarm-bad {
+  border: 1px solid rgb(253,86,95);
+  background-color: rgb(253,86,95);
+  color: white;
+}
+
+.editor-alarm-exit-button {
+  cursor: pointer;
+  right: 1rem;
+}
+/*.post-editor-save-btn {*/
+/*  background-color: black;*/
+/*  color: white;*/
+/*  padding: 0.5rem 1.5rem;*/
+/*  border-radius: 6px;*/
+/*  cursor: pointer;*/
+/*  border: none;*/
+/*}*/
+
+/*.post-editor-save-btn:hover {*/
+/*  background-color: #1f1f1f;*/
+/*}*/
+
+
+/*md 요소*/

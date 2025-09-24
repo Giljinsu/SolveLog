@@ -1,0 +1,56 @@
+.login_icon_box {
+  position: relative;
+  display: flex;
+  justify-content: right;
+  flex-direction: row;
+  height: 100%;
+  /*gap: 10rem*/
+}
+
+.login_Icon {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.login_icon_button {
+  border-radius: 50%;
+  border: none;
+  padding: 0 10px;
+  height: 100%;
+  font-size: 15px;
+  font-weight: bold;
+  color: white;
+  align-items: center;
+  align-content: center;
+  /*padding: 1rem;*/
+  background-color: red;
+}
+
+.login_icon_dropdown {
+  background-color: white;
+  position: absolute;
+  top: 3rem;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  width: 100px;
+  z-index: 100;
+  padding: 0;
+  font-size: 14px;
+  cursor: pointer;
+  /*font-weight: bold;*/
+  /*padding: 1rem 0;*/
+}
+
+.login_icon_dropdown li {
+  list-style: none;
+  padding: 10px 14px;
+}
+
+.login_icon_dropdown li:hover {
+  font-weight: bold;
+  background-color: #f5f5f5;
+}

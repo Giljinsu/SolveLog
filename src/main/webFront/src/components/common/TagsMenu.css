@@ -1,0 +1,36 @@
+
+.tags-menu {
+  width: 13rem;
+}
+
+.tags-menu-header {
+  font-weight: bolder;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(0,0,0,0.5);
+}
+
+.tags-menu-body {
+  padding: 1rem 0;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  gap: 0.5rem;
+}
+
+.tags-body-item {
+  display: flex;
+  gap: 5px;
+}
+
+.tags-body-item-text {
+  cursor: pointer;
+}
+
+.tags-body-item-text:hover {
+  font-weight: bolder;
+}
+
+.tags-body-item-text-selected {
+  font-weight: bolder;
+}
+

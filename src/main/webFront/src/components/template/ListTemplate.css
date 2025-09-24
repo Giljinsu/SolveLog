@@ -1,0 +1,67 @@
+.listTemplate {
+  margin: auto;
+  max-width: 800px;
+  position: relative;
+}
+
+.list-header {
+  margin-top: 5rem;
+  /*border-bottom: 1px solid rgb(0,0,0,0.3);*/
+}
+
+.list-header-title {
+  margin-top: 2rem;
+}
+
+.list-header-title > h1{
+  font-size: 48px;
+  margin-bottom: 3rem;
+}
+
+.list-subheader {
+  margin-bottom: 3rem;
+}
+
+
+.list-body {
+}
+
+.no-list-template {
+  text-align: center;
+  vertical-align: center;
+}
+
+.list-left-menu-max {
+  position: absolute;
+  /*left menu 의 크기 13rem*/
+  /*width: 13rem;*/
+  left: -15rem;
+  overflow: auto;
+}
+
+@media (min-width: 1440px) {
+  .list-left-menu-max {
+    /*visibility: visible;*/
+    display: block;
+  }
+
+  .list-left-menu-min {
+    /*visibility: hidden;*/
+    display: none;
+  }
+}
+
+@media (max-width: 1439px) {
+  .list-left-menu-max {
+    /*visibility: hidden;*/
+    display: none;
+  }
+
+  .list-left-menu-min {
+    /*visibility: visible;*/
+    display: block;
+  }
+}
+
+
+

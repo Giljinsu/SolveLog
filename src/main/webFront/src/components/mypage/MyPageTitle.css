@@ -1,0 +1,78 @@
+.my-page-user-img-section {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgb(0,0,0,0.2);
+}
+
+
+.my-page-user-nickname-authorized {
+  cursor: pointer;
+  padding: 0;
+  transition: 0.2s;
+  text-align: left;
+  /*resize: none;*/
+}
+
+.my-page-user-nickname-authorized:hover {
+  /*border-bottom: 1px solid black;*/
+  text-decoration: underline;
+  text-decoration-thickness: 3px;   /*밑줄 두꼐*/
+}
+
+.my-page-user-nickname {
+  cursor: pointer;
+  padding: 0;
+  transition: 0.2s;
+  text-align: left;
+  /*resize: none;*/
+}
+
+.my-page-user-nickname:hover {
+  text-decoration: underline;
+  text-decoration-thickness: 3px;   /*밑줄 두꼐*/
+}
+
+
+.my-page-user-nickname-edit {
+  padding: 0 1rem 0 0;
+}
+
+.my-page-user-nickname-section {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+  position: relative;
+}
+
+.nickname-edit-icon-section {
+  vertical-align: middle;  /* 텍스트 중앙 정렬 */
+  /*margin-left: 6px;        !* 글자와 간격 *!*/
+}
+
+.nickname-edit-icon {
+ cursor: pointer;
+}
+
+
+/*.my-page-user-nickname-authorized {*/
+/*  position: relative;*/
+/*}*/
+
+/*.my-page-user-nickname-authorized::after {*/
+/*  content: "";*/
+/*  position: absolute;*/
+/*  bottom: 0;*/
+/*  left: 0;*/
+/*  height: 1px;*/
+/*  width: 100%;*/
+/*  background: black;*/
+/*  transform: scaleX(0);*/
+/*  transition: transform 0.3s ease;*/
+/*  transform-origin: left;*/
+/*}*/
+
+/*.my-page-user-nickname-authorized:hover::after {*/
+/*  transform: scaleX(1);*/
+/*}*/

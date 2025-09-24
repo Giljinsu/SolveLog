@@ -1,0 +1,198 @@
+
+
+.post_html_body {
+  background-color: white;
+}
+
+.post_content {
+  /*본문 내용은 700 ~ 800이 적당*/
+  max-width: 800px;
+  margin: 0 auto;
+  /*overflow: hidden;*/
+  /*background-c  olor: white;*/
+
+}
+
+.post_content_header {
+  /*margin-bottom: 3rem;*/
+  border-bottom: 1px solid #4b5563;
+  padding: 1rem 0;
+}
+
+.post_content_header_title_section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+
+.post_content_header_title_button_section > button {
+  border: none;
+  background-color: white;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+}
+
+.post_content_header_title_dropdown_menu {
+  /*position: absolute;*/
+  /*background-color: white;*/
+  /*border: 1px solid #ddd;*/
+  /*box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);*/
+  /*padding-left: 0;*/
+  /*top: 10%;*/
+  position: absolute;
+  top: 140px;
+  background-color: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  min-width: 100px;
+  z-index: 10;
+  padding-left: 0;
+  text-align: right;
+}
+
+.post_content_header_title_dropdown_menu li {
+  display: block;
+  padding: 8px 12px;
+  color: #333;
+  text-decoration: none;
+  font-size: 14px;
+  cursor: pointer;
+  text-align: start;
+}
+
+.post_content_header_title_dropdown_menu li:hover {
+  color: black;
+}
+
+.post_content_header_sub {
+  display: flex;
+  justify-content: space-between;
+}
+
+.post_content_header_sub_info {
+  display: flex;
+  gap: 1rem;
+  align-items: end;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.post_author {
+  cursor: pointer;
+}
+
+.post_author:hover {
+  text-decoration: underline;
+}
+
+.post_content_header_sub_cnt {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 14px;
+  color: #6b7280;
+  align-items: end;
+  font-weight: bold;
+}
+
+.post_written_date {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.post_content_body {
+  min-height: 50vh;
+}
+
+
+.post_left_menu {
+  position: relative;
+  left: -6rem;
+}
+
+.post_right_menu {
+  display: flex;
+  justify-content: right;
+  position: relative;
+  right: -6rem;
+}
+
+@media (max-width: 1439px) {
+  .post_left_menu {
+    visibility: hidden;
+  }
+
+  .post_right_menu {
+    visibility: hidden;
+  }
+}
+
+
+
+.post_footer {
+  padding: 1rem 0;
+  border-bottom: 1px solid #4b5563;
+  display: flex;
+  justify-content: space-between;
+}
+
+
+.post_comment_section {
+}
+
+.post_comment_comments {
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.post_comment_input > textarea {
+  /*padding 포함 해주는*/
+  box-sizing: border-box;
+  padding: 1rem;
+  width: 100%;
+  min-height: 100px;
+  margin-bottom: 0.5rem;
+  resize: none;
+}
+
+.post_comment_input {
+  text-align: right;
+  margin-bottom: 5rem;
+}
+
+.post_comment_input > textarea:focus {
+  outline: none;
+}
+
+.post_comment_input > button {
+  padding: 0.6rem 1rem;
+}
+
+.post_content_like_box {
+  display: inline-flex;
+  align-items: end;
+  gap: 0.25rem;
+}
+
+
+.post_content_like_button{
+  cursor: pointer;
+  /*padding: 0;*/
+}
+
+/*@media (max-width: 1439px) {*/
+/*  .post_content_like_button{*/
+/*    visibility: hidden;*/
+/*  }*/
+/*}*/
+
+.post_content_like_button svg{
+  position: relative;
+  top: 3px; /* 또는 -1px로 조정해가며 실험 */
+}
+
+
+.post_tag_section {
+  margin-top: 0.8rem;
+}
