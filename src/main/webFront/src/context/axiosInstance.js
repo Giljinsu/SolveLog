@@ -15,10 +15,10 @@ const instance = axios.create({
 // 2. 요청 인터셉터 (Authorization 헤더 자동 설정)
 instance.interceptors.request.use(
     (config) => {
-      const accessToken = localStorage.getItem("accessToken");
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`
-      }
+      // const accessToken = localStorage.getItem("accessToken");
+      // if (accessToken) {
+        // config.headers.Authorization = `Bearer ${accessToken}`
+      // }
       return config;
     },
     (error) => {
@@ -40,25 +40,25 @@ instance.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          const refreshToken = localStorage.getItem("refreshToken");
+          // const refreshToken = localStorage.getItem("refreshToken");
 
           const res = await axios.post(
               "/api/refresh",
               {},
-              {
-                headers: {
-                  Authorization: `Bearer ${refreshToken}`,
-                },
-              }
+              // {
+              //   headers: {
+              //     Authorization: `Bearer ${refreshToken}`,
+              //   },
+              // }
           );
 
-          const newAccessToken = res.data.accessToken;
-          const newRefreshToken = res.data.refreshToken;
+          // const newAccessToken = res.data.accessToken;
+          // const newRefreshToken = res.data.refreshToken;
 
-          localStorage.setItem("accessToken", newAccessToken);
-          localStorage.setItem("refreshToken", newRefreshToken);
+          // localStorage.setItem("accessToken", newAccessToken);
+          // localStorage.setItem("refreshToken", newRefreshToken);
 
-          originalRequest.headers.Authorization = `bearer ${newAccessToken}`;
+          // originalRequest.headers.Authorization = `bearer ${newAccessToken}`;
           return instance(originalRequest);
         } catch (refreshError) {
           console.error("리프레시 토큰 만료됨");
@@ -66,8 +66,8 @@ instance.interceptors.response.use(
           if (logoutCallback) {
             logoutCallback();
           }  else {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
+            // localStorage.removeItem("accessToken");
+            // localStorage.removeItem("refreshToken");
           }
 
           return Promise.reject(refreshError);

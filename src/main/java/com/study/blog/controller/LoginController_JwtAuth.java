@@ -9,9 +9,13 @@ import com.study.blog.service.FileService;
 import com.study.blog.service.RefreshTokenService;
 import com.study.blog.utils.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseCookie.ResponseCookieBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -33,7 +37,7 @@ public class LoginController_JwtAuth {
 
 
     @PostMapping("/api/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody LoginRequestDto requestDto) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();
 
@@ -50,13 +54,18 @@ public class LoginController_JwtAuth {
 
         refreshTokenService.saveToken(username, refreshToken);
 
-        return ResponseEntity.ok(new LoginResponseDto(accessToken, refreshToken));
-
+//        return ResponseEntity.ok(new LoginResponseDto(accessToken, refreshToken));
+        return responseTokenCookie(accessToken, refreshToken, "로그인 성공", false);
     }
 
     @PostMapping("/api/refresh")
-    public ResponseEntity<LoginResponseDto> refresh(HttpServletRequest request) {
-        String refreshToken = jwtUtil.extractTokenFromHeader(request);
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        String refreshToken = jwtUtil.extractTokenFromCookie(request, "refreshToken");
+
+        if (refreshToken == null) {
+            throw new InvalidTokenException("리프레시 토큰 없음");
+        }
+
         String username = null;
 
         try {
@@ -84,7 +93,8 @@ public class LoginController_JwtAuth {
 
         refreshTokenService.saveToken(username, newRefreshToken);
 
-        return ResponseEntity.ok(new LoginResponseDto(newAccessToken, newRefreshToken));
+//        return ResponseEntity.ok(new LoginResponseDto(newAccessToken, newRefreshToken));
+        return responseTokenCookie(newAccessToken, newRefreshToken, "토큰 재발급", false);
     }
 
     @GetMapping("/api/me")
@@ -107,9 +117,51 @@ public class LoginController_JwtAuth {
     }
 
     @PostMapping("/api/logout")
-    public ResponseEntity<Map<String, String>> logout(@AuthenticationPrincipal UserDetails userDetails) {
-        refreshTokenService.deleteToken(userDetails.getUsername());
-        return ResponseEntity.ok().body(Map.of("message", "로그아웃 성공"));
+    public ResponseEntity<?> logout(@AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            refreshTokenService.deleteToken(userDetails.getUsername());
+        }
+//        return ResponseEntity.ok().body(Map.of("message", "로그아웃 성공"));
 
+        return responseTokenCookie("", "", "로그아웃 성공", true);
+
+    }
+
+    public ResponseEntity<?> responseTokenCookie(String accessToken, String refreshToken,
+        String message, boolean isLogout) {
+        int accessTokenMaxAge = 15; // 분
+        int refreshTokenMaxAge = 7; // 일
+
+        if (isLogout) {
+            accessTokenMaxAge = 0;
+            refreshTokenMaxAge = 0;
+            accessToken="";
+            refreshToken="";
+        }
+
+
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
+            .httpOnly(true)
+            .secure(false) // https  배포시 true
+            .path("/")
+            .sameSite("Lax") // https 배포시 None
+            .maxAge(Duration.ofMinutes(accessTokenMaxAge))
+            .build();
+
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+            .httpOnly(true)
+            .secure(false) // https  배포시 true
+            .path("/")
+            .sameSite("Lax") // https 배포시 None
+            .maxAge(Duration.ofDays(refreshTokenMaxAge))
+            .build();
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        httpHeaders.add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+//        return ResponseEntity.ok(new LoginResponseDto(accessToken, refreshToken));
+        return ResponseEntity.ok()
+            .headers(httpHeaders)
+            .body(Map.of("message",message));
     }
 }

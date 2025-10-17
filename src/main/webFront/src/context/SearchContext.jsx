@@ -8,7 +8,6 @@ import {
 } from "react";
 import axios from "axios";
 import {useLocation, useNavigationType} from "react-router-dom";
-import {useAuth} from "./AuthContext.jsx";
 import useCategoryList from "../hooks/useCategoryList.jsx";
 import {options} from "../utils/SearchOptions.js"
 import qs from "qs";
@@ -17,11 +16,11 @@ export const SearchContext = createContext();
 
 export const SearchProvider = ({children}) => {
   const [searchCondition, setSearchCondition] = useState({
-    searchValue : "",
-    searchType : "TITLE",
-    searchOrderType : "",
-    categoryType : "",
-    tagNameList : []
+    searchValue: "",
+    searchType: "TITLE",
+    searchOrderType: "",
+    categoryType: "",
+    tagNameList: []
   })
   const [isReady, setIsReady] = useState(false)
   const [nextPage, setNextPage] = useState(0);
@@ -32,21 +31,23 @@ export const SearchProvider = ({children}) => {
   const navigationType = useNavigationType();
 
   // 2025-07-29 : 검색조건 초기화시 게시글 카테고리중 첫번째요소를 자동으로 선택하기 위함
-  const {categoryList, loading} = useCategoryList("SEARCH_CATEGORY");
+  const [categoryReloadKey, setCategoryReloadKey] = useState(0);
+  const reloadCategories = () => setCategoryReloadKey(k => k + 1);
+  const {categoryList, loading} = useCategoryList("SEARCH_CATEGORY", categoryReloadKey);
 
 
   const searchPostList = async () => {
     if (!isReady) return [];
 
     try {
-      const axiosResponse = await axios.get("/api/getPostList",{
-        params : {
+      const axiosResponse = await axios.get("/api/getPostList", {
+        params: {
           ...searchCondition,
           page: nextPage,
           size: 20,
         },
-        paramsSerializer : params =>
-            qs.stringify(params, { arrayFormat: "repeat" })
+        paramsSerializer: params =>
+            qs.stringify(params, {arrayFormat: "repeat"})
       });
 
       setHasNext(axiosResponse.data.hasNext);
@@ -58,22 +59,21 @@ export const SearchProvider = ({children}) => {
       console.log(e);
       return [];
     } finally {
-      setNextPage(prev => prev+1);
+      setNextPage(prev => prev + 1);
       setIsReady(false);
     }
   }
 
-
   const setSearchInput = (name, value) => {
-    const updated = {...searchCondition, [name] : value};
+    const updated = {...searchCondition, [name]: value};
 
     // 태그 검색
-    if(updated.searchValue !== "") {
+    if (updated.searchValue !== "") {
       const result = parseSearchInput(updated.searchValue);
       setSearchCondition({
         ...searchCondition,
-        tagNameList : result.tagNameList,
-        searchValue : result.searchValue ? result.searchValue : ""
+        tagNameList: result.tagNameList,
+        searchValue: result.searchValue ? result.searchValue : ""
       });
     } else {
       setSearchCondition(updated);
@@ -97,10 +97,10 @@ export const SearchProvider = ({children}) => {
 
     const tags = input.match(/#\S+/g);
 
-    if (tags &&  tags.length>0) {
-      return {tagNameList : tags.map(tag=>tag.slice(1))};
+    if (tags && tags.length > 0) {
+      return {tagNameList: tags.map(tag => tag.slice(1))};
     } else {
-      return {searchValue : input};
+      return {searchValue: input};
     }
 
   }
@@ -134,6 +134,7 @@ export const SearchProvider = ({children}) => {
     setIsReady(true); // 초기화 시 검색이 안되는 현상으로 집어놓음
   };
 
+
   const getNextPostPage = async () => {
     if (!hasNextRef.current) return;
     // setNextPage(prev => prev+1);
@@ -141,7 +142,7 @@ export const SearchProvider = ({children}) => {
     setIsReady(true);
   }
 
-  const getPageByTagId  = async (tagId) => {
+  const getPageByTagId = async (tagId) => {
     if (!tagId || tagId === "") return;
 
     const tagIdList = [tagId];
@@ -158,8 +159,8 @@ export const SearchProvider = ({children}) => {
           page: 0,
           size: 20,
         },
-        paramsSerializer : params =>
-          qs.stringify(params, { arrayFormat: "repeat" })
+        paramsSerializer: params =>
+            qs.stringify(params, {arrayFormat: "repeat"})
 
         // qs 라이브러리
         // 해당 라이브러리로 arrayFormat: "repeat" 을 주게되면
@@ -177,11 +178,10 @@ export const SearchProvider = ({children}) => {
   }
 
   useEffect(() => {
-    if (!loading && categoryList) {
+    if (!loading && categoryList.length > 0) {
       resetSearchCondition();
     }
-  }, [categoryList,loading]);
-
+  }, [categoryList, loading]);
 
   useEffect(() => {
     // console.log(navigationType)
@@ -212,11 +212,11 @@ export const SearchProvider = ({children}) => {
             getNextPostPage,
             postList,
             getPageByTagId,
-          }} >
+            reloadCategories,
+          }}>
         {children}
       </SearchContext.Provider>
   )
-
 }
 
 export const useSearchContext = () => {

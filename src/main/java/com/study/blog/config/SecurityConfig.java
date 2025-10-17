@@ -76,7 +76,8 @@ public class SecurityConfig {
                         "/api/getPostByTagIdAndUsername",
                         "/api/getUserImg/**",
                         "/api/getUser/**",
-                        "/api/getTagAutoCompleteList/**"
+                        "/api/getTagAutoCompleteList/**",
+                        "/api/logout"
                     ).permitAll()
                     .anyRequest().authenticated()
     //                .anyRequest().permitAll()

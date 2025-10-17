@@ -1,11 +1,13 @@
 package com.study.blog.utils;
 
 
+import com.study.blog.exception.InvalidTokenException;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
@@ -53,6 +55,29 @@ public class JwtUtil {
             .getBody()
             .getSubject();
     }
+
+    //쿠키에서 토큰 추출
+    public String extractTokenFromCookie(HttpServletRequest request, String tokenType) {
+
+        if (request.getCookies() != null) {
+            for(Cookie cookie : request.getCookies()) {
+                if (tokenType.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+
+//        if (token == null) {
+//            if ("refreshToken".equals(tokenType)) {
+//                throw new InvalidTokenException("리프레시 토큰 없음");
+//            } else {
+//                throw new InvalidTokenException("억세스 토큰 없음");
+//            }
+//        }
+
+        return null;
+    }
+
 
     //요청에서 토큰 추출
     public String extractTokenFromHeader(HttpServletRequest request) {

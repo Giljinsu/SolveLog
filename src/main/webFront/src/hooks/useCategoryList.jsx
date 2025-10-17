@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 
-const useCategoryList = (parentCategory) => {
+const useCategoryList = (parentCategory, reloadKey = 0) => {
   const [categoryList, setCategoryList] = useState([])
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ const useCategoryList = (parentCategory) => {
     }
 
     getCategories();
-  }, [parentCategory]);
+  }, [parentCategory, reloadKey]);
   // useCategoryList
 
   // console.log(categoryList)

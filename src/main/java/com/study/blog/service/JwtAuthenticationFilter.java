@@ -1,5 +1,6 @@
 package com.study.blog.service;
 
+import com.study.blog.exception.NotExistUserException;
 import com.study.blog.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -31,14 +32,26 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
         FilterChain filterChain) throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
+//        String authHeader = request.getHeader("Authorization");
+//
+//        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+//        String token = authHeader.substring(7); // "Bearer " 이후
+        if ("/api/logout".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // "Bearer " 이후
+        String token = jwtUtil.extractTokenFromCookie(request, "accessToken");
+
+        if (token == null) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (!jwtUtil.isTokenValid(token)) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.setContentType("application/json"); // json 응답
@@ -49,30 +62,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String username = jwtUtil.getUsername(token);
-        UserDetails userDetails = usersService.loadUserByUsername(username);
 
-        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-            userDetails // userDetails를 넣어줘야 @AuthenticationPrincipal 을 사용 가능
-            ,null
-            ,userDetails.getAuthorities()
-        );
+        try {
+            UserDetails userDetails = usersService.loadUserByUsername(username);
 
-        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        /*
-            WebAuthenticationDetailsSource() 에는
-            remoteAddress 클라언트 IP 주소
-            sessionId 요청에 포람된 세션 ID
-            JWT는 세션을 안쓰니 sessionId는 별 의미 없음
+            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                userDetails // userDetails를 넣어줘야 @AuthenticationPrincipal 을 사용 가능
+                ,null
+                ,userDetails.getAuthorities()
+            );
 
-           하지만 Spring Security 내부 로직 중엔 details 필드가 null이면 NullPointerException 터지는 경우도 있음
-           (예: 커스텀 AuthenticationSuccessHandler 같은 데서)
+            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+            /*
+                WebAuthenticationDetailsSource() 에는
+                remoteAddress 클라언트 IP 주소
+                sessionId 요청에 포람된 세션 ID
+                JWT는 세션을 안쓰니 sessionId는 별 의미 없음
 
-            방어 코드처럼 안전하게 넣어주는게 관행
-         */
-        SecurityContextHolder.getContext().setAuthentication(authToken);
+               하지만 Spring Security 내부 로직 중엔 details 필드가 null이면 NullPointerException 터지는 경우도 있음
+               (예: 커스텀 AuthenticationSuccessHandler 같은 데서)
+
+                방어 코드처럼 안전하게 넣어주는게 관행
+             */
+            SecurityContextHolder.getContext().setAuthentication(authToken);
 
 
-        filterChain.doFilter(request,response);
+            filterChain.doFilter(request,response);
+
+        } catch (NotExistUserException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+            response.setContentType("application/json"); // json 응답
+            response.getWriter().write("{\"error\": \"not found username\"}");
+
+        }
     }
 
 }

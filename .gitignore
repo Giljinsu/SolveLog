@@ -43,3 +43,12 @@ out/
 ### FrontEnd ###
 **/node_modules/
 **/dist/
+
+### 파일 이미지 ###
+/upload
+
+### pem ###
+.pem*.pem
+
+
+**

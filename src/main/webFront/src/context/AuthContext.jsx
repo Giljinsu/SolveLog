@@ -13,7 +13,7 @@ export const AuthProvider = ({children}) => {
   // username roles nickname userImgId
   const [isLoading, setIsLoading] = useState(true)
   const nav = useNavigate();
-  const {resetSearchCondition} = useSearchContext();
+  const {resetSearchCondition, reloadCategories} = useSearchContext();
 
   const fetchUser = async () => {
     try {
@@ -21,8 +21,8 @@ export const AuthProvider = ({children}) => {
       setUser(axiosResponse.data)
     } catch (e) {
       setUser(null)
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+      // localStorage.removeItem("accessToken");
+      // localStorage.removeItem("refreshToken");
 
       nav("/");
 
@@ -37,14 +37,18 @@ export const AuthProvider = ({children}) => {
     }
   }
 
-  const logout = () => {
-    axios.post("api/logout").finally(() => {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("refreshToken");
+  const logout = async () => {
+    try {
+      await axios.post("api/logout");
+
       setUser(null)
       resetSearchCondition();
+      reloadCategories();
       nav("/")
-    })
+
+    } catch (e) {
+      console.error("로그아웃 실패", e);
+    }
   }
 
   const reFetchUser = async () => {
