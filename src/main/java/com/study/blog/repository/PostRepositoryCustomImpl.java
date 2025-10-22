@@ -420,7 +420,8 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
             return null;
         }
 
-        return post.content.contains(searchCondition.getSearchValue().toUpperCase());
+//        return post.content.toUpperCase().contains(searchCondition.getSearchValue().toUpperCase());
+        return post.content.containsIgnoreCase(searchCondition.getSearchValue());
     }
 
     private BooleanExpression searchTitle(SearchCondition searchCondition) {

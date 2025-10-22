@@ -8,7 +8,8 @@ export const registerLogout = (fn) => {
 
 // 1. Axios 인스턴스 생성
 const instance = axios.create({
-  baseURL: "http://localhost:8080", // API 서버 주소
+  // baseURL: "http://localhost:8080", // API 서버 주소
+  baseURL: "http://www.studyfordocker.duckdns.org/", // API 서버 주소
   withCredentials: true // 쿠키 사용 시 필요
 })
 

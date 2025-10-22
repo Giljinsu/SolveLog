@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import java.time.Duration;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -127,6 +128,11 @@ public class LoginController_JwtAuth {
 
     }
 
+    @Value("${cookie.secure}")
+    private boolean cookieSecure;
+    @Value("${cookie.same-site}")
+    private String sameSite;
+
     public ResponseEntity<?> responseTokenCookie(String accessToken, String refreshToken,
         String message, boolean isLogout) {
         int accessTokenMaxAge = 15; // 분
@@ -142,17 +148,17 @@ public class LoginController_JwtAuth {
 
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
             .httpOnly(true)
-            .secure(false) // https  배포시 true
+            .secure(cookieSecure) // https  배포시 true
             .path("/")
-            .sameSite("Lax") // https 배포시 None
+            .sameSite(sameSite) // https 배포시 None
             .maxAge(Duration.ofMinutes(accessTokenMaxAge))
             .build();
 
         ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
             .httpOnly(true)
-            .secure(false) // https  배포시 true
+            .secure(cookieSecure) // https  배포시 true
             .path("/")
-            .sameSite("Lax") // https 배포시 None
+            .sameSite(sameSite) // https 배포시 None
             .maxAge(Duration.ofDays(refreshTokenMaxAge))
             .build();
 

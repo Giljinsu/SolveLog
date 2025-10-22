@@ -1,33 +1,3 @@
 spring:
   profiles:
-    active: "local"
-#  datasource:
-#    url: "jdbc:h2:tcp://localhost/~/dbs/toy_blog"
-#    username: "sa"
-#    password:
-#    driver-class-name: org.h2.Driver
-  datasource:
-    url: "jdbc:postgresql://localhost:5432/solvelog"
-    username: "solvelog_admin"
-    password: "solve1234"
-    driver-class-name: org.postgresql.Driver
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      timeout: 2000 #ms
-      ssl:
-        enabled: false
-  #      password:
-
-  jpa:
-    hibernate:
-      ddl-auto: create
-    properties.hibernate:
-      show_sql: true
-      format_sql: true
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-
-logging.level:
-    org.hibernate.sql: debug
-#    org.hibernate.type: trace
+    active: local

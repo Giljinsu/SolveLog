@@ -1,7 +1,17 @@
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'org.flywaydb:flyway-database-postgresql:10.20.1'
+	}
+}
+
 plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.4.5'
 	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.flywaydb.flyway' version '10.20.1'
 }
 
 group = 'com.study'
@@ -34,6 +44,13 @@ dependencies {
 	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
 	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
 
+	//flyaway
+	implementation 'org.flywaydb:flyway-core'
+	// 2. Flyway PostgreSQL 지원 모듈 (필수 추가)
+	implementation 'org.flywaydb:flyway-database-postgresql'
+	runtimeOnly 'org.flywaydb:flyway-database-postgresql'
+	runtimeOnly 'org.postgresql:postgresql'
+
 	//jwt
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
@@ -53,6 +70,14 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+flyway {
+	url = 'jdbc:postgresql://localhost:5432/solvelog'   // 실제 DB 이름으로 변경
+	user = 'solvelog_admin'                               // DB 사용자명
+	password = 'solve1234'                      // DB 비밀번호
+	schemas = ['public']
+	locations = ['classpath:db/migration']           // (기본 경로면 생략 가능)
 }
 
 tasks.named('test') {

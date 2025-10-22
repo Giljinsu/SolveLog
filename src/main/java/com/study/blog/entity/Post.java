@@ -35,7 +35,8 @@ public class Post extends BasicDate {
     @Column(nullable = false)
     private String title;
 
-    @Lob
+//    @Lob
+    @Column(columnDefinition = "TEXT")
     private String content;
     private int viewCount;
     private String tags;
