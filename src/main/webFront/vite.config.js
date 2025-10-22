@@ -12,7 +12,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: "http://localhost:8080",
-        target: "http://www.studyfordocker.duckdns.org/",
+        target: "https://www.studyfordocker.duckdns.org/",
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, 'api')
       }

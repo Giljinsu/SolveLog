@@ -14,7 +14,7 @@ VALUES (3, 1, '자유게시판')
 
 -- alarm_type의 필수 템플릿 삽입
 INSERT INTO alarm_type (alarm_type_id, template, type)
-VALUES (1, '{{sender}}님이 '{{postTitle}}'에 댓글을 남겼습니다.', 'COMMENT')
+VALUES (1, '{{sender}}님이 ''{{postTitle}}''에 댓글을 남겼습니다.', 'COMMENT')
     ON CONFLICT (alarm_type_id) DO NOTHING;
 
 INSERT INTO alarm_type (alarm_type_id, template, type)

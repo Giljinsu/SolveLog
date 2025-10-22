@@ -13,7 +13,8 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 모든 경로
-                    .allowedOrigins("http://localhost:5173") // 리액트 서버 주소
+//                    .allowedOrigins("http://localhost:5173") // 리액트 서버 주소
+                    .allowedOrigins("https://www.studyfordocker.duckdns.org")
                     .allowedMethods("*") // GET, POST, PUT, DELETE 등
                     .allowedHeaders("*")
                     .allowCredentials(true); //withCredentials: true 쓸 뎡우
