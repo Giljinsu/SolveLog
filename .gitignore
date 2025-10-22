@@ -37,8 +37,8 @@ out/
 .vscode/
 
 ### Common ###
-.env
-.env.*
+#.env
+#.env.*
 
 ### FrontEnd ###
 **/node_modules/
@@ -49,6 +49,3 @@ out/
 
 ### pem ###
 .pem*.pem
-
-
-**
