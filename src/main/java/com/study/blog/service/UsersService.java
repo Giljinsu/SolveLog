@@ -57,6 +57,7 @@ public class UsersService implements UserDetailsService{
         return new UsersResponseDto(
             user.getId(),
             user.getNickname(),
+            user.getBio(),
             fileResponseDto
         );
     }
@@ -88,7 +89,24 @@ public class UsersService implements UserDetailsService{
         Users findUser = usersRepository.findUsersByUsername(userRequestDto.getUsername())
             .orElseThrow();
 
-        findUser.updateUser(userRequestDto.getNickName(), userRequestDto.getRole());
+
+        // 닉네임 변경
+        if (userRequestDto.getNickName() != null) {
+            findUser.updateUser(
+                userRequestDto.getNickName(),
+                findUser.getBio(),
+                userRequestDto.getRole()
+            );
+        }
+
+        // 바이오 변경
+        if (userRequestDto.getBio() != null) {
+            findUser.updateUser(
+                findUser.getNickname(),
+                userRequestDto.getBio(),
+                userRequestDto.getRole()
+            );
+        }
 
         return new UsersResponseDto(findUser.getId(), findUser.getNickname());
     }

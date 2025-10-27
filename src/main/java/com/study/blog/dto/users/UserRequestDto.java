@@ -12,6 +12,7 @@ public class UserRequestDto {
     private String username;
     private String password;
     private String nickName;
+    private String bio;
     private Role role;
 
     public UserRequestDto(String username, String password, String nickName) {

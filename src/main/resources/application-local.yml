@@ -37,3 +37,14 @@ logging.level:
 cookie:
   secure: false
   same-site: Lax
+
+cloud:
+  aws:
+    s3:
+      bucket: solvelog-files
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${SOLVELOG_ACCESS_KEY}
+      secret-key: ${SOLVELOG_SECRET_KEY}
+

@@ -35,7 +35,7 @@
 }
 
 
-.my-page-user-nickname-edit {
+.my-page-user-edit {
   padding: 0 1rem 0 0;
 }
 
@@ -48,13 +48,31 @@
 
 .nickname-edit-icon-section {
   vertical-align: middle;  /* 텍스트 중앙 정렬 */
+
   /*margin-left: 6px;        !* 글자와 간격 *!*/
+}
+
+.my-page-user-bio-section {
+  padding: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
 }
 
 .nickname-edit-icon {
  cursor: pointer;
 }
 
+.my-page-user-bio {
+  font-size: 16px;
+}
+
+.bio-edit-icon-section {
+  /*vertical-align: middle;  !* 텍스트 중앙 정렬 *!*/
+  display: flex;
+
+}
 
 /*.my-page-user-nickname-authorized {*/
 /*  position: relative;*/

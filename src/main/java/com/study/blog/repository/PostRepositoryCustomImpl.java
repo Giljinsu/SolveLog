@@ -259,6 +259,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 //                        .where(comment1.post.id.eq(post.id)),
                     post.user.nickname,
                     post.user.username,
+                    post.user.bio,
                     post.tags,
                     post.summary,
                     post.isTemp
@@ -280,6 +281,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
                 post.category.type,
                 post.user.nickname,
                 post.user.username,
+                post.user.bio,
                 post.tags,
                 post.summary
             ).fetchOne();

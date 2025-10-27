@@ -113,6 +113,16 @@ public class PostService {
     public PostResponseDto getDetailPost(Long postId) {
         PostResponseDto postDto = postRepository.findDetailPostById(postId);
 
+        // 게시글 작성자 이미지
+        File postUserImg = fileRepository.findUserImgByUsername(postDto.getUsername()).orElseThrow();
+        postDto.setUserImg(
+            new FileResponseDto(
+                postUserImg.getId(),
+                postUserImg.getOriginalFileName(),
+                postUserImg.getPath()
+            )
+        );
+
         postDto.addTagList(postTagRepository.findByPostId(postDto.getId()).orElseThrow());
 
         // comment 리스트
@@ -419,8 +429,9 @@ public class PostService {
 
     // 임시파일 삭제
     private void cleanUnusedFile(String username, String content) {
-        Set<Long> fileIds = extractFileIdsFromMarkdown(content);
-        List<File> files = fileRepository.findByUsernameAndPostIdIsNull(username).orElseThrow();
+        Set<Long> fileIds = extractFileIdsFromMarkdown(content); // 현재의 마크다운 파일
+//        List<File> files = fileRepository.findByUsernameAndPostIdIsNull(username).orElseThrow();
+        List<File> files = fileRepository.findUsingFileByUsername(username).orElseThrow(); // 이전에 저장되어있는 파일
 
         for (File file : files) {
             if (!fileIds.contains(file.getId())) {
@@ -443,7 +454,8 @@ public class PostService {
         for (File existingFile : existingFiles) {
             if (!fileIds.contains(existingFile.getId())) {
                 java.io.File physicalFile = new java.io.File(existingFile.getPath());
-                if (physicalFile.exists() && !existingFile.getIsThumbnail()) { // 썸네일을 제외한 삭제 썸네일은 프론트에서 삭제
+//                if (physicalFile.exists() && !existingFile.getIsThumbnail()) { // 썸네일을 제외한 삭제 썸네일은 프론트에서 삭제
+                if (!existingFile.getIsThumbnail()) { // 썸네일을 제외한 삭제 썸네일은 프론트에서 삭제
                     fileService.deleteFile(existingFile.getId());
                 }
             }
@@ -479,10 +491,10 @@ public class PostService {
         // 업데이트 후 없는것 삭제
         cleanUnusedExistFile(requestDto.getPostId(), requestDto.getContent());
 
+        fileService.updateFilePostId(requestDto.getPostId(), requestDto.getUsername());
+
         //임시파일 이동
         fileService.moveFileToPostId(requestDto.getPostId());
-
-        fileService.updateFilePostId(requestDto.getPostId(), requestDto.getUsername());
 
         return findPost.getId();
     }

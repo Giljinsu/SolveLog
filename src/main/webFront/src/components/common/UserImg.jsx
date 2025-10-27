@@ -35,7 +35,7 @@ const UserImg = ({userImg, nickname, radius, onClickImg, isAuthentication}) => {
       <div>
         {!imgSrcError && userImg ? (
             <img
-                onClick={()=>onClickImg ? onClickImg() : ""}
+                onClick={(e)=>onClickImg ? onClickImg(e) : ""}
                 className={`${isAuthentication ? "user-img-authorized"
                     : "user-img"}`}
                 src={userImg ? userImg : test}

@@ -299,7 +299,8 @@ const MyPage = () => {
             }
             subHeader={
               <MyPageSearch onClickButton={searchPost}
-                            isMyPage={isAuthentication && username === user.username}
+                            isMyPage={isAuthentication && username
+                                === user.username}
                             tabSelected={tabSelected}
                             setTabSelected={setTabSelected}
               />
@@ -312,7 +313,8 @@ const MyPage = () => {
                     tabSelected={tabSelected}
                 />
             ))}
-            listPlaceholder={tabSelected === "my" ? "작성한 글이 없습니다." : "좋아요한 글이 없습니다."}
+            listPlaceholder={tabSelected === "my" ? "작성한 글이 없습니다."
+                : "좋아요한 글이 없습니다."}
             leftMenuMax={<TagsMenu
                 tagList={tagList}
                 totalCount={totalCount}
@@ -323,9 +325,11 @@ const MyPage = () => {
                 tagList={tagList}
                 totalCount={totalCount}
                 selected={tagSelected}
-                onClickTag= {onClickTag}
+                onClickTag={onClickTag}
             />}
         />
+
+        <div className={"post_end_buffer"} style={{"height": "80px"}}/>
       </div>
   )
 }

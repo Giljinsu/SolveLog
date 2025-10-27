@@ -9,6 +9,7 @@ import lombok.Setter;
 public class UsersResponseDto {
     private Long userId;
     private String nickname;
+    private String bio;
     private FileResponseDto userImg;
 
     public UsersResponseDto(Long userId, String nickname) {
@@ -22,5 +23,10 @@ public class UsersResponseDto {
         this.userImg = userImg;
     }
 
-
+    public UsersResponseDto(Long userId, String nickname, String bio, FileResponseDto userImg) {
+        this.userId = userId;
+        this.nickname = nickname;
+        this.bio = bio;
+        this.userImg = userImg;
+    }
 }

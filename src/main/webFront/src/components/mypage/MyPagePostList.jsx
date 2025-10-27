@@ -27,6 +27,7 @@ const MyPagePostList = ({post, onClickTag, tabSelected}) => {
             thumbnail={getImage(post.thumbnailFile.fileId)}
             author={tabSelected !== "my" ? post.nickName : null}
             username={tabSelected !== "my" ? post.username : null}
+            userImg={tabSelected !== "my" ? post.userImg : null}
             onClickTag={onClickTag}
         />
       </div>

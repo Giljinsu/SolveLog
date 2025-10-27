@@ -2,7 +2,10 @@ package com.study.blog;
 
 import com.study.blog.entity.enums.FileType;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,11 +14,18 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.couchbase.CouchbaseProperties.Io;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
+@Component
+@RequiredArgsConstructor
 public class FileUpload {
+    private final S3Uploader s3Uploader;
+
     //파일 업로드
+    //교육용 사용 X
     public String fileUpload(MultipartFile file) throws IOException {
         String uploadRootPath = "upload";
 
@@ -55,10 +65,17 @@ public class FileUpload {
 
         Path fullPath = Paths.get(rootDir.toString(), year, month, username, postDir);
 
-        return createFileAndGetAbsolutePath(file, fullPath);
+        if (postId == null) {
+            // temp 일 경우 내부에 이미지 저장
+            return createFileAndGetAbsolutePath(file, fullPath);
+        } else {
+            // 아닐경우 s3에 업로드
+            return uploadS3AndGetAbsolutePath(file, fullPath);
+        }
+
     }
 
-    private static String createFileAndGetAbsolutePath(MultipartFile file, Path fullPath) {
+    private String createFileAndGetAbsolutePath(MultipartFile file, Path fullPath) {
         if(!Files.exists(fullPath)) {
             try {
                 Files.createDirectories(fullPath);
@@ -66,10 +83,11 @@ public class FileUpload {
                 throw new RuntimeException("폴더 생성 실패 : " + fullPath);
             }
         }
-        String uuid = UUID.randomUUID().toString();
-        String savedFileName = uuid + "_" + file.getOriginalFilename();
-
-        Path target = fullPath.resolve(savedFileName);
+//        String uuid = UUID.randomUUID().toString();
+//        String savedFileName = uuid + "_" + file.getOriginalFilename();
+//
+//        Path target = fullPath.resolve(savedFileName);
+        Path target = addUuidOnPath(fullPath, file.getOriginalFilename());
 
         try {
             file.transferTo(target);
@@ -80,10 +98,31 @@ public class FileUpload {
         return target.toString();
     }
 
+    private String uploadS3AndGetAbsolutePath(MultipartFile file, Path fullPath) {
+        if (file.getOriginalFilename() == null) {
+            throw new RuntimeException("파일이 없습니다");
+        }
+
+
+        Path target = addUuidOnPath(fullPath, file.getOriginalFilename());
+//        String key = target.toString().replace(File.separator, "/");
+        s3Uploader.upload(file, target.toString());
+        return target.toString();
+    }
+
+    private Path addUuidOnPath(Path fullPath, String originalFilename) {
+        String encodedFilename = URLEncoder.encode(originalFilename, StandardCharsets.UTF_8);
+//            .replace("+", "%20");
+        String uuid = UUID.randomUUID().toString();
+        String savedFileName = uuid + "_" + encodedFilename;
+
+        return fullPath.resolve(savedFileName);
+    }
+
     public String uploadUserImg(MultipartFile file, String username) {
         Path rootDir = Paths.get("upload","userImg",username);
 
-        return createFileAndGetAbsolutePath(file, rootDir);
+        return uploadS3AndGetAbsolutePath(file, rootDir);
     }
 
     // 폴더 이동
@@ -108,6 +147,7 @@ public class FileUpload {
 
     // 폴더 이동
     public void moveFileToTargetDir(Path originDir, Path targetDir) throws IOException {
+        // s3 사용하지 않을때
         if (!Files.exists(originDir)) {
             throw new IOException("Temp directory does not exist");
         }
@@ -128,6 +168,34 @@ public class FileUpload {
             }
         }
     }
+
+    // s3로 이동
+    public void moveFileToS3TargetDir(Path originDir, Path targetDir) throws IOException {
+        if (!Files.exists(originDir)) {
+            throw new IOException("Temp directory does not exist");
+        }
+
+        // temp 디렉토리 내 모든 파일 이동
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(originDir)) {
+            for (Path file : stream) {
+                try {
+//                    String key = targetDir.resolve(file.getFileName()).toString().replace(File.separator, "/");
+                    Path targetPath = targetDir.resolve(file.getFileName());
+                    s3Uploader.uploadFromFile(file.toFile(), targetPath.toString());
+                    Files.delete(file);
+                } catch (Exception e) {
+                    System.err.println("업로드 실패: " + file + "->" + e.getMessage());
+                }
+//                Files.move(file, targetPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+    }
+
+    public void deleteFileFromS3(String savePath) {
+//        String key = savePath.replace(File.separator, "/");
+        s3Uploader.delete(savePath);
+    }
+
 
     public String getExtension(String originalFileName) {
 //        System.out.println("originalFileName = " + originalFileName);

@@ -17,6 +17,10 @@ public interface FileRepository extends JpaRepository<File, Long> {
     @Query("delete from File f where f.postId = :postId")
     void deleteByPostId(@Param("postId") Long postId);
 
+    @Modifying
+    @Query("delete from File f where f.postId = :postId and f.isThumbnail is true")
+    void deleteThumbnailByPostId(@Param("postId") Long postId);
+
     Optional<List<File>> findByUsernameAndPostIdIsNull(String username);
 
     @Query(

@@ -21,6 +21,8 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
   const [summary, setSummary] = useState('');
   // const [alarmList, setAlarmList] = useState('');
   const isSaveRef = useRef(false) // 저장인지 여부
+  const prevThumbnailId = useRef('');
+  const isThumbnailChangedRef = useRef(false); // 썸네일 변경 여부
   const nav = useNavigate();
   const {resetSearchCondition} = useSearchContext();
   const {categoryList} = useCategoryList("SEARCH_CATEGORY");
@@ -44,7 +46,8 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     formData.append("file", file);
     formData.append("username", user.username)
     formData.append("isThumbnail", isThumbnail);
-    if (postId) formData.append("postId", postId);
+    // if (postId) formData.append("postId", postId);
+    //수정이어도 추가하면 무조건 temp 파일로 하기위해 위의 내용을 주석처리
 
     try {
       return await axios.post("/api/uploadFile",formData);
@@ -149,6 +152,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
 
     const fileId = res.data.fileId;
 
+    isThumbnailChangedRef.current = true;
     // 백엔드 url
     //.env 파일에 서버 주소 저장
     const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -211,6 +215,8 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
       const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
       const imageTitle = thumbnailFile[0].originalFileName;
 
+      prevThumbnailId.current = fileId;
+
       setThumbnail({
         mdImage: mdImage,
         fileId: fileId,
@@ -267,7 +273,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                     console.log("태그 생성 실패:", e.detail.data.value);
                     console.log("실패 사유:", e.detail.message);
                     console.log(e.detail);
-                    // 예) "pattern mismatch", "duplicate", "maxTags exceeded"
+                    // 예 "pattern mismatch", "duplicate", "maxTags exceeded"
                     //already exists 이미 존
                     //pattern mismatch 글자수 제한
                     //number of tags exceeded: 태그 최대 수 초과
@@ -312,7 +318,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                    accept={"image/jpeg, image/png, image/gif, image/bmp, image/webp"}
                    style={{display:"none"}}
                    onChange={(e) => {
-                     if (thumbnail) deleteThumbnailFile(thumbnail.fileId)
+                     // if (thumbnail) deleteThumbnailFile(thumbnail.fileId)
                      onChangeThumbnail(e);
                    }}
             />
@@ -342,6 +348,11 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                       buttonText={"임시작성"}
                       buttonEvent={() => {
                         isSaveRef.current = true;
+                        
+                        //기존 썸네일 삭제
+                        if (postId && isThumbnailChangedRef.current) {
+                          deleteThumbnailFile(prevThumbnailId.current);
+                        }
 
                         !postId ? createPost({
                           username: user.username,
@@ -369,6 +380,11 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                     buttonText={"작성하기"}
                     buttonEvent={() => {
                       isSaveRef.current = true;
+
+                      //기존 썸네일 삭제
+                      if (postId && isThumbnailChangedRef.current) {
+                        deleteThumbnailFile(prevThumbnailId.current);
+                      }
 
                       !postId ? createPost({
                         username: user.username,

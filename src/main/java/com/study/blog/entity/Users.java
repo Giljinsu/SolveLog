@@ -49,6 +49,8 @@ public class Users {
 
     private Long userImgId;
 
+    private String bio;
+
     private Users(String username, String password,
         String nickname, Role role) {
         this.username = username;
@@ -64,6 +66,12 @@ public class Users {
 
     public void updateUser(String nickname, Role role) {
         setNickname(nickname);
+        setRole(role);
+    }
+
+    public void updateUser(String nickname, String bio, Role role) {
+        setNickname(nickname);
+        setBio(bio);
         setRole(role);
     }
 

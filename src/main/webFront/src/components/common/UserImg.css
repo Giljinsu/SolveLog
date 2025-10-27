@@ -4,6 +4,7 @@
   /*border: 1px solid;*/
   border-radius: 50%;
   object-fit: cover;
+  cursor: pointer;
 }
 
 

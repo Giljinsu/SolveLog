@@ -131,12 +131,12 @@
 
 
 
-.post_footer {
-  padding: 1rem 0;
-  border-bottom: 1px solid #4b5563;
-  display: flex;
-  justify-content: space-between;
-}
+/*.post_footer {*/
+/*  padding: 1rem 0;*/
+/*  border-bottom: 1px solid #4b5563;*/
+/*  display: flex;*/
+/*  justify-content: space-between;*/
+/*}*/
 
 
 .post_comment_section {
@@ -195,4 +195,39 @@
 
 .post_tag_section {
   margin-top: 0.8rem;
+}
+
+.post-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem 0;
+  margin-top: 9rem;
+  /*border-top: 1px solid #e5e7eb;*/
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 3rem;
+}
+
+.author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.post-footer .author-info .name {
+  font-weight: 600;
+  font-size: 24px;
+  color: #111;
+  cursor: pointer;
+  display: block;
+  width: fit-content; /* 내용 길이에 맞게 줄어듦 */
+}
+
+.post-footer .author-info .name:hover {
+  text-decoration: underline 0.1rem;
+}
+
+.post-footer .author-info .bio {
+  font-size: 0.9rem;
+  color: #555;
 }

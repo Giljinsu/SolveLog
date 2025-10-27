@@ -58,6 +58,11 @@ dependencies {
 
 	implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 
+	//aws
+//	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+	implementation 'software.amazon.awssdk:s3:2.29.22'
+	implementation 'software.amazon.awssdk:auth:2.29.22'
+
 	compileOnly 'org.projectlombok:lombok'
 //	runtimeOnly 'com.h2database:h2'
 //	implementation("com.h2database:h2")

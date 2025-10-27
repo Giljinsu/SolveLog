@@ -21,6 +21,7 @@ public class PostResponseDto {
     private Integer likeCount;
     private Integer commentCount;
     private String nickName;
+    private String authorBio;
     private String username;
     private String categoryType;
     private String tags;
@@ -67,7 +68,7 @@ public class PostResponseDto {
     // 상세
     public PostResponseDto(Long id, String title, String content, LocalDateTime createdDate,
         Integer viewCount, String categoryType, Integer likeCount, Integer commentCount,
-        String nickName, String username, String tags, String summary, Boolean isTemp) {
+        String nickName, String username, String authorBio, String tags, String summary, Boolean isTemp) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -78,6 +79,7 @@ public class PostResponseDto {
         this.commentCount = commentCount;
         this.nickName = nickName;
         this.username = username;
+        this.authorBio = authorBio;
         this.tags = tags;
         this.summary = summary;
         this.isTemp = isTemp;

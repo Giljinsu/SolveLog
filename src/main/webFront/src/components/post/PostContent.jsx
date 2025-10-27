@@ -1,5 +1,6 @@
 import "./PostContent.css"
 import {
+  Children,
   useCallback,
   useContext,
   useEffect,
@@ -18,8 +19,9 @@ import {LoginDispatchContext} from "../../App.jsx";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
 import {useNavigate} from "react-router-dom";
 import {useSearchContext} from "../../context/SearchContext.jsx";
+import UserImg from "../common/UserImg.jsx";
 
-const PostContent = ({postId, title, author, postUsername, writtenDate, content, likes,
+const PostContent = ({postId, title, author, authorImg, authorBio, postUsername, writtenDate, content, likes,
   commentCnt, comments, viewCount, tags, files, targetCommentIdForScroll,
   onCommentChange, onClickCommentCreate, onClickCommentDelete,
   getLikesCount, deletePost}) => {
@@ -46,6 +48,8 @@ const PostContent = ({postId, title, author, postUsername, writtenDate, content,
   const titleListRef = useRef([]); // 2025 07 18 추가
   const [rightMenuSelectedIndex, setRightMenuSelectedIndex] = useState(-1);
   const rightMenuSelectedIndexRef = useRef(-1);
+
+  const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     if (isLoading) return ; // 인증
@@ -143,8 +147,28 @@ const PostContent = ({postId, title, author, postUsername, writtenDate, content,
 
   // 마크다운 제목태그 아이디 생성
   const generateId = (children) => {
-    return children
-      .toString()
+    // 들어오는 값이 문자열이 아닌경우가 있을수 있으니
+    // const text =
+    //     typeof children === "string"
+    //         ? children
+    //         : Children.toArray(children).join(" ");
+
+    // 들어오는 값이 문자열이 아닌경우 React Element 가 들어오는경우
+    // 재귀적으로 String type 만 리턴
+    const text = Children.toArray(children)
+      .map(child => {
+        if (typeof child ==="string" || typeof child === "number") {
+          return child;
+        }
+
+        if (child.props && child.props.children) {
+          return generateId(child.props.children)
+        }
+        return "";
+      }).join();
+
+    return text
+      // .toString()
       .toLowerCase()
       .replace(/[^a-z0-9가-힣]+/g,'-')
       .replace(/^-+|-+$/g, '');
@@ -443,8 +467,28 @@ const PostContent = ({postId, title, author, postUsername, writtenDate, content,
 
           </section>
 
-          <section className={"post_footer"}>
+          <section className={"post_footer_section"}>
             {/* 작성자 프로필 */}
+            <div className={"post-footer"}>
+              <UserImg
+                  radius={120}
+                  nickname={author}
+                  userImg={authorImg && authorImg.fileId
+                      ? `${backendBaseUrl}/api/inlineFile/${authorImg.fileId}`
+                      : ""}
+                  onClickImg={onClickAuthor}
+              />
+              <div className="author-info">
+                <div className="name"
+                     onClick={()=>onClickAuthor()}
+                     // style={{cursor : "pointer"}}
+                >{author}</div>
+                {/*<div className="role">Solvelog 개발자</div>*/}
+                {authorBio && (
+                    <div className="bio">{authorBio}</div>
+                )}
+              </div>
+            </div>
 
           </section>
 
@@ -493,9 +537,8 @@ const PostContent = ({postId, title, author, postUsername, writtenDate, content,
           </section>
 
         </div>
-        <div className={"post_end_buffer"} style={{"height":"80px"}}>
+        <div className={"post_end_buffer"} style={{"height":"80px"}} />
 
-        </div>
       </>
   )
 }

@@ -175,7 +175,7 @@ const Post = () => {
     }
   }
 
-
+  // 게시글 삭제
   const deletePost = async (postId) => {
     try {
       if (!(await viewPopup(
@@ -202,12 +202,7 @@ const Post = () => {
     })
   }
 
-  const onClickTag = (tagId) => {
-
-  }
-
   if (!postDetail) return (<div>로딩중..</div>)
-
 
   return (
       <>
@@ -216,6 +211,8 @@ const Post = () => {
               postId={postId}
               title={postDetail.title}
               author={postDetail.nickName}
+              authorImg={postDetail.userImg}
+              authorBio={postDetail.authorBio}
               postUsername={postDetail.username}
               writtenDate={postDetail.createdDate}
               content={postDetail.content}
