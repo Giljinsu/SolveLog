@@ -6,6 +6,7 @@ import axiosInstance from "../../context/axiosInstance.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useSearchContext} from "../../context/SearchContext.jsx";
 import {useNavigate} from "react-router-dom";
+import LoadingPopup from "../loading/LoadingPopup.jsx";
 
 export const LoginModal = ({setIsLoginOpen}) => {
   const [inputInfo, setInputInfo] = useState({
@@ -19,6 +20,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
   const [isNotValidate, setIsNotValidate] = useState(false);
   const [menuSelected, setMenuSelected] = useState("login");
   const [responseMessage, setResponseMessage] = useState("");
+  const [loading, setLoading] = useState(false);
   const {reFetchUser} = useAuth();
 
   //로그인 인풋
@@ -35,6 +37,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
   const onSubmit = async (e) => {
     e.preventDefault(); // form submit 시 새로고침하는 경향이 있는데 이걸 막음
     try {
+      setLoading(true);
       //아이디 비밀번호
       if (inputInfo.username === "" || inputInfo.password === "") {
         setIsNotValidate(true);
@@ -68,6 +71,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
 
       await reFetchUser();
 
+      setLoading(false);
       setIsLoginOpen(false)
     } catch (e) {
       setIsLoginFailed(true)
@@ -101,6 +105,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
 
   return(
       <div className="modal-backdrop" onClick={() => setIsLoginOpen(false)}>
+        {loading && <LoadingPopup />}
         {/*
           React에서 클릭 이벤트는 **버블링(bubbling)**이 일어납니다:
           모달 안을 클릭해도, 이벤트가 부모인 modal-backdrop까지 올라가서 모달이 닫혀버리는 현상 발생
