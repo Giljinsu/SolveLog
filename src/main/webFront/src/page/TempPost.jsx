@@ -95,7 +95,7 @@ const TempPost = () => {
         rightButtonText:"확인"
       }))) return;
 
-      await axios.post(`api/deletePost/${postId}`);
+      await axios.post(`/api/deletePost/${postId}`);
 
       setTmpPostList(prev => prev.filter(post => post.id !== postId));
     } catch (e) {

@@ -169,7 +169,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
 
   const deleteThumbnailFile = async (thumbnailId) => {
     try {
-      await axios.post(`api/deleteFile/${thumbnailId}`);
+      await axios.post(`/api/deleteFile/${thumbnailId}`);
     } catch (e) {
       console.log(e);
     }

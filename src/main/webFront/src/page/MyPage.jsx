@@ -98,7 +98,7 @@ const MyPage = () => {
 
   const getUserTagList = async () => {
     try {
-      const axiosResponse = await axios.get(`api/getPostCountPerTagByUsername/${username}`);
+      const axiosResponse = await axios.get(`/api/getPostCountPerTagByUsername/${username}`);
 
       setTotalCount(axiosResponse.data.totalCount);
       setTagList(axiosResponse.data.tagCountDtos);
@@ -110,7 +110,7 @@ const MyPage = () => {
 
   const getLikeTagList = async () => {
     try {
-      const axiosResponse = await axios.get(`api/getLikePostCountPerTagByUsername/${username}`);
+      const axiosResponse = await axios.get(`/api/getLikePostCountPerTagByUsername/${username}`);
 
       setTotalCount(axiosResponse.data.totalCount);
       setTagList(axiosResponse.data.tagCountDtos);

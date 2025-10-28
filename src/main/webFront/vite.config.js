@@ -12,7 +12,7 @@ export default defineConfig({
     proxy: {
       '/api': {
         // target: "http://localhost:8080",
-        target: "https://www.solvelog.site/",
+        target: "https://www.solvelog.site",
         changeOrigin: true,
         rewrite: path => path.replace(/^\/api/, 'api')
       }

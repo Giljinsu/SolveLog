@@ -258,7 +258,7 @@ export const SearchModal = ({setIsSearchOpen}) => {
   const getTagAutoComplete = async (value) => {
     try {
       const slice = value.slice(1);
-      const axiosResponse = await axios.get(`api/getTagAutoCompleteList/${slice}`);
+      const axiosResponse = await axios.get(`/api/getTagAutoCompleteList/${slice}`);
       lastRef.current = value;
       setAutoCompleteList(axiosResponse.data)
     } catch (e) {

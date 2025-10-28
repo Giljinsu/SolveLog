@@ -17,7 +17,7 @@ export const AuthProvider = ({children}) => {
 
   const fetchUser = async () => {
     try {
-      const axiosResponse = await axios.get("api/me");
+      const axiosResponse = await axios.get("/api/me");
       setUser(axiosResponse.data)
     } catch (e) {
       setUser(null)
@@ -39,7 +39,7 @@ export const AuthProvider = ({children}) => {
 
   const logout = async () => {
     try {
-      await axios.post("api/logout");
+      await axios.post("/api/logout");
 
       setUser(null)
       resetSearchCondition();

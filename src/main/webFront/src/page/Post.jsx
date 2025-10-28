@@ -156,7 +156,7 @@ const Post = () => {
           "댓글을 삭제하시겠습니까?"
       ))) return;
 
-      await axios.post(`api/deleteComment/${commentId}`)
+      await axios.post(`/api/deleteComment/${commentId}`)
     } catch (e) {
       console.log(e)
     } finally {
@@ -167,7 +167,7 @@ const Post = () => {
   // 좋아요 갯수 조회
   const getLikesCount= async () => {
     try {
-      const axiosResponse = await axios.get(`api/getLikesCount/${postId}`);
+      const axiosResponse = await axios.get(`/api/getLikesCount/${postId}`);
 
       setPostDetail({...postDetail, likeCount: axiosResponse.data})
     } catch (e) {
@@ -183,7 +183,7 @@ const Post = () => {
           "게시글을 삭제하시겠습니까?"
       ))) return;
 
-      await axios.post(`api/deletePost/${postId}`)
+      await axios.post(`/api/deletePost/${postId}`)
 
       resetSearchCondition();
       nav("/");

@@ -134,7 +134,7 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
   const deleteUserImg = async (imgId) => {
     if (!imgId) return;
     try {
-      await axios.post(`api/deleteFile/${imgId}`);
+      await axios.post(`/api/deleteFile/${imgId}`);
     } catch (e) {
       console.log(e);
     }
