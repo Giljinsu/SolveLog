@@ -13,6 +13,8 @@ import 'highlight.js/styles/atom-one-dark.css';
 import TempPost from "./page/TempPost.jsx";
 import {PopupProvider} from "./context/PopupContext.jsx";
 import MyPage from "./page/MyPage.jsx";
+import LoadingPopup from "./components/loading/LoadingPopup.jsx";
+import {useLoadingStore} from "./hooks/useLoadingStore.js";
 
 // export const PostStateContext = createContext();
 // export const PostSDispatchContext = createContext();
@@ -32,9 +34,11 @@ import MyPage from "./page/MyPage.jsx";
 function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const {loading} = useLoadingStore();
 
   return (
       <>
+        {loading && <LoadingPopup />}
         <SearchProvider>
           <AuthProvider>
             <PopupProvider>

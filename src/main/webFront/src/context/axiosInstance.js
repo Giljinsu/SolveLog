@@ -1,4 +1,5 @@
 import axios from "axios";
+import {useLoadingStore} from "../hooks/useLoadingStore.js";
 
 let logoutCallback = null;
 
@@ -16,6 +17,7 @@ const instance = axios.create({
 // 2. 요청 인터셉터 (Authorization 헤더 자동 설정)
 instance.interceptors.request.use(
     (config) => {
+      useLoadingStore.getState().setLoading(true);
       // const accessToken = localStorage.getItem("accessToken");
       // if (accessToken) {
         // config.headers.Authorization = `Bearer ${accessToken}`
@@ -29,9 +31,13 @@ instance.interceptors.request.use(
 
 // 3, 응답 인터셉터 (AccessToken 만료 시 자동 재발급)
 instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      useLoadingStore.getState().setLoading(false);
+      return response
+    },
     async (error) => {
       const originalRequest = error.config;
+      const {setLoading} = useLoadingStore.getState();
 
       //access token 만료
       if(
@@ -60,6 +66,7 @@ instance.interceptors.response.use(
           // localStorage.setItem("refreshToken", newRefreshToken);
 
           // originalRequest.headers.Authorization = `bearer ${newAccessToken}`;
+          setLoading(false);
           return instance(originalRequest);
         } catch (refreshError) {
           console.error("리프레시 토큰 만료됨");
@@ -70,11 +77,11 @@ instance.interceptors.response.use(
             // localStorage.removeItem("accessToken");
             // localStorage.removeItem("refreshToken");
           }
-
+          setLoading(false);
           return Promise.reject(refreshError);
         }
       }
-
+      setLoading(false);
       return Promise.reject(error)
     }
 

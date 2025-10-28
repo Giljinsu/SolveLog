@@ -7,6 +7,8 @@ import {useAuth} from "../context/AuthContext.jsx";
 import {LoginDispatchContext} from "../App.jsx";
 import {useSearchContext} from "../context/SearchContext.jsx";
 import {usePopup} from "../context/PopupContext.jsx";
+import Loading from '../components/loading/Loading.jsx';
+import LoadingPopup from "../components/loading/LoadingPopup.jsx";
 
 const Post = () => {
   //
@@ -202,7 +204,9 @@ const Post = () => {
     })
   }
 
-  if (!postDetail) return (<div>로딩중..</div>)
+  // if (!postDetail) return (<Loading />)
+  if (!postDetail) return (<LoadingPopup />)
+
 
   return (
       <>
