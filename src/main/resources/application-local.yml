@@ -41,7 +41,8 @@ cookie:
 cloud:
   aws:
     s3:
-      bucket: solvelog-files
+      bucket: ${SOLVELOG_BUCKET}
+#      bucket: solvelog-local
     region:
       static: ap-northeast-2
     credentials:

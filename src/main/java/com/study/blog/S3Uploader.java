@@ -76,7 +76,7 @@
                         .contentType(Files.probeContentType(file.toPath())) // 자동 MIME 추론
     //                    .acl(ObjectCannedACL.PUBLIC_READ) // 공개 접근 가능
                         .build(),
-                    software.amazon.awssdk.core.sync.RequestBody.fromFile(file.toPath()) // ✅ MultipartFile 대신 File 직접 사용
+                    software.amazon.awssdk.core.sync.RequestBody.fromFile(file.toPath()) // MultipartFile 대신 File 직접 사용
                 );
 
                 return String.format("https://%s.s3.%s.amazonaws.com/%s",

@@ -38,3 +38,10 @@ logging.level:
 cookie:
   secure: true
   same-site: None
+
+cloud:
+  aws:
+    s3:
+      bucket: ${SOLVELOG_BUCKET}
+    region:
+      static: ap-northeast-2
