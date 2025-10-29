@@ -27,7 +27,7 @@ jobs:
           push: true
           tags: pigroad/solvelog-backend:latest
 
-      - name: Build Backend and Push Docker Image
+      - name: Build Frontend and Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: ./src/main/webFront
