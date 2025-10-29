@@ -11,10 +11,10 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
-    url: "jdbc:postgresql://localhost:5432/solvelog"
-    username: "solvelog_admin"
-    password: "solve1234"
-    driver-class-name: org.postgresql.Driver
+      url: jdbc:h2:mem:testdb;MODE=PostgreSQL
+      username: sa
+      password:
+#    driver-class-name: org.postgresql.Driver
   data:
     redis:
       host: localhost
@@ -26,7 +26,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     properties.hibernate:
       show_sql: true
       format_sql: true
