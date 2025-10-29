@@ -24,7 +24,7 @@ public class WebConfig {
         };
     }
 
-    @Bean
+    @Bean   
     @Profile("local")
     public WebMvcConfigurer corsLocalConfigurer() {
         return new WebMvcConfigurer() {

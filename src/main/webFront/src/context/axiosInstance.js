@@ -7,17 +7,31 @@ export const registerLogout = (fn) => {
   logoutCallback = fn;
 }
 
+const noLoadingApi = [
+    "/api/me",
+    "/api/refresh",
+    "/api/getAlarmList"
+];
+
+const showLoading = (url) => {
+  return !noLoadingApi.some((api) => url.includes(api))
+}
+
 // 1. Axios 인스턴스 생성
 const instance = axios.create({
   // baseURL: "http://localhost:8080", // API 서버 주소
-  baseURL: "https://www.solvelog.site", // API 서버 주소
+  // baseURL: "https://www.solvelog.site", // API 서버 주소
+  baseURL: `${import.meta.env.VITE_API_BASE_URL}`,
   withCredentials: true // 쿠키 사용 시 필요
 })
 
 // 2. 요청 인터셉터 (Authorization 헤더 자동 설정)
 instance.interceptors.request.use(
     (config) => {
-      useLoadingStore.getState().setLoading(true);
+
+      if (showLoading(config.url)) {
+        useLoadingStore.getState().setLoading(true);
+      }
       // const accessToken = localStorage.getItem("accessToken");
       // if (accessToken) {
         // config.headers.Authorization = `Bearer ${accessToken}`
@@ -32,7 +46,9 @@ instance.interceptors.request.use(
 // 3, 응답 인터셉터 (AccessToken 만료 시 자동 재발급)
 instance.interceptors.response.use(
     (response) => {
-      useLoadingStore.getState().setLoading(false);
+      if (showLoading(response.config?.url)) {
+        useLoadingStore.getState().setLoading(false);
+      }
       return response
     },
     async (error) => {
@@ -49,7 +65,7 @@ instance.interceptors.response.use(
         try {
           // const refreshToken = localStorage.getItem("refreshToken");
 
-          const res = await axios.post(
+          const res = await instance.post(
               "/api/refresh",
               {},
               // {
@@ -66,7 +82,10 @@ instance.interceptors.response.use(
           // localStorage.setItem("refreshToken", newRefreshToken);
 
           // originalRequest.headers.Authorization = `bearer ${newAccessToken}`;
-          setLoading(false);
+
+          if (showLoading(error.config?.url)){
+            setLoading(false);
+          }
           return instance(originalRequest);
         } catch (refreshError) {
           console.error("리프레시 토큰 만료됨");
@@ -77,11 +96,17 @@ instance.interceptors.response.use(
             // localStorage.removeItem("accessToken");
             // localStorage.removeItem("refreshToken");
           }
-          setLoading(false);
+
+          if (showLoading(error.config?.url)){
+            setLoading(false);
+          }
           return Promise.reject(refreshError);
         }
       }
-      setLoading(false);
+
+      if (showLoading(error.config?.url)){
+        setLoading(false);
+      }
       return Promise.reject(error)
     }
 

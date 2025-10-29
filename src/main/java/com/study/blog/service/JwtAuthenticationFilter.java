@@ -40,24 +40,29 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //        }
 //        String token = authHeader.substring(7); // "Bearer " 이후
 
-        if ("/api/logout".equals(request.getRequestURI())) {
+        if ("/api/logout".equals(request.getRequestURI()) || "/api/refresh".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = jwtUtil.extractTokenFromCookie(request, "accessToken");
 
-        if (token == null) {
+//        if (token == null) {
+//            filterChain.doFilter(request, response);
+//            return;
+//        }
+//
+//        if (!jwtUtil.isTokenValid(token)) {
+//            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+//            response.setContentType("application/json"); // json 응답
+//            response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
+//
+////            filterChain.doFilter(request, response); // 다음 필터
+//            return;
+//        }
+
+        if (token == null || !jwtUtil.isTokenValid(token)) {
             filterChain.doFilter(request, response);
-            return;
-        }
-
-        if (!jwtUtil.isTokenValid(token)) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
-            response.setContentType("application/json"); // json 응답
-            response.getWriter().write("{\"error\": \"Invalid or expired token\"}");
-
-//            filterChain.doFilter(request, response); // 다음 필터
             return;
         }
 

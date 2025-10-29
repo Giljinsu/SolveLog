@@ -135,7 +135,7 @@ public class LoginController_JwtAuth {
 
     public ResponseEntity<?> responseTokenCookie(String accessToken, String refreshToken,
         String message, boolean isLogout) {
-        int accessTokenMaxAge = 15; // 분
+        int accessTokenMaxAge = 30; // 분
         int refreshTokenMaxAge = 7; // 일
 
         if (isLogout) {

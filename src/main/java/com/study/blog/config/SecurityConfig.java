@@ -2,6 +2,7 @@ package com.study.blog.config;
 
 import com.study.blog.service.CustomAuthenticationProvider;
 import com.study.blog.service.JwtAuthenticationFilter;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -77,10 +78,23 @@ public class SecurityConfig {
                         "/api/getUserImg/**",
                         "/api/getUser/**",
                         "/api/getTagAutoCompleteList/**",
-                        "/api/logout"
+                        "/api/logout",
+                        "/api/refresh"
                     ).permitAll()
                     .anyRequest().authenticated()
     //                .anyRequest().permitAll()
+            )
+            .exceptionHandling(ex -> ex
+                .authenticationEntryPoint((request, response, authException) -> {
+                    //인증 실패 처리 (로그인 안한 상태에서 보호된 API 접근)
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+                    response.getWriter().write("{\"error\": \"Unauthorized or Token expired\"}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    //인가 실패 처리 (권한이 부족한 요청)
+                    response.setStatus(HttpServletResponse.SC_FORBIDDEN); // 403
+                    response.getWriter().write("{\"error\": \"Forbidden\"}");
+                })
             )
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
