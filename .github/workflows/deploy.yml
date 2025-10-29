@@ -4,7 +4,8 @@ on:
   workflow_run:
     workflows: ["CI Spring + React"]   # CI.yml의 name
     types:
-      - completed                      # CI 완료될 때 실행됨
+      - completed # CI 완료될 때 실행됨
+  workflow_dispatch:
 
 jobs:
   deploy:
