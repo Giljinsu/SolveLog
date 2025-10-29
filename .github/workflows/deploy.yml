@@ -1,12 +1,14 @@
 name: deploy SolveLog
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI Spring + React"]   # CI.yml의 name
+    types:
+      - completed                      # CI 완료될 때 실행됨
 
 jobs:
   deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }} 
     name: Deploy to EC2
     runs-on: ubuntu-latest
 
