@@ -58,7 +58,8 @@ instance.interceptors.response.use(
       //access token 만료
       if(
           error.response?.status === 401 &&
-          !originalRequest._retry //무한루프 방지
+          !originalRequest._retry &&//무한루프 방지
+          !originalRequest.url.includes("/api/refresh") // refresh 무한루프 방지
       ) {
         originalRequest._retry = true;
 
