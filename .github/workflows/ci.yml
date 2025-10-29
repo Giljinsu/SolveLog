@@ -25,11 +25,11 @@ jobs:
         with:
           context: ./
           push: true
-          tags: giljinsu/solvelog-backend:latest
+          tags: pigroad/solvelog-backend:latest
 
       - name: Build Backend and Push Docker Image
         uses: docker/build-push-action@v6
         with:
           context: ./src/main/webFront
           push: true
-          tags: giljinsu/solvelog-frontend:latest
+          tags: pigroad/solvelog-frontend:latest
