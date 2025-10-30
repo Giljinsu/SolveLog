@@ -1,4 +1,4 @@
-name: CI Spring + React
+name: solvelogCi
 
 on:
   push:
