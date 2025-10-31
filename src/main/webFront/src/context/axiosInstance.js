@@ -59,8 +59,7 @@ instance.interceptors.response.use(
       if(
           error.response?.status === 401 &&
           !originalRequest._retry &&//무한루프 방지
-          !originalRequest.url.includes("/api/refresh") && // refresh 무한루프 방지
-          document.cookie.includes("refreshToken")
+          !originalRequest.url.includes("/api/refresh")
       ) {
         originalRequest._retry = true;
 
