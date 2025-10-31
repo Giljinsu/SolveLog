@@ -1,19 +1,18 @@
-import testImage from "../../assets/Logo-Test.png";
+import noImage from "../../assets/no-image.png";
 import "./TempList.css"
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import dayjs from "dayjs";
 
 const TempList = ({postId, listImg, title, summary, createdDate, onClick, onDeleteClick}) => {
 
   dayjs.extend(utc)
   dayjs.extend(timezone)
-  dayjs.extend(relativeTime); // .from .to .fromNow .toNow 를 제공한다.
+  dayjs.extend(relativeTime);
   dayjs.locale('ko'); // 한국어 설정
-  dayjs.tz.setDefault("Asia/Seoul");
 
-  const now = dayjs(); // 현재 시각
+  const now = dayjs().utc(); // 현재 시각
   const postDate = dayjs(createdDate);
 
   return (
@@ -21,7 +20,7 @@ const TempList = ({postId, listImg, title, summary, createdDate, onClick, onDele
         <div  onClick={()=>onClick(postId)} className={"temp-list-img-section"}>
           <img
               alt={"이미지 없음"}
-              src={listImg ? listImg : testImage}
+              src={listImg ? listImg : noImage}
           />
         </div>
 

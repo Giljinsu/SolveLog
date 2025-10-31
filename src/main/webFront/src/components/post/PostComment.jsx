@@ -1,14 +1,14 @@
 import "./PostComment.css"
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import {useAuth} from "../../context/AuthContext.jsx";
 import {Button2} from "../common/Button.jsx";
 import {use, useEffect, useRef, useState} from "react";
 import UserImg from "../common/UserImg.jsx";
 import userImg from "../common/UserImg.jsx";
 import {useNavigate} from "react-router-dom";
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
 
 const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCommentDelete,
   parentCommentId, childComments, postId, onClickCommentCreate, onCommentChange, commentUsername,
@@ -16,9 +16,8 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   // targetCommentIdForScroll
   dayjs.extend(utc)
   dayjs.extend(timezone)
-  dayjs.extend(relativeTime); // .from .to .fromNow .toNow 를 제공한다.
-  dayjs.locale('ko'); // 한국어 설정
-  dayjs.tz.setDefault("Asia/Seoul");
+  dayjs.extend(relativeTime);// .from .to .fromNow .toNow 를 제공한다.
+  dayjs.locale('ko');
 
   const {isAuthentication, user, isLoading} = useAuth();
   const [isReplyViewOpen, setIsReplyViewOpen] = useState(false)
@@ -35,8 +34,23 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-  const now = dayjs();
+  // const now = dayjs.utc();
+  // // const commentWrittenDate = dayjs(writtenDate);
+  // const commentWrittenDate = dayjs(writtenDate)
+
+  const now = dayjs().utc();  // local
   const commentWrittenDate = dayjs(writtenDate);
+
+
+  console.log(commentId);
+  console.log("원본:", writtenDate);
+  console.log("파싱:", dayjs(writtenDate).format());
+  console.log("파싱 UTC:", dayjs.utc(writtenDate).format());
+  console.log("로컬:", dayjs(writtenDate).local().format());
+  console.log("now UTC:", dayjs.utc().format());
+
+  console.log("test:"+ now.format());
+  console.log("commentWrittenDate"+ now.format());
 
 
   useEffect(() => {
