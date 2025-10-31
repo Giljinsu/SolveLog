@@ -34,7 +34,7 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-  const now = dayjs;
+  const now = dayjs();
   // const commentWrittenDate = dayjs(writtenDate);
   const commentWrittenDate = dayjs(writtenDate)
 
