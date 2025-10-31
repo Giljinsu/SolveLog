@@ -13,7 +13,7 @@ const TempList = ({postId, listImg, title, summary, createdDate, onClick, onDele
   dayjs.locale('ko'); // 한국어 설정
 
   const now = dayjs().utc(); // 현재 시각
-  const postDate = dayjs(createdDate);
+  const postDate = dayjs(createdDate).utc();
 
   return (
       <div className={"temp-list-section"}>

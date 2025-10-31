@@ -39,7 +39,7 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   // const commentWrittenDate = dayjs(writtenDate)
 
   const now = dayjs().utc();  // local
-  const commentWrittenDate = dayjs(writtenDate);
+  const commentWrittenDate = dayjs(writtenDate).utc();
 
 
   console.log(commentId);

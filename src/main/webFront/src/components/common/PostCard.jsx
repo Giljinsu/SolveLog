@@ -29,7 +29,7 @@ function PostCard({postId, title, tags, category, summary, author, date, views, 
 
   const now = dayjs().utc(); // 현재 시각
   // const postDate = dayjs(date);
-  const postDate = dayjs(date);
+  const postDate = dayjs(date).utc();
   // 끝
 
 
