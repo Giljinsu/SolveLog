@@ -1,10 +1,7 @@
-ENV TZ=Asia/Seoul
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-
 FROM node:22.12.0-alpine AS build
-Label maintainer="therin234@gmail.com"
-Label version="1.0.0"
-Label description="A md blog Solvelog"
+LABEL maintainer="therin234@gmail.com"
+LABEL version="1.0.0"
+LABEL description="A md blog Solvelog"
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
