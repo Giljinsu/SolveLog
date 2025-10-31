@@ -7,13 +7,18 @@ import {use, useEffect, useRef, useState} from "react";
 import UserImg from "../common/UserImg.jsx";
 import userImg from "../common/UserImg.jsx";
 import {useNavigate} from "react-router-dom";
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCommentDelete,
   parentCommentId, childComments, postId, onClickCommentCreate, onCommentChange, commentUsername,
   targetCommentIdForScroll, commentUserImg}) => {
   // targetCommentIdForScroll
-  dayjs.extend(relativeTime) // .from .to .fromNow .toNow 를 제공한다.
-  dayjs.locale('ko');
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
+  dayjs.extend(relativeTime); // .from .to .fromNow .toNow 를 제공한다.
+  dayjs.locale('ko'); // 한국어 설정
+  dayjs.tz.setDefault("Asia/Seoul");
 
   const {isAuthentication, user, isLoading} = useAuth();
   const [isReplyViewOpen, setIsReplyViewOpen] = useState(false)

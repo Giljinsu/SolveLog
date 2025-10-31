@@ -2,10 +2,11 @@ import "./PostCard.css"
 import noImage from '../../assets/no-image.png'
 import testImage2 from '../../assets/test2.webp'
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import 'dayjs/locale/ko';
 import {useNavigate} from "react-router-dom";
-import {useEffect} from "react";
 import {useSearchContext} from "../../context/SearchContext.jsx";
 import UserImg from "./UserImg.jsx";
 
@@ -20,9 +21,12 @@ function PostCard({postId, title, tags, category, summary, author, date, views, 
   // category = "카테고리";
 
   // dayjs 설정
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
   dayjs.extend(relativeTime);
   dayjs.locale('ko'); // 한국어 설정
-
+  dayjs.tz.setDefault("Asia/Seoul");
+  
   const now = dayjs(); // 현재 시각
   const postDate = dayjs(date);
   // 끝

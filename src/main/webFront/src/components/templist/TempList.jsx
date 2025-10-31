@@ -1,12 +1,17 @@
 import testImage from "../../assets/Logo-Test.png";
 import "./TempList.css"
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import dayjs from "dayjs";
 
 const TempList = ({postId, listImg, title, summary, createdDate, onClick, onDeleteClick}) => {
 
-  dayjs.extend(relativeTime);
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
+  dayjs.extend(relativeTime); // .from .to .fromNow .toNow 를 제공한다.
   dayjs.locale('ko'); // 한국어 설정
+  dayjs.tz.setDefault("Asia/Seoul");
 
   const now = dayjs(); // 현재 시각
   const postDate = dayjs(createdDate);
