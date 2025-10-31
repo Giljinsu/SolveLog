@@ -14,9 +14,11 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   parentCommentId, childComments, postId, onClickCommentCreate, onCommentChange, commentUsername,
   targetCommentIdForScroll, commentUserImg}) => {
   // targetCommentIdForScroll
-  // dayjs.extend(utc)
-  // dayjs.extend(timezone)
+
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
   dayjs.extend(relativeTime);// .from .to .fromNow .toNow 를 제공한다.
+  dayjs.tz.setDefault("Asia/Seoul");
   dayjs.locale('ko');
 
   const {isAuthentication, user, isLoading} = useAuth();
@@ -35,8 +37,7 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
 
 
   const now = dayjs();
-  // const commentWrittenDate = dayjs(writtenDate);
-  const commentWrittenDate = dayjs(writtenDate)
+  const commentWrittenDate = dayjs(writtenDate);
 
   // const now = dayjs().utc();
   // const commentWrittenDate = dayjs.utc(writtenDate);

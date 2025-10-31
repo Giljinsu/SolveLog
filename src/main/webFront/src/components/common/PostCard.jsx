@@ -22,8 +22,9 @@ function PostCard({postId, title, tags, category, summary, author, date, views, 
   // category = "카테고리";
 
   // dayjs 설정
-  // dayjs.extend(utc)
-  // dayjs.extend(timezone)
+  dayjs.extend(utc)
+  dayjs.extend(timezone)
+  dayjs.tz.setDefault("Asia/Seoul");
   dayjs.extend(relativeTime);
   dayjs.locale('ko'); // 한국어 설정
 
