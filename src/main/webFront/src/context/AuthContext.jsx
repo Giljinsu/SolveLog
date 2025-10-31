@@ -42,9 +42,9 @@ export const AuthProvider = ({children}) => {
       await axios.post("/api/logout");
 
       setUser(null)
-      resetSearchCondition();
-      reloadCategories();
-      nav("/")
+      // resetSearchCondition();
+      // reloadCategories();
+      // nav("/")
 
     } catch (e) {
       console.error("로그아웃 실패", e);

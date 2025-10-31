@@ -137,15 +137,18 @@ const Post = () => {
   // }
   const onClickCommentCreate = async (comment, setComment) => {
     try {
+      if (!user) {
+        setIsLoginOpen(true);
+        return;
+      }
 
       await axios.post("/api/createComment",comment)
+      setComment({...comment, comment: ""})
+      await getCommentList();
     } catch (e) {
       // console.log(e)
 
-      setIsLoginOpen(true);
     } finally {
-      setComment({...comment, comment: ""})
-      await getCommentList();
     }
 
   }

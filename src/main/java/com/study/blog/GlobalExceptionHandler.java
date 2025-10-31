@@ -25,7 +25,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<?> handleLockedException(LockedException e) {
         return ResponseEntity
-            .status(HttpStatus.LOCKED)
+            .status(HttpStatus.LOCKED) // 423
             .body(new ErrorResponse("LOCKED_USER", "잠긴 계정입니다 10분후 재시도 해주세요."));
     }
 
