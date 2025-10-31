@@ -66,19 +66,22 @@ export const SearchProvider = ({children}) => {
 
   const setSearchInput = (name, value) => {
     const updated = {...searchCondition, [name]: value};
+    if (name === "categoryType") { // 카테고리 변경시 입력값 초기화
+      updated.searchValue = "";
+      updated.tagNameList = [];
+    }
 
     // 태그 검색
     if (updated.searchValue !== "") {
       const result = parseSearchInput(updated.searchValue);
       setSearchCondition({
-        ...searchCondition,
+        ...updated,
         tagNameList: result.tagNameList,
         searchValue: result.searchValue ? result.searchValue : ""
       });
     } else {
       setSearchCondition(updated);
     }
-
     if (
         updated.categoryType &&
         updated.searchOrderType &&

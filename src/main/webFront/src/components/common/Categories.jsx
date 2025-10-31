@@ -5,7 +5,7 @@ import {useSearchContext} from "../../context/SearchContext.jsx";
 
 const Categories = () => {
   const {categoryList:categories} = useCategoryList("SEARCH_CATEGORY") || [];
-  const {setSearchInput, setIsReady, searchCondition} = useSearchContext();
+  const {setSearchInput, searchCondition} = useSearchContext();
   const selected = searchCondition.categoryType
 
 
