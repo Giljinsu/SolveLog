@@ -7,13 +7,15 @@ import dayjs from "dayjs";
 
 const TempList = ({postId, listImg, title, summary, createdDate, onClick, onDeleteClick}) => {
 
-  dayjs.extend(utc)
-  dayjs.extend(timezone)
+  // dayjs.extend(utc)
+  // dayjs.extend(timezone)
   dayjs.extend(relativeTime);
   dayjs.locale('ko'); // 한국어 설정
 
-  const now = dayjs().utc(); // 현재 시각
-  const postDate = dayjs(createdDate).utc();
+  // const now = dayjs().utc(); // 현재 시각
+  // const postDate = dayjs(createdDate).utc();
+  const now = dayjs(); // 현재 시각
+  const postDate = dayjs(createdDate);
 
   return (
       <div className={"temp-list-section"}>

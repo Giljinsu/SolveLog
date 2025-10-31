@@ -14,8 +14,8 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   parentCommentId, childComments, postId, onClickCommentCreate, onCommentChange, commentUsername,
   targetCommentIdForScroll, commentUserImg}) => {
   // targetCommentIdForScroll
-  dayjs.extend(utc)
-  dayjs.extend(timezone)
+  // dayjs.extend(utc)
+  // dayjs.extend(timezone)
   dayjs.extend(relativeTime);// .from .to .fromNow .toNow 를 제공한다.
   dayjs.locale('ko');
 
@@ -34,23 +34,18 @@ const PostComment = ({commentId, commentAuthor, writtenDate, comment, onClickCom
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
-  // const now = dayjs.utc();
-  // // const commentWrittenDate = dayjs(writtenDate);
-  // const commentWrittenDate = dayjs(writtenDate)
+  const now = dayjs;
+  // const commentWrittenDate = dayjs(writtenDate);
+  const commentWrittenDate = dayjs(writtenDate)
 
-  const now = dayjs().utc();  // local
-  const commentWrittenDate = dayjs(writtenDate).utc();
+  // const now = dayjs().utc();
+  // const commentWrittenDate = dayjs.utc(writtenDate);
 
+  // const now = dayjs(); // 한국 시간으로 계산
+  // const commentWrittenDate = dayjs.utc(writtenDate).tz("Asia/Seoul");
 
-  console.log(commentId);
-  console.log("원본:", writtenDate);
-  console.log("파싱:", dayjs(writtenDate).format());
-  console.log("파싱 UTC:", dayjs.utc(writtenDate).format());
-  console.log("로컬:", dayjs(writtenDate).local().format());
-  console.log("now UTC:", dayjs.utc().format());
-
-  console.log("test:"+ now.format());
-  console.log("commentWrittenDate"+ now.format());
+  // const now = dayjs();  // local
+  // const commentWrittenDate = dayjs.tz(writtenDate);
 
 
   useEffect(() => {
