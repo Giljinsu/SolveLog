@@ -1,3 +1,6 @@
+ENV TZ=Asia/Seoul
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 FROM node:22.12.0-alpine AS build
 Label maintainer="therin234@gmail.com"
 Label version="1.0.0"
