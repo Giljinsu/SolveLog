@@ -26,7 +26,13 @@ export const LoginModal = ({setIsLoginOpen}) => {
   //로그인 인풋
   const setLoginInput = (e) => {
     const name = e.target.name;
+    if (name === "username") {
+      e.target.value = e.target.value.replace(/[^a-z0-9_]/g, '');
+    } else if (name === "password" || name==="rePassword") {
+      e.target.value = e.target.value.replace(/[^A-Za-z0-9!@#$%^&*()_\-+=<>?{}[\]~]/g, '');
+    }
     const value = e.target.value;
+
 
     setIsNotValidate(false);
 
@@ -130,6 +136,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
                   value={inputInfo.username}
                   type="text"
                   placeholder="아이디"
+                  maxLength={20}
                   autoComplete={menuSelected === "login" ? "username" : "new-username"}
                   onChange={setLoginInput}
               />
@@ -138,6 +145,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
                   value={inputInfo.password}
                   type="password"
                   placeholder="비밀번호"
+                  maxLength={30}
                   autoComplete={menuSelected === "login" ? "current-password" : "new-password"}
                   onChange={setLoginInput}
               />
@@ -153,6 +161,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
                           value={inputInfo.rePassword}
                           type="password"
                           placeholder="비밀번호 재입력"
+                          maxLength={30}
                           autoComplete="new-password"
                           onChange={setLoginInput}
                       />
@@ -161,6 +170,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
                           value={inputInfo.nickName}
                           type="text"
                           placeholder="닉네임"
+                          maxLength={15}
                           autoComplete="new-password"
                           onChange={setLoginInput}
                       />
