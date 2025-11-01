@@ -96,7 +96,7 @@ const Post = () => {
       const response = await axios.get(`/api/getComments/${postId}`);
 
       setPostDetail({...postDetail,
-        commentCount : response.data.data[0].commentCnt,
+        commentCount : response.data.data.length > 0 ? response.data.data[0].commentCnt : 0,
         comments : response.data.data
       })
 
