@@ -49,7 +49,7 @@ jobs:
             docker-compose up -d proxyserver
             
             echo "start Blue Green Deployment"
-            IS_BACKENDSERVER1=${docker ps | grep backendserver1}
+            IS_BACKENDSERVER1=$(docker ps | grep backendserver1)
             DEFAULT_CONF=" /nginx/nginx.conf"
             MAX_RETRIES=20
             
