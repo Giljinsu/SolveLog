@@ -44,10 +44,79 @@ jobs:
 
             echo "Pull latest images..."
             docker-compose pull
+            
+            echo "restart proxyserver container"
+            docker-compose up -d proxyserver
+            
+            echo "start Blue Green Deployment"
+            IS_BACKENDSERVER1=${docker ps | grep backendserver1}
+            DEFAULT_CONF=" /nginx/nginx.conf"
+            MAX_RETRIES=20
+            
+            check_service() {
+              local RETRIES=0
+              local URL=$1
+              while [ $RETRIES -lt $MAX_RETRIES ]; do
+                echo "Checking service at $URL... (attempt: $((RETRIES+1)))"
+                sleep 3
+                
+                REQUEST=$(curl $URL)
+                if [ -n "$REQUEST" ]; then
+                echo "health check success"
+                return 0
+                fi
+            
+                RETRIES=$((RETRIES+1))
+              done;
+              
+              echo "Failed to check service after $MAX_RETRIES attempts."
+              return 1
+            }
+            
+            if [ -z "$IS_BACKENDSERVER1" ]; then
+              echo "### BACKENDSERVER2 => BACKENDSERVER1 ###"
+              
+              echo "1.Restart Container BACKENDSERVER1"
+              docker-compose up -d --remove-orphans backend1
+              
+              echo "2.health check"
+              if ! check_service "http://127.0.0.1:8080"; then
+                echo "BACKENDSERVER1 health check failed"
+                exit 1
+              fi
+            
+              echo "3. reload nginx"
+              sudo cp ./nginx/nginx.blue.conf ./nginx/nginx.conf
+              docker exec proxyserver nginx -s reload
+              
+              echo "4. DEV2 컨테이너 내리기"
+              docker-compose stop backend2
+              docker-compose rm -f backend2
+            
+            else
+              echo "### BACKENDSERVER1 => BACKENDSERVER2 ###"
+            
+              echo "1.Restart Container BACKENDSERVER2"
+              docker-compose up -d --remove-orphans backend2
+            
+              echo "2.health check"
+              if ! check_service "http://127.0.0.1:8081"; then
+                echo "BACKENDSERVER2 health check failed"
+                exit 1
+              fi
+            
+              echo "3. reload nginx"
+              sudo cp ./nginx/nginx.green.conf ./nginx/nginx.conf
+              docker exec proxyserver nginx -s reload
+            
+              echo "4. DEV2 컨테이너 내리기"
+              docker-compose stop backend1
+              docker-compose rm -f backend1
+            fi
 
-            echo "Restart containers..."
-            docker-compose up -d --remove-orphans
-
+#            echo "Restart containers..."
+#            docker-compose up -d --remove-orphans
+#
             echo "Prune unused images..."
             docker image prune -af || true
 
