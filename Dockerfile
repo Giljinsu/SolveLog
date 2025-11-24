@@ -14,7 +14,7 @@ RUN gradle dependencies --no-daemon
 COPY . .
 RUN ./gradlew build -x test --no-daemon #-x test 는 테스트 실행 X
 
-FROM openjdk:21-slim
+FROM eclipse-temurin:21-jre
 WORKDIR /app
 COPY --from=build /app/build/libs/*.jar app.jar
 EXPOSE 8080
