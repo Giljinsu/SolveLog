@@ -46,7 +46,7 @@ jobs:
             docker-compose pull
 
             echo "restart proxyserver container"
-            docker-compose up -d proxyserver
+            docker-compose up -d nginxproxy
 
             echo "start Blue Green Deployment"
             IS_BACKENDSERVER1=$(docker ps | grep backendserver1 || true)
