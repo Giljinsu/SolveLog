@@ -81,6 +81,7 @@ const PostEdit = () => {
 
   }
 
+  // 게시글 생성
   const createPost = async (initData) => {
     try {
 
@@ -113,6 +114,7 @@ const PostEdit = () => {
 
   }
 
+  // 게시글 수정
   const updatePost = async (initData) => {
     try {
       if (!chkValid(initData)) return;
@@ -140,6 +142,7 @@ const PostEdit = () => {
     }
   }
 
+  // 게시글 조회
   const getPostDetail = async () => {
     try {
       let api = await axios.get(`/api/getPostDetail/${postId ? postId : postDetail.postId}`);

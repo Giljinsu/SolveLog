@@ -175,6 +175,13 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     }
   }
 
+  const onTabKeyDown = (event) => {
+    if(event.keyCode===9) {
+      event.preventDefault();
+      insertAtCursor(textAreaRef.current, '  ')
+    }
+  }
+
 
   useEffect(() => {
 
@@ -226,6 +233,38 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     }
 
   }, [postDetail]);
+
+  // 카테고리 문제풀이 일시 템플릿 추가
+  useEffect(() => {
+    if (category === "문제풀이" && content === "") {
+      setContent("# 문제\n"
+          + "문제\n"
+          + "\n"
+          + "## 입력\n"
+          + "입력\n"
+          + "\n"
+          + "## 출력\n"
+          + "출력\n"
+          + "\n"
+          + "<div style=\"display: flex; gap: 20px;\">\n"
+          + "\n"
+          + "  <div style=\"flex: 1;\">\n"
+          + "    <h3>예제 입력 </h3>\n"
+          + "    <pre><code>\n"
+          + "입력 값\n"
+          + "    </code></pre>\n"
+          + "  </div>\n"
+          + "\n"
+          + "  <div style=\"flex: 1;\">\n"
+          + "    <h3>예제 출력 </h3>\n"
+          + "    <pre><code>\n"
+          + "출력 값\n"
+          + "    </code></pre>\n"
+          + "  </div>\n"
+          + "\n"
+          + "</div>");
+    }
+  }, [category]);
 
   return (
       <div className="post-editor-container">
@@ -329,6 +368,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                 ref={textAreaRef}
                 placeholder="당신의 이야기를 적어보세요..."
                 value={content}
+                onKeyDown={e => onTabKeyDown(e)}
                 onChange={(e) => setContent(e.target.value)}
                 onPaste={onImagePaste}
             />
