@@ -209,7 +209,8 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
       }
     });
 
-    if (thumbnailFile) {
+    // 썸네일 유무
+    if (thumbnailFile.length > 0) {
       const fileId = thumbnailFile[0].fileId;
       const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
       const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
