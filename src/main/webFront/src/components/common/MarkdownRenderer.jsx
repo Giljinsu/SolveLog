@@ -6,6 +6,7 @@ import ReactMarkdown from "react-markdown";
 import {memo, useMemo} from "react";
 
 const MarkdownRenderer = ({content, headingRenderer}) => {
+  // headingRenderer : 헤더들의 id 를 만들어줌
 
   const imgComponents = useMemo(() => ({
     img: ({node, ...props}) => {
@@ -49,16 +50,18 @@ const MarkdownRenderer = ({content, headingRenderer}) => {
           <ReactMarkdown
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight, rehypeRaw]}
-              components={{
-                // img: ({node, ...props}) => {
-                //   return(<img
-                //       loading={"lazy"}
-                //       style={{maxWidth:'100%', display:'block', margin:'0 auto 3rem auto'}}
-                //       {...props}
-                //   />);
+              components={
+                // {
+                //   img: ({node, ...props}) => {
+                //     return(<img
+                //         loading={"lazy"}
+                //         style={{maxWidth:'100%', display:'block', margin:'0 auto 3rem auto'}}
+                //         {...props}
+                //     />);
+                //   },
                 // }
-                imgComponents,
-              }}
+                imgComponents
+              }
           >
             {content}
           </ReactMarkdown>

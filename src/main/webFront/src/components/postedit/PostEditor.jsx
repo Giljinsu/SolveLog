@@ -100,9 +100,14 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     const end = textarea.selectionEnd;
     const value = textarea.value;
 
-    const updateValue = value.substring(0, start) + text + value.substring(end);
+    // const updateValue = value.substring(0, start) + text + value.substring(end);
+    //
+    // setContent(updateValue);
 
-    setContent(updateValue);
+    // 이 API가 직접 textarea.value를 수정하고, 커서/선택 영역도 관리해 줌
+    textarea.setRangeText(text, start, end, 'end'); // 'end' → 삽입된 텍스트 뒤로 커서 이동
+
+    setContent(textarea.value);
 
   }
 
@@ -217,7 +222,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     });
 
     // 썸네일 유무
-    if (thumbnailFile.length > 0) {
+    if (thumbnailFile && thumbnailFile.length > 0) {
       const fileId = thumbnailFile[0].fileId;
       const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
       const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`

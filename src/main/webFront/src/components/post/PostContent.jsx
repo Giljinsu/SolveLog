@@ -329,11 +329,15 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
       }
     });
 
-    const fileId = thumbnailFile[0].fileId;
+    if(thumbnailFile && thumbnailFile.length > 0) {
+      const fileId = thumbnailFile[0].fileId;
 
-    const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
+      const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
-    return `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
+      return `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
+    }
+
+    return "";
 
   }, [files]);
 
