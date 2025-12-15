@@ -27,7 +27,7 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
     id:'',
     src:''
   })
-  const {reFetchUser} = useAuth();
+  const {reFetchUser, logout} = useAuth();
   const nav = useNavigate();
   // 백엔드 url
   //.env 파일에 서버 주소 저장
@@ -44,7 +44,7 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
       document.removeEventListener("mousedown", bioHandler);
       document.removeEventListener("mousedown", handler);
     }
-  }, []);
+  }, [nickname]);
 
   useEffect(() => {
     setNicknameState(nickname);
@@ -163,11 +163,12 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
       const findUserImg = axiosResponse.data.data.userImg;
       const userBio = axiosResponse.data.data.bio;
 
-      const fileId = findUserImg.fileId;
+      // const fileId = findUserImg.fileId;
+      const fileId = findUserImg !== null ? findUserImg.fileId : null;
       const imgSrc = `${backendBaseUrl}/api/inlineFile/${fileId}`;
       setUserImg({id: fileId, src: imgSrc })
 
-      setBioState(userBio);
+      setBioState(userBio ? userBio : '');
       originBioRef.current = userBio;
 
     } catch (e) {
@@ -270,6 +271,13 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
     } catch (e) {
 
     }
+  }
+
+  const deleteUser = async () => {
+    if (!(await openPopup("회원 탈퇴", "정말로 회원 탈퇴하시겠습니까?"))) return;
+    await axiosInstance.post(`/api/deleteUser/${username}`)
+    logout();
+    nav("/");
   }
 
   return (
@@ -404,7 +412,11 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
 
 
         </div>
-
+        {isMyPage && (
+          <div className={"user-delete-button"} onClick={deleteUser}>
+            회원 탈퇴하기
+          </div>
+        )}
         <input type={"file"}
                ref={inputRef}
                accept={"image/jpeg, image/png, image/bmp, image/webp"}

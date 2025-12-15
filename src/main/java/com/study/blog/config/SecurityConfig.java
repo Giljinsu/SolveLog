@@ -62,13 +62,14 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests((auth) -> auth
                     .requestMatchers(
+                        "/error",
                         "/api/login",
                         "/api/signup",
                         "/api/createUser",
                         "/api/hello",
                         "/api/getPostList",
                         "/api/getPostDetail/**", // /** 하위경로
-                        "/api//getComments/**",
+                        "/api/getComments/**",
                         "/api/posts/**",
                         "/api/getCategoryListByParentType/**",
                         "/api/inlineFile/**",
@@ -79,7 +80,15 @@ public class SecurityConfig {
                         "/api/getUser/**",
                         "/api/getTagAutoCompleteList/**",
                         "/api/logout",
-                        "/api/refresh"
+                        "/api/refresh",
+                        "/api/sendEmailCode",
+                        "/api/sendEmailCode/**",
+                        "/api/deleteUser/**",
+                        "/api/resetPassword",
+                        "/api/resetPassword/**",
+                        "/api/sendResetPwEmail/**",
+                        "/api/getEmailByResetToken/{token}",
+                        "/api/getEmailByResetToken/**"
                     ).permitAll()
                     .anyRequest().authenticated()
     //                .anyRequest().permitAll()

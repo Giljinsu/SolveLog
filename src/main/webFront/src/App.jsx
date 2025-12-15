@@ -15,6 +15,7 @@ import {PopupProvider} from "./context/PopupContext.jsx";
 import MyPage from "./page/MyPage.jsx";
 import LoadingPopup from "./components/loading/LoadingPopup.jsx";
 import {useLoadingStore} from "./hooks/useLoadingStore.js";
+import ResetPassword from "./page/ResetPassword.jsx";
 
 // export const PostStateContext = createContext();
 // export const PostSDispatchContext = createContext();
@@ -54,6 +55,7 @@ function App() {
                       <Route path={"/postEdit"} element={<PostEdit />}></Route>
                       <Route path={"/tempPost"} element={<TempPost />}></Route>
                       <Route path={"/myPage/:username"} element={<MyPage />}></Route>
+                      <Route path={"/resetPw?"} element={<ResetPassword />}></Route>
                       {/*<Route path={"/postNew"} element={<PostNew />}></Route>*/}
                     </Routes>
                   </LoginDispatchContext.Provider>

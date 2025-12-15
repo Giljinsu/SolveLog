@@ -3,6 +3,8 @@ package com.study.blog;
 import com.study.blog.dto.ErrorResponse;
 import com.study.blog.exception.ExistUserException;
 import com.study.blog.exception.NotExistUserException;
+import com.study.blog.exception.NotValidateEmailCode;
+import com.study.blog.exception.NotValidateResetToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.LockedException;
@@ -34,7 +36,23 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleNotExistUserException(NotExistUserException e) {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND) // 404
-            .body(new ErrorResponse("NOT_EXIST_USER", "아이디가 존재하지 않습니다."));
+            .body(new ErrorResponse("NOT_EXIST_USER", "이메일이 존재하지 않습니다."));
+    }
+
+    //NotValidateEmailCode
+    @ExceptionHandler(NotValidateEmailCode.class)
+    public ResponseEntity<?> handleNotValidateEmailCode(NotValidateEmailCode e) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND) // 404
+            .body(new ErrorResponse("NOT_VALIDATE_EMAIL_CODE", "유효하지 않은 인증 코드입니다."));
+    }
+
+    //NotValidateResetToken
+    @ExceptionHandler(NotValidateResetToken.class)
+    public ResponseEntity<?> handleNotValidateResetToken(NotValidateResetToken e) {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND) // 404
+            .body(new ErrorResponse("NOT_VALIDATE_RESET_TOKEN", "유효하지 않은 토큰입니다."));
     }
 
 

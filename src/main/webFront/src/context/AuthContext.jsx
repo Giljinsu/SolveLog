@@ -24,7 +24,7 @@ export const AuthProvider = ({children}) => {
       // localStorage.removeItem("accessToken");
       // localStorage.removeItem("refreshToken");
 
-      nav("/");
+      // nav("/");
 
       // if (e.response) {
       //   const {status, data} = e.response;

@@ -30,6 +30,16 @@ spring:
       format_sql: true
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: therin234@gmail.com
+    password: ziqj sbmb yadb volw
+    properties.mail.smtp:
+      auth: true
+      timeout: 5000
+      starttls.enable: true
+
 logging.level:
     org.hibernate.sql: debug
 #    org.hibernate.type: trace
@@ -49,3 +59,6 @@ cloud:
       access-key: ${SOLVELOG_ACCESS_KEY}
       secret-key: ${SOLVELOG_SECRET_KEY}
 
+
+app:
+  base-url: http://localhost:5173

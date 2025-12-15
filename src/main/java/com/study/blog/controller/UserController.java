@@ -1,5 +1,6 @@
 package com.study.blog.controller;
 
+import com.study.blog.dto.users.ResetTokenDto;
 import com.study.blog.dto.users.UserRequestDto;
 import com.study.blog.dto.users.UsersResponseDto;
 import com.study.blog.service.UsersService;
@@ -43,9 +44,15 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
-    @PostMapping("/api/deleteUser/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
-        usersService.deleteUser(userId);
+    @PostMapping("/api/deleteUser/{username}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String username) {
+        usersService.deleteUser(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/api/resetPassword")
+    public ResponseEntity<Void> resetPassword(@RequestBody ResetTokenDto resetTokenDto) {
+        usersService.resetUserPassword(resetTokenDto);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

@@ -12,6 +12,7 @@ import {useAuth} from "../context/AuthContext.jsx";
 import {usePopup} from "../context/PopupContext.jsx";
 import qs from "qs";
 import MyPageSearch from "../components/mypage/MyPageSearch.jsx";
+import axiosInstance from "../context/axiosInstance.js";
 
 const MyPage = () => {
   const [tagList, setTagList] = useState([]);
@@ -32,7 +33,7 @@ const MyPage = () => {
   const [nickname, setNickname] = useState('');
   const [tabSelected, setTabSelected] = useState("my");
   const tabSelectedRef = useRef(tabSelected);
-  const {isAuthentication, user, isLoading} = useAuth() || {};
+  const {isAuthentication, user} = useAuth() || {};
   const username = params.username;
 
   useEffect(() => {

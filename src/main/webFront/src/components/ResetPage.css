@@ -1,0 +1,59 @@
+.reset-page-section {
+  width: 100vw;
+  height: 100vh; /* 화면 꽉 차게 */
+  position: relative;
+  left: calc(-50vw + 50%); /* ← 중앙 정렬 해제 트릭 */
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background-color: #f5f5f5; /* 선택 */
+}
+
+.reset-page-content {
+  /*top: -20rem;*/
+  transform: translateY(-30px); /* ← 여기 값으로 위로 올리기 */
+  background: white;
+  padding: 1rem 2rem 2rem 2rem;
+  border-radius: 10px;
+  min-width: 500px;
+  max-width: 500px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reset-page-email {
+  margin-top: 2rem;
+}
+
+.reset-page-content > input {
+  padding: 10px 0 ;
+  border: none;
+  border-bottom: 1px solid;
+  /*border-radius: 5px;*/
+}
+
+.reset-page-content > input:focus {
+  outline: none;
+}
+
+.reset-page-content > button {
+  padding: 0.5rem;
+}
+
+.reset-page-error {
+  padding: 2rem 0;
+  font-size: 36px;
+}
+
+.reset-page-error-text {
+  color: red;
+}
+
+.reset-page-finish {
+  color: red;
+}

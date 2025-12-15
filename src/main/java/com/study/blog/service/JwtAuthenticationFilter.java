@@ -93,7 +93,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 
             filterChain.doFilter(request,response);
-
         } catch (NotExistUserException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
             response.setContentType("application/json"); // json 응답

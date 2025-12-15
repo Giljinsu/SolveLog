@@ -74,6 +74,19 @@
 
 }
 
+.user-delete-button {
+  color: #6b7280;
+  font-size: 11px;
+  position: absolute;
+  right: 3px;
+  top: 10rem;
+  cursor: pointer;
+}
+
+.user-delete-button:hover {
+  color: black;
+}
+
 /*.my-page-user-nickname-authorized {*/
 /*  position: relative;*/
 /*}*/

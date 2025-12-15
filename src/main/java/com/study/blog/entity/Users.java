@@ -51,17 +51,22 @@ public class Users {
 
     private String bio;
 
+    private String isDeleted;
+
+    private LocalDateTime deletedDate;
+
     private Users(String username, String password,
-        String nickname, Role role) {
+        String nickname, Role role, String isDeleted) {
         this.username = username;
         this.password = password;
         this.nickname = nickname;
         this.role = role;
+        this.isDeleted = isDeleted;
     }
 
     //생성 메서드
     public static Users createUser(String username, String password, String nickname, Role role) {
-        return new Users(username, password, nickname, role);
+        return new Users(username, password, nickname, role, "n");
     }
 
     public void updateUser(String nickname, Role role) {
@@ -73,6 +78,27 @@ public class Users {
         setNickname(nickname);
         setBio(bio);
         setRole(role);
+    }
+
+    // 유저 삭제
+    public void deleteUser() {
+        setIsDeleted("y");
+        setDeletedDate(LocalDateTime.now());
+    }
+
+    // 유저 재가입
+    public void reCreateUser(String password, String nickname, String bio, Role role) {
+        setPassword(password);
+        setNickname(nickname);
+        setBio(bio);
+        setRole(role);
+        setIsDeleted("n");
+        setDeletedDate(null);
+    }
+
+    // 유저 비밀번호 변경
+    public void resetPassword(String password) {
+        setPassword(password);
     }
 
     public void uploadUserImg(Long fileId) {

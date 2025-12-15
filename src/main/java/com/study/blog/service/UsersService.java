@@ -1,6 +1,8 @@
 package com.study.blog.service;
 
+import com.study.blog.dto.email.EmailRequestDto;
 import com.study.blog.dto.file.FileResponseDto;
+import com.study.blog.dto.users.ResetTokenDto;
 import com.study.blog.dto.users.UserRequestDto;
 import com.study.blog.dto.users.UsersResponseDto;
 import com.study.blog.entity.File;
@@ -28,6 +30,7 @@ public class UsersService implements UserDetailsService{
 
     private final UsersRepository usersRepository;
     private final FileRepository fileRepository;
+    private final EmailService emailService;
 
     // 유저 리스트 관리자용 (페이지네이션 아직)
     public List<UsersResponseDto> getList() {
@@ -65,15 +68,33 @@ public class UsersService implements UserDetailsService{
     // 유저 생성
     @Transactional
     public Long createUser(UserRequestDto userRequestDto) {
-        Boolean exist = usersRepository.existsByUsername(userRequestDto.getUsername());
+        // 이메일 코드 인증
+        emailService.validateEmailCode(
+            new EmailRequestDto(userRequestDto.getUsername(), userRequestDto.getAuthCode()));
 
-        if (exist) {
-            throw new ExistUserException();
-        }
+//        Boolean exist = usersRepository.existsByUsername(userRequestDto.getUsername());
+//        if (exist) {
+//            throw new ExistUserException();
+//        }
+
+        Optional<Users> optionalUser = usersRepository.findUsersByUsername(
+            userRequestDto.getUsername());
 
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-
         String encodePassword = bCryptPasswordEncoder.encode(userRequestDto.getPassword());
+
+        if (optionalUser.isPresent()) { // 유저 존재 유무
+            Users findUser = optionalUser.get();
+
+            if ("y".equals(findUser.getIsDeleted())) {
+                // 재가입 처리
+                findUser.reCreateUser(encodePassword, userRequestDto.getNickName(),
+                    userRequestDto.getBio(), Role.USER);
+                return findUser.getId();
+            } else {
+                throw new ExistUserException();
+            }
+        }
 
         Users newUser = Users.createUser(userRequestDto.getUsername(), encodePassword,
             userRequestDto.getNickName(), Role.USER);
@@ -113,13 +134,39 @@ public class UsersService implements UserDetailsService{
 
     // 유저 삭제
     @Transactional
-    public void deleteUser(Long userId) {
-        usersRepository.deleteById(userId);
+    public void deleteUser(String username) {
+        Users findUser = usersRepository.findUsersByUsername(username)
+            .orElseThrow(NotExistUserException::new);
+
+        findUser.deleteUser();
+    }
+
+    // 유저 비밀번호 재설정
+    @Transactional
+    public void resetUserPassword(ResetTokenDto resetTokenDto) {
+        // redis 에 저장된 토큰과 비교하여 username 가져옴 -> user를 찾고 비밀번호 변경
+        String resetToken = resetTokenDto.getResetToken();
+        String newPassword = resetTokenDto.getPassword();
+        String email = resetTokenDto.getUsername();
+//        String email = emailService.getEmailByToken(resetToken);
+
+        Users findUser = usersRepository.findUsersByUsernameIsNotDeleted(email)
+            .orElseThrow(NotExistUserException::new);
+
+        BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        String encodePassword = bCryptPasswordEncoder.encode(newPassword);
+
+        findUser.resetPassword(encodePassword);
+
+        //토큰 삭제
+        emailService.deleteResetToken(email,resetToken);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Users findUser = usersRepository.findUsersByUsername(username)
+//        Users findUser = usersRepository.findUsersByUsername(username)
+//            .orElseThrow(NotExistUserException::new);
+        Users findUser = usersRepository.findUsersByUsernameIsNotDeleted(username)
             .orElseThrow(NotExistUserException::new);
 
         return new CustomUserDetails(findUser);

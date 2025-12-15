@@ -14,6 +14,7 @@ public class UserRequestDto {
     private String nickName;
     private String bio;
     private Role role;
+    private String authCode;
 
     public UserRequestDto(String username, String password, String nickName) {
         this.username = username;

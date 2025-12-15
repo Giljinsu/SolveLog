@@ -10,9 +10,6 @@
   z-index: 1000;
 }
 
-
-
-
 .modal-content {
   margin-top: 5rem;
   background: white;
@@ -51,6 +48,29 @@
   margin-bottom: 1rem;
 }
 
+.email-section {
+  display: flex;
+  gap: 3px;
+  /*flex: 1;*/
+}
+
+.email-section > button{
+  padding: 10px;
+  background-color: #6b7280;
+}
+
+.email-section > input {
+  /*margin-bottom: 1rem;*/
+  padding: 10px 0 ;
+  border: none;
+  border-bottom: 1px solid;
+  flex: 1;
+}
+
+.email-section > input:focus {
+  outline: none;
+}
+
 .modal-login > input {
   padding: 10px 0 ;
   border: none;
@@ -77,6 +97,22 @@
 .modal-content-bottom > button {
   padding: 10px;
   flex: 1;
+}
+
+.find-pw-button-section {
+  display: flex;
+  justify-content: right;
+}
+
+.find-pw-button {
+  padding: 5px 5px 0 0;
+  color: #6b7280;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.find-pw-button:hover {
+  color: black;
 }
 
 /*검색*/

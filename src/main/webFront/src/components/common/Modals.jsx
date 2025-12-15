@@ -12,22 +12,27 @@ export const LoginModal = ({setIsLoginOpen}) => {
     username : "",
     password : "",
     rePassword : "",
-    nickName : ""
+    nickName : "",
+    authCode : ""
   });
   const [isLoginFailed, setIsLoginFailed] = useState( false);
+  const [isPasswordValidate, setIsPasswordValidate] = useState(false);
   const [isRePasswordValidate, setIsRePasswordValidate] = useState(false);
   const [isNotValidate, setIsNotValidate] = useState(false);
   const [menuSelected, setMenuSelected] = useState("login");
   const [responseMessage, setResponseMessage] = useState("");
+  const [isSendEmail, setIsSendEmail] = useState(false);
   const {reFetchUser} = useAuth();
 
   //로그인 인풋
   const setLoginInput = (e) => {
     const name = e.target.name;
     if (name === "username") {
-      e.target.value = e.target.value.replace(/[^a-z0-9_]/g, '');
+      // e.target.value = e.target.value.replace(/[^a-z0-9_]/g, '');
     } else if (name === "password" || name==="rePassword") {
       e.target.value = e.target.value.replace(/[^A-Za-z0-9!@#$%^&*()_\-+=<>?{}[\]~]/g, '');
+    } else if (name === "authCode") {
+      e.target.value = e.target.value.replace(/[^0-9_]/g, '');
     }
     const value = e.target.value;
 
@@ -41,14 +46,26 @@ export const LoginModal = ({setIsLoginOpen}) => {
   const onSubmit = async (e) => {
     e.preventDefault(); // form submit 시 새로고침하는 경향이 있는데 이걸 막음
     try {
+      // if (menuSelected === "signup" && !isSendEmail) {
+      //   setResponseMessage("코드를 전송해주세요.");
+      //   setIsLoginFailed(true);
+      //   return;
+      // }
+      // if (menuSelected === "signup" && isSendEmail && inputInfo.authCode === "") {
+      //   setResponseMessage("코드를 입력해주세요.");
+      //   setIsLoginFailed(true);
+      //   return;
+      // }
       //아이디 비밀번호
       if (inputInfo.username === "" || inputInfo.password === "") {
+        setIsLoginFailed(false);
         setIsNotValidate(true);
         return;
       }
 
       // 회원가입
       if(menuSelected === "signup") {
+
 
         //비밀번호 확인용
         if (inputInfo.password !== inputInfo.rePassword) {
@@ -57,6 +74,14 @@ export const LoginModal = ({setIsLoginOpen}) => {
           return;
         }
         setIsRePasswordValidate(false);
+
+        // 비밀번호 유효성 검사
+        if (!checkPassword()) {
+          setIsNotValidate(true);
+          setIsPasswordValidate(true);
+          return;
+        }
+        setIsPasswordValidate(false);
 
         // 닉네임 입력
         if (inputInfo.nickName === "") {
@@ -86,9 +111,75 @@ export const LoginModal = ({setIsLoginOpen}) => {
           setResponseMessage(data.message);
         } else if (status === 404 && data.code === "NOT_EXIST_USER") {
           setResponseMessage(data.message)
+        } else if (status === 404 && data.code === "NOT_VALIDATE_EMAIL_CODE") {
+          setResponseMessage(data.message)
         } else {
-          setResponseMessage("아이디 또는 비밀번호가 잘못되었습니다.")
+          setResponseMessage("이메일 또는 비밀번호가 잘못되었습니다.")
         }
+      }
+    }
+  }
+
+  const onClickSendEmail = async () => {
+    if (inputInfo.username === "") {
+      setResponseMessage("이메일을 입력해주세요.");
+      setIsLoginFailed(true);
+      return;
+    }
+    if (!checkEmail()) {
+      setResponseMessage("잘못된 이메일 형식입니다.");
+      setIsLoginFailed(true);
+      return;
+    }
+    setIsSendEmail(true);
+    setIsLoginFailed(false);
+    try {
+      await axiosInstance.post("/api/sendEmailCode", {
+        email: inputInfo.username,
+      });
+
+      setResponseMessage("이메일 인증코드를 해당 메일에 보냈습니다.");
+      setIsLoginFailed(true);
+    } catch (e) {
+        console.log(e);
+    }
+
+  }
+
+  const checkEmail = () => {
+     return inputInfo.username.match(
+         '^[a-zA-Z0-9+\\-_.]+@[a-zA-Z0-9-]+(\\.[a-zA-Z0-9-]+)+$') !== null;
+  }
+
+  const checkPassword = () => {
+    // 영문 숫자 조합 8자리 이상
+    let reg = /^(?=.*[a-zA-Z])(?=.*[0-9]).{8,25}$/
+
+    // 영문 숫자 특수기호 조합 8자리 이상
+    // let reg = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,15}$/
+
+    return inputInfo.password.match(reg) != null;
+  }
+
+  const onClickResetPassword = async () => {
+    if (inputInfo.username === "") {
+      setIsLoginFailed(true);
+      setResponseMessage("이메일을 입력해주세요.");
+      return;
+    }
+
+    try {
+      await axiosInstance.post(`/api/sendResetPwEmail/${inputInfo.username}`)
+      setIsLoginFailed(true);
+      setResponseMessage("해당 이메일에 비밀번호 변경 메일이 전송 되었습니다.")
+    } catch (e) {
+      setIsLoginFailed(true)
+      if (e.response) {
+        const {status, data} = e.response;
+
+        if (status === 404 && data.code === "NOT_EXIST_USER") {
+          setResponseMessage(data.message)
+        }ㅂ
       }
     }
   }
@@ -98,9 +189,11 @@ export const LoginModal = ({setIsLoginOpen}) => {
       username : "",
       password : "",
       rePassword: "",
-      nickName : ""
+      nickName : "",
+      authCode : ""
     })
 
+    setIsSendEmail(false);
     setIsNotValidate(false)
     setIsLoginFailed(false);
   }, [menuSelected]);
@@ -126,18 +219,34 @@ export const LoginModal = ({setIsLoginOpen}) => {
           </div>
           <form onSubmit={onSubmit}>
             <div className={"modal-login"}>
+              <div className={"email-section"}>
+                <input
+                    name={"username"}
+                    value={inputInfo.username}
+                    type="text"
+                    placeholder="이메일"
+                    maxLength={20}
+                    autoComplete={menuSelected === "login" ? "username" : "new-username"}
+                    onChange={setLoginInput}
+              />
+              {menuSelected === "signup" ? (
+                  <Button2
+                      buttonEvent={onClickSendEmail}
+                      buttonText={`${isSendEmail ? "재전송":"코드 전송"}`}
+                      buttonType={"button"}
+                  />
+              ) : ""}
+            </div>
+            {isSendEmail ? (
               <input
-                  name={"username"}
-                  value={inputInfo.username}
-                  type="text"
-                  placeholder="아이디"
-                  maxLength={20}
-                  autoComplete={menuSelected === "login" ? "username" : "new-username"}
+                  name={"authCode"}
+                  placeholder={"코드를 입력해주세요."}
                   onChange={setLoginInput}
               />
-              <input
-                  name={"password"}
-                  value={inputInfo.password}
+            ) : ""}
+            <input
+                name={"password"}
+                value={inputInfo.password}
                   type="password"
                   placeholder="비밀번호"
                   maxLength={30}
@@ -178,7 +287,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
               )}
               {isNotValidate && (inputInfo.username === "" ? (
                       <div className={"login_failed"}>
-                        아이디를 입력해주새요.
+                        이메일을 입력해주새요.
                       </div>
                   ) : inputInfo.password === "" ? (
                       <div className={"login_failed"}>
@@ -188,11 +297,25 @@ export const LoginModal = ({setIsLoginOpen}) => {
                       <div className={"login_failed"}>
                         비밀번호가 일치하지 않습니다.
                       </div>
+                  ) : isPasswordValidate ? (
+                      <div className={"login_failed"}>
+                        비밀번호는 영문자, 숫자를 포함한 8자 이상이어야 합니다.
+                      </div>
                   ) : inputInfo.nickName === "" && menuSelected === "signup" ? (
                       <div className={"login_failed"}>
                         닉네임을 입력해주세요.
                       </div>
                   ) : null)}
+              {menuSelected === "login" &&
+                <div className={"find-pw-button-section"}>
+                  <div
+                      className={"find-pw-button"}
+                      onClick={onClickResetPassword}
+                  >
+                    비밀번호 찾기
+                  </div>
+                </div>
+              }
 
             </div>
             <div className={"modal-content-bottom"}>
