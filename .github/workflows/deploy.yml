@@ -58,7 +58,7 @@ jobs:
               local URL=$1
               while [ $RETRIES -lt $MAX_RETRIES ]; do
                 echo "Checking service at $URL... (attempt: $((RETRIES+1)))"
-                sleep 3
+                sleep 10
 
                 REQUEST=$(curl -s $URL || true)
                 if [ -n "$REQUEST" ]; then
@@ -120,9 +120,10 @@ jobs:
             echo "Deployment completed!"
 
       - name: Remove GitHub Actions IP
+        if: always()
         run: |
           aws ec2 revoke-security-group-ingress \
               --group-id ${{ secrets.SECURITY_GROUP_ID }} \
               --protocol tcp \
               --port 22 \
-              --cidr ${{ steps.ip.outputs.ipv4 }}/32
+              --cidr ${{ steps.ip.outputs.ipv4 }}/32 || true

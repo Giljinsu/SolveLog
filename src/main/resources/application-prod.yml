@@ -34,15 +34,15 @@ spring:
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc.time_zone: Asia/Seoul
 
-      mail:
-        host: smtp.gmail.com
-        port: 587
-        username: therin234@gmail.com
-        password: ziqj sbmb yadb volw
-        properties.mail.smtp:
-          auth: true
-          timeout: 5000
-          starttls.enable: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: therin234@gmail.com
+    password: ${SMTP_PASSWORD}
+    properties.mail.smtp:
+      auth: true
+      timeout: 5000
+      starttls.enable: true
 
 logging.level:
     org.hibernate.sql: debug
@@ -60,4 +60,4 @@ cloud:
       static: ap-northeast-2
 
 app:
-  base-url: https://www.solvelog.site
+  base-url: https://solvelog.site
