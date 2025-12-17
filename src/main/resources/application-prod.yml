@@ -35,10 +35,13 @@ spring:
       jdbc.time_zone: Asia/Seoul
 
   mail:
-    host: smtp.gmail.com
+    #    host: smtp.gmail.com
+    host: email-smtp.ap-northeast-2.amazonaws.com
     port: 587
-    username: therin234@gmail.com
-    password: ${SMTP_PASSWORD}
+    #    username: therin234@gmail.com
+    #    password: ${SMTP_PASSWORD}
+    username: ${SES_SMTP_USERNAME}
+    password: ${SES_SMTP_PASSWORD}
     properties.mail.smtp:
       auth: true
       timeout: 5000

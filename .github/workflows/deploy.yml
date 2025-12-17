@@ -51,14 +51,14 @@ jobs:
             echo "start Blue Green Deployment"
             IS_BACKENDSERVER1=$(docker ps | grep backendserver1 || true)
             DEFAULT_CONF="/nginx/nginx.conf"
-            MAX_RETRIES=20
+            MAX_RETRIES=30
 
             check_service() {
               local RETRIES=0
               local URL=$1
               while [ $RETRIES -lt $MAX_RETRIES ]; do
                 echo "Checking service at $URL... (attempt: $((RETRIES+1)))"
-                sleep 10
+                sleep 3
 
                 REQUEST=$(curl -s $URL || true)
                 if [ -n "$REQUEST" ]; then

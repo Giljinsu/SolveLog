@@ -28,7 +28,7 @@ public class EmailService {
     private final UsersRepository usersRepository;
 
     private static final SecureRandom secureRandom = new SecureRandom();
-    private static final String senderEmail= "solvelog@gmail.com"; //회신 안되는 이메일
+//    private static final String senderEmail= "solvelog@gmail.com"; //회신 안되는 이메일
 
     private String emailCodeKey(String email) {return "ec:email:" + email; }
     private String resetTokenEmailKey(String email) {return "rp:email:" + email; }
@@ -59,7 +59,8 @@ public class EmailService {
             helper.setTo(emailRequestDto.getEmail());
             helper.setSubject(title);
             helper.setText(content, true);
-            helper.setReplyTo("solvelog@gmail.com");
+            helper.setFrom("no-reply@solvelog.site");
+            helper.setReplyTo("no-reply@solvelog.site");
 
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
@@ -104,6 +105,8 @@ public class EmailService {
 
         try {
             helper.setTo(username);
+            helper.setFrom("no-reply@solvelog.site");
+            helper.setReplyTo("no-reply@solvelog.site");
             helper.setSubject("[SolveLog] 비밀번호 재설정 메일");
 
             // HTML 메시지 설정
@@ -118,7 +121,7 @@ public class EmailService {
 
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Failed to send auth email to "+username, e);
         }
 
     }
