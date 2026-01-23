@@ -5,12 +5,14 @@
 Solvelog는 백준 문제풀이를 단순 저장하는 수준을 넘어  
 태그·카테고리 기반 관리, 사용자 인증, 검색 성능 개선, 실제 서비스 운영 경험을 목표로 개발한 풀스택 개인 프로젝트입니다.
 
----
+블로그 주소 : https://www.solvelog.site
+
+[//]: # (---)
 
 ## 프로젝트 기간
 - 2025.07 ~ 2025.11
 
----
+[//]: # (---)
 
 ## 프로젝트 기획 의도
 
@@ -20,7 +22,7 @@ Solvelog는 백준 문제풀이를 단순 저장하는 수준을 넘어
 
 **“개발자의 성장을 기록하는 공간”** 을 만들고자 기획했습니다.
 
----
+[//]: # (---)
 
 ## 기술 스택
 
@@ -58,12 +60,12 @@ Solvelog는 백준 문제풀이를 단순 저장하는 수준을 넘어
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)
 ![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ%20IDEA-000000?style=for-the-badge&logo=intellijidea&logoColor=white)
 
----
+[//]: # (---)
 
 ## 시스템 아키텍처
 ![img.png](solvelog_system.png)
 
----
+[//]: # (---)
 
 ## 주요 기능
 
@@ -96,7 +98,7 @@ Solvelog는 백준 문제풀이를 단순 저장하는 수준을 넘어
 - 비밀번호 재설정 메일 발송
 - 인증 코드 Redis 저장
 
----
+[//]: # (---)
 
 ## ERD
 ```mermaid
@@ -230,7 +232,7 @@ erDiagram
 - Security Filter Chain 커스터마이징
 - HttpOnly + Secure Cookie 적용
 
----
+[//]: # (---)
 
 ## 트러블 슈팅
 
@@ -259,7 +261,7 @@ DataIntegrityViolationException 발생 시
 ### 더 많은 트러블 슈팅
 https://www.notion.so/Mini-Medium-1f99df4168ec80ddad6adafed3a7b552
 
----
+[//]: # (---)
 
 ## 배포 및 CI/CD
 - Docker 기반 컨테이너화
@@ -267,7 +269,7 @@ https://www.notion.so/Mini-Medium-1f99df4168ec80ddad6adafed3a7b552
 - Blue-Green 배포 전략을 적용하여 무중단 배포 구현
 - AWS EC2 서비스 운영
 
----
+[//]: # (---)
 
 ## 프로젝트를 통해 배운 점
 - Spring Security 인증 흐름 이해
@@ -276,7 +278,7 @@ https://www.notion.so/Mini-Medium-1f99df4168ec80ddad6adafed3a7b552
 - 실서비스 관점의 성능 최적화
 - 프론트엔드-백엔드 협업 구조 이해
 
----
+[//]: # (---)
 
 ## 개선 계획
 - Elasticsearch 기반 검색
@@ -285,7 +287,7 @@ https://www.notion.so/Mini-Medium-1f99df4168ec80ddad6adafed3a7b552
 - 모바일 UI 개선
 - 프론트, 백엔드 서버 분리
 
----
+[//]: # (---)
 
 ## 개발자
 - 길진수
