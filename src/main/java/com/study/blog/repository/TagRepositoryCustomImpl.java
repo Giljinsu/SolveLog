@@ -29,27 +29,29 @@ public class TagRepositoryCustomImpl implements TagRepositoryCustom{
             순서
             1. 정확한 순서
             2. a %
-            3. %a%
+            3. %a% (속도 문제)
          */
 
         NumberExpression<Integer> matchRank = new CaseBuilder()
             .when(tag.name.toLowerCase().eq(lowerCase)).then(3)
             .when(tag.name.toLowerCase().like(lowerCase + "%")).then(2)
-            .when(tag.name.toLowerCase().like("%" + lowerCase + "%")).then(1)
+//            .when(tag.name.toLowerCase().like("%" + lowerCase + "%")).then(1)
             .otherwise(0);
+
+        NumberExpression<Long> postCnt = postTag.post.id.countDistinct();
 
         return queryFactory
             .select(Projections.constructor(TagResponseDto.class,
                 tag.id,
                 tag.name,
-                postTag.post.id.countDistinct().intValue()
+                postCnt.intValue()
             ))
             .from(tag)
             .leftJoin(postTag).on(postTag.tag.id.eq(tag.id))
-            .where(tag.name.toLowerCase().like("%" + lowerCase + "%"))
+            .where(tag.name.toLowerCase().like(lowerCase + "%"))
             .groupBy(tag.id, tag.name)
             .orderBy(matchRank.desc(),
-                postTag.post.id.countDistinct().desc(),
+                postCnt.desc(),
                 tag.name.asc())
             .limit(5)
             .fetch();

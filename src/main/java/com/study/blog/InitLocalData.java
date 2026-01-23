@@ -77,7 +77,7 @@ public class InitLocalData {
 //        usersRepository.save(user2);
 //
 //        // 페이지네이션 테스트용 데이터
-//        for (int i = 0; i < 100; i++) {
+//        for (int i = 0; i < 10000; i++) {
 //            Post post1 = Post.createPost("test"+i,
 //                "<h1>코딩일기 or SolveLog</h1>\n"
 //                    + "<h2>작은 블로그 플랫폼 (Mini Medium)\n"
@@ -205,6 +205,14 @@ public class InitLocalData {
 //        }
 //
 //
+//    }
+//    @EventListener(ApplicationReadyEvent.class)
+//    @Transactional
+//    public void init() {
+//        for (int i = 0; i < 10000; i++) {
+//            Tag tag = Tag.createTag("태그" + i);
+//            tagRepository.save(tag);
+//        }
 //    }
 
 }
