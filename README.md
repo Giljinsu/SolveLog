@@ -291,6 +291,6 @@ https://www.notion.so/Mini-Medium-1f99df4168ec80ddad6adafed3a7b552
 
 ## 개발자
 - 길진수
-- GitHub: https://github.com/길진수
+- GitHub: https://github.com/Giljinsu
 
 ---

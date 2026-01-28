@@ -93,7 +93,7 @@ export const LoginModal = ({setIsLoginOpen}) => {
       }
 
       // 로그인
-      const axiosResponse = await axios.post("/api/login", inputInfo);
+      const axiosResponse = await axiosInstance.post("/api/login", inputInfo);
       localStorage.setItem("accessToken", axiosResponse.data.accessToken);
       localStorage.setItem("refreshToken", axiosResponse.data.refreshToken);
 
