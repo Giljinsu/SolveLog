@@ -187,17 +187,20 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     }
   }
 
+  const deleteTempFiles = async () => {
+    try {
+      await axios.post(`/api/deleteTempFiles/${user.username}`);
+    } catch (e) {
+
+    }
+  }
+
 
   useEffect(() => {
+    // 혹시 남아있을 임시파일 삭제
+    deleteTempFiles();
 
     return () => {
-      const deleteTempFiles = async () => {
-        try {
-          await axios.post(`/api/deleteTempFiles/${user.username}`);
-        } catch (e) {
-
-        }
-      }
 
       if (!isSaveRef.current) {
           deleteTempFiles();
