@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
@@ -126,6 +127,11 @@ public class FileService {
         try {
             Path filePath = Paths.get(path); // ex: upload/2025/07/jinsu/temp/file123.png
             Path tempDir = filePath.getParent().getParent().resolve("temp");       // → upload/2025/07/jinsu/temp
+
+            // temp 폴더가 없는경우 넝어가기
+            if (!Files.isDirectory(tempDir)) {
+                return;
+            }
 
             Path rootDir = Paths.get("upload");
             String year = String.valueOf(LocalDate.now().getYear());
