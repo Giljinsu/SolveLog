@@ -29,12 +29,19 @@ const MyPage = () => {
   const [hasNext, setHasNext] = useState(false);
   const hasNextRef = useRef(hasNext);
   const location = useLocation();
-  const incomingNick = location.state.nickname || {};
+//   const incomingNick = location.state.nickname || {};
+//   const incomingNick = location.state ? location.state.nickname : " ";
   const [nickname, setNickname] = useState('');
   const [tabSelected, setTabSelected] = useState("my");
+  const [bioState, setBioState] = useState("");
+  const [userImg, setUserImg] = useState({
+      id:'',
+      src:''
+   })
   const tabSelectedRef = useRef(tabSelected);
   const {isAuthentication, user} = useAuth() || {};
   const username = params.username;
+  const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
   useEffect(() => {
     const scrollEvent = () => {
@@ -61,6 +68,7 @@ const MyPage = () => {
   useEffect(() => {
     getUserTagList();
     getUserPostList("전체보기");
+    getUserInfo();
   }, [username, user]);
 
   useEffect(()=> {
@@ -85,9 +93,28 @@ const MyPage = () => {
     postListRef.current = postList
   }, [postList]);
 
-  useEffect(() => {
-    setNickname(incomingNick);
-  }, [incomingNick]);
+  // 유저 정보
+  const getUserInfo = async () => {
+    try {
+      // const axiosResponse = await axios.get(`api/getUserImg/${username}`);
+      const axiosResponse = await axios.get(`/api/getUser/${username}`);
+      const findUserImg = axiosResponse.data.data.userImg;
+      const userBio = axiosResponse.data.data.bio;
+      const nickname = axiosResponse.data.data.nickname;
+
+      // const fileId = findUserImg.fileId;
+      const fileId = findUserImg !== null ? findUserImg.fileId : null;
+      const imgSrc = `${backendBaseUrl}/api/inlineFile/${fileId}`;
+      setUserImg({id: fileId, src: imgSrc })
+      setNickname(nickname);
+
+      setBioState(userBio ? userBio : '');
+//       originBioRef.current = userBio;
+
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   const getTagList = () => {
     if (tabSelected === "my") {
@@ -296,6 +323,10 @@ const MyPage = () => {
                   nickname={nickname}
                   username={username}
                   resetMyPage={resetMyPage}
+                  bioState={bioState}
+                  setBioState={setBioState}
+                  userImg={userImg}
+                  setUserImg={setUserImg}
               />
             }
             subHeader={

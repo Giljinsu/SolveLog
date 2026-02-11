@@ -9,7 +9,8 @@ import {useNavigate} from "react-router-dom";
 
 
 // isMyPage : 해당 페이지의 유저와 내가 로그인한 유저가 같은지 여부
-const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
+const MyPageTitle = ({isMyPage, nickname, bioState, setBioState, userImg, setUserImg,
+    username, resetMyPage}) => {
   const inputRef = useRef(null);
   const confirm = usePopup();
   const [isNicknameEdit, setIsNicknameEdit] = useState(false);
@@ -20,13 +21,8 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
   const bioRef = useRef(null);
   const originBioRef = useRef('');
   const [nicknameState, setNicknameState] = useState("");
-  const [bioState, setBioState] = useState("");
   const nicknameSectionRef = useRef('');
   const bioSectionRef = useRef('');
-  const [userImg, setUserImg] = useState({
-    id:'',
-    src:''
-  })
   const {reFetchUser, logout} = useAuth();
   const nav = useNavigate();
   // 백엔드 url
@@ -39,7 +35,7 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
     document.addEventListener('mousedown', handler);
 
 
-    getUserInfo();
+    originBioRef.current = bioState;
     return ()=> {
       document.removeEventListener("mousedown", bioHandler);
       document.removeEventListener("mousedown", handler);
@@ -153,27 +149,6 @@ const MyPageTitle = ({isMyPage, nickname, bio, username, resetMyPage}) => {
 
     reFetchUser();
 
-  }
-
-  // 유저 정보
-  const getUserInfo = async () => {
-    try {
-      // const axiosResponse = await axios.get(`api/getUserImg/${username}`);
-      const axiosResponse = await axios.get(`/api/getUser/${username}`);
-      const findUserImg = axiosResponse.data.data.userImg;
-      const userBio = axiosResponse.data.data.bio;
-
-      // const fileId = findUserImg.fileId;
-      const fileId = findUserImg !== null ? findUserImg.fileId : null;
-      const imgSrc = `${backendBaseUrl}/api/inlineFile/${fileId}`;
-      setUserImg({id: fileId, src: imgSrc })
-
-      setBioState(userBio ? userBio : '');
-      originBioRef.current = userBio;
-
-    } catch (e) {
-      console.log(e);
-    }
   }
 
   // 닉네임 변경 버튼
