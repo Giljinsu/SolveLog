@@ -46,7 +46,8 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
         + "where u.username = :username "
         + "and p.isTemp is false "
         + "group by t.id, t.name "
-        + "order by count(pt.tag.id)"
+        + "order by t.name asc"
+//        + "order by count(pt.tag.id) desc"
     )
     List<TagCountDto> findTagCountByUsername(@Param("username") String username);
 
@@ -59,7 +60,8 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
         + "where u.username = :username "
         + "and p.isTemp is false "
         + "group by t.id, t.name "
-        + "order by count(pt.tag.id)"
+        + "order by t.name asc"
+//        + "order by count(pt.tag.id)"
     )
     List<TagCountDto> findLikesTagCountByUsername(@Param("username") String username);
 
