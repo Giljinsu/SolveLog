@@ -14,7 +14,9 @@ const Post = () => {
   //
   const [postDetail, setPostDetail] = useState("")
   const location = useLocation();
-  const {postId} = location.state || {}
+  const params = useParams();
+//   const {postId} = location.state : {};
+  const postId = location.state?.postId ?? params.postId;
   const {user, isLoading} = useAuth();
   const {resetSearchCondition} = useSearchContext();
   const nav = useNavigate();

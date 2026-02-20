@@ -50,7 +50,7 @@ function App() {
                   }}>
                     <Routes>
                       <Route path={"/"} element={<Home /> }></Route>
-                      <Route path={"/post/:title"} element={<Post /> }></Route>
+                      <Route path={"/post/:postId/:title"} element={<Post /> }></Route>
                       <Route path={"/signup"} element={<Signup />}></Route>
                       <Route path={"/postEdit"} element={<PostEdit />}></Route>
                       <Route path={"/tempPost"} element={<TempPost />}></Route>

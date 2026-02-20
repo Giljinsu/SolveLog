@@ -85,10 +85,12 @@ public class AlarmService {
     public String createLink(Map<String, String> metamap) {
         String postTitle = metamap.get("postTitle");
         String targetCommentId = metamap.get("targetCommentId");
+        String postId = metamap.get("postId");
 
         if (postTitle == null || postTitle.isEmpty()) return "";
 
         StringBuilder sb = new StringBuilder("/post/");
+        sb.append(postId).append("/");
         sb.append(postTitle);
 
         if (targetCommentId != null && !targetCommentId.isEmpty()) {

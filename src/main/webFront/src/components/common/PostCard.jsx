@@ -38,7 +38,7 @@ function PostCard({postId, title, tags, category, summary, author, date, views, 
 
 
   const onPostClick = () => {
-    nav(`/post/${title}`, {
+    nav(`/post/${postId}/${title}`, {
       state : {
         postId : postId
       }

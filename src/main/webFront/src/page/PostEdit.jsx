@@ -97,7 +97,7 @@ const PostEdit = () => {
       if (initData.isTemp === false) {
         // resetSearchCondition();
         // nav("/")
-        nav(`/post/${initData.title}`, {
+        nav(`/post/${newPostId}/${initData.title}`, {
           state : {
             postId : newPostId
           }
@@ -128,7 +128,7 @@ const PostEdit = () => {
       if (initData.isTemp === false) {
         // resetSearchCondition();
         // nav("/")
-        nav(`/post/${initData.title}`, {
+        nav(`/post/${initData.postId}/${initData.title}`, {
           state : {
             postId : initData.postId
           }
