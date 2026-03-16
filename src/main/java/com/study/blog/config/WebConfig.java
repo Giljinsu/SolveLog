@@ -16,7 +16,10 @@ public class WebConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**") // 모든 경로
 //                    .allowedOrigins("http://localhost:5173") // 리액트 서버 주소
-                    .allowedOrigins("https://www.solvelog.site")
+                    .allowedOrigins(
+                        "https://solvelog.site",
+                        "https://www.solvelog.site"
+                    )
                     .allowedOrigins("https://solvelog.site")
                     .allowedMethods("*") // GET, POST, PUT, DELETE 등
                     .allowedHeaders("*")
