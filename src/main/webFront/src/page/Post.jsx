@@ -46,11 +46,16 @@ const Post = () => {
             replace: true
           });
         }
-      }, 100); // 필요한 경우 조절
+      }, 300); // 필요한 경우 조절
     }
     setTargetCommentIdForScroll(hash);
     // 해시 제거
   }, [location]);
+
+  useEffect(()=> {
+    if (isLoading) return ; // 인증
+    addViewCnt();
+  }, [postId])
 
   useEffect(() => {
     if (isLoading) return ; // 인증

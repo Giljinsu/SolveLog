@@ -25,10 +25,18 @@ const MyPageSearch = ({onClickButton, isMyPage, tabSelected , setTabSelected}) =
                 >
                   좋아요한 글
                 </span>
+                <span
+                    className={"my-page-search-tab-item "
+                        + `${tabSelected === "statistics" ? "my-page-search-tab-item-selected" : ""}`}
+                    onClick={()=>setTabSelected("statistics")}
+                >
+                  통계
+                </span>
                 <div
                     className={"underline"}
                     style={{
-                          transform: tabSelected === "my" ? "translateX(0%)" : "translateX(100%)"
+//                           transform: tabSelected === "my" ? "translateX(0%)" : "translateX(100%)"
+                          transform: tabSelected === "my" ? "translateX(0%)" : tabSelected === "like" ? "translateX(100%)" : "translateX(200%)"
                         }}
                 >
                 </div>

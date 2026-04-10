@@ -90,11 +90,11 @@
 }
 
 .post_comment_reply_comment_section {
-  padding: 1rem;
+  padding: 1rem 0 0 2rem;
 }
 
 .post_comment_reply_comment {
-  border-bottom: 1px solid rgb(230, 230, 230);
+  /*border-bottom: 1px solid rgb(230, 230, 230);*/
 }
 
 .reply-editor-display {

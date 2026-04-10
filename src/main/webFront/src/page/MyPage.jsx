@@ -42,6 +42,8 @@ const MyPage = () => {
   const {isAuthentication, user} = useAuth() || {};
   const username = params.username;
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
+  const isStatistics = tabSelected === "statistics";
+  const pageCnt = 5; // 페이지 수
 
   useEffect(() => {
     const scrollEvent = () => {
@@ -168,7 +170,7 @@ const MyPage = () => {
           tagIdList: tagIdList,
           username: username,
           page: 0,
-          size: 20,
+          size: pageCnt,
         },
         paramsSerializer : params =>
             qs.stringify(params, { arrayFormat: "repeat" })
@@ -194,7 +196,7 @@ const MyPage = () => {
           tagIdList: tagIdList,
           username: username,
           page: 0,
-          size: 20,
+          size: pageCnt,
         },
         paramsSerializer : params =>
             qs.stringify(params, { arrayFormat: "repeat" })
@@ -222,7 +224,7 @@ const MyPage = () => {
             tagIdList: tagIdList,
             username: username,
             page: nextPageRef.current,
-            size: 20,
+            size: pageCnt,
           },
           paramsSerializer : params =>
               qs.stringify(params, { arrayFormat: "repeat" })
@@ -234,7 +236,7 @@ const MyPage = () => {
             tagIdList: tagIdList,
             username: username,
             page: nextPageRef.current,
-            size: 20,
+            size: pageCnt,
           },
           paramsSerializer : params =>
               qs.stringify(params, { arrayFormat: "repeat" })
@@ -317,48 +319,53 @@ const MyPage = () => {
       <div>
         <Header/>
         <ListTemplate
-            header={
-              <MyPageTitle
-                  isMyPage={isAuthentication && username === user.username}
-                  nickname={nickname}
-                  username={username}
-                  resetMyPage={resetMyPage}
-                  bioState={bioState}
-                  setBioState={setBioState}
-                  userImg={userImg}
-                  setUserImg={setUserImg}
+          header={
+            <MyPageTitle
+              isMyPage={isAuthentication && username === user.username}
+              nickname={nickname}
+              username={username}
+              resetMyPage={resetMyPage}
+              bioState={bioState}
+              setBioState={setBioState}
+              userImg={userImg}
+              setUserImg={setUserImg}
+            />
+          }
+          subHeader={
+            <MyPageSearch
+              onClickButton={searchPost}
+              isMyPage={isAuthentication && username === user.username}
+              tabSelected={tabSelected}
+              setTabSelected={setTabSelected}
+            />
+          }
+          {...(!isStatistics && {
+            listTemplate: postList?.map(post => (
+              <MyPagePostList
+                key={post.id}
+                post={post}
+                onClickTag={onClickTag}
+                tabSelected={tabSelected}
               />
-            }
-            subHeader={
-              <MyPageSearch onClickButton={searchPost}
-                            isMyPage={isAuthentication && username
-                                === user.username}
-                            tabSelected={tabSelected}
-                            setTabSelected={setTabSelected}
-              />
-            }
-            listTemplate={postList && postList.map(post => (
-                <MyPagePostList
-                    key={post.id}
-                    post={post}
-                    onClickTag={onClickTag}
-                    tabSelected={tabSelected}
-                />
-            ))}
-            listPlaceholder={tabSelected === "my" ? "작성한 글이 없습니다."
-                : "좋아요한 글이 없습니다."}
-            leftMenuMax={<TagsMenu
+            )),
+            listPlaceholder: tabSelected === "my" ? "작성한 글이 없습니다." : "좋아요한 글이 없습니다.",
+            leftMenuMax: (
+              <TagsMenu
                 tagList={tagList}
                 totalCount={totalCount}
                 selected={tagSelected}
                 onClickTag={onClickTag}
-            />}
-            leftMenuMin={<TagsMenuMin
+              />
+            ),
+            leftMenuMin: (
+              <TagsMenuMin
                 tagList={tagList}
                 totalCount={totalCount}
                 selected={tagSelected}
                 onClickTag={onClickTag}
-            />}
+              />
+            ),
+          })}
         />
 
         <div className={"post_end_buffer"} style={{"height": "80px"}}/>
