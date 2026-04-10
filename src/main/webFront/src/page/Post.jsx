@@ -57,15 +57,15 @@ const Post = () => {
     addViewCnt();
   }, [postId])
 
-  useEffect(() => {
-    if (isLoading) return ; // 인증
-
-    if (user) {
-      // setCurComment({...curComment, username : user.username})
-    }
-
-    addViewCnt();
-  }, [isLoading]);
+//   useEffect(() => {
+//     if (isLoading) return ; // 인증
+//
+//     if (user) {
+//       // setCurComment({...curComment, username : user.username})
+//     }
+//
+//     addViewCnt();
+//   }, [isLoading]);
 
   // 상세조회
   const getPostDetail = async () => {
