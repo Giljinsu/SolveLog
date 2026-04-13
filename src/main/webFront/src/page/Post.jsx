@@ -52,20 +52,10 @@ const Post = () => {
     // 해시 제거
   }, [location]);
 
-  useEffect(()=> {
-    if (isLoading) return ; // 인증
+  useEffect(() => {
+    if (isLoading || !postId) return;
     addViewCnt();
-  }, [postId])
-
-//   useEffect(() => {
-//     if (isLoading) return ; // 인증
-//
-//     if (user) {
-//       // setCurComment({...curComment, username : user.username})
-//     }
-//
-//     addViewCnt();
-//   }, [isLoading]);
+  }, [isLoading, postId]);
 
   // 상세조회
   const getPostDetail = async () => {
@@ -78,24 +68,50 @@ const Post = () => {
     }
   }
 
+  const getViewedPosts = () => {
+    const raw = localStorage.getItem("viewedPosts");
+
+    if (!raw) return [];
+
+    try {
+      const parsed = JSON.parse(raw);
+
+      if (Array.isArray(parsed)) {
+        return parsed.map(String);
+      }
+
+      if (typeof parsed === "string" || typeof parsed === "number") {
+        return [String(parsed)];
+      }
+
+      return [];
+    } catch {
+      // 예전 방식이 그냥 문자열로 저장된 경우
+      return [String(raw)];
+    }
+  };
+
   // 조회수 증가
+  // 20260413 localStorage에 배열로 저장 안하고 단일만 저장하는 현상 발견
+  // 따라서 배열로 변경하였지만 문제는 기존 사용자들은 localStorage 배열이 아닌 값이 저장
+  // 따라서 getViewedPosts 메서드를 만들어 기존사용자들의 에러 발생 방지
   const addViewCnt = async () => {
     try {
-      // 중복 조회수 방지
-      const viewedPosts = localStorage.getItem("viewedPosts") || [];
-      if (!viewedPosts.includes(postId)) {
-        //
-        const axiosResponse = await axios.post(`/api/posts/${postId}/view`);
-        localStorage.setItem("viewedPosts", postId);
+      const viewedPosts = getViewedPosts();
+      const currentPostId = String(postId);
 
-        // setPostDetail({...postDetail, viewCount : axiosResponse.data.viewCount})
+      if (!viewedPosts.includes(currentPostId)) {
+        await axios.post(`/api/posts/${postId}/view`);
+
+        viewedPosts.push(currentPostId);
+        localStorage.setItem("viewedPosts", JSON.stringify(viewedPosts));
       }
     } catch (e) {
       console.log(e);
     } finally {
       await getPostDetail();
     }
-  }
+  };
 
   //댓글 리스트 조회
   const getCommentList = async () => {
