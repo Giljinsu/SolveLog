@@ -14,9 +14,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get Public IP
+      - name: Get runner public IP
         id: ip
-        uses: haythem/public-ip@v1.3
+        shell: bash
+        run: |
+          IP=$(curl -4 -s --retry 5 --retry-delay 3 --retry-all-errors https://api.ipify.org || true)
+
+          if [ -z "$IP" ]; then
+            IP=$(curl -4 -s --retry 5 --retry-delay 3 --retry-all-errors https://checkip.amazonaws.com || true)
+          fi
+
+          if [ -z "$IP" ]; then
+            IP=$(curl -4 -s --retry 5 --retry-delay 3 --retry-all-errors https://ifconfig.me || true)
+          fi
+
+          if [ -z "$IP" ]; then
+            echo "Failed to get public IP"
+            exit 1
+          fi
+
+          echo "ipv4=$IP" >> "$GITHUB_OUTPUT"
+          echo "Resolved IP: $IP"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
