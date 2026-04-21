@@ -65,6 +65,45 @@ public interface PostTagRepository extends JpaRepository<PostTag, Long> {
     )
     List<TagCountDto> findLikesTagCountByUsername(@Param("username") String username);
 
+    @Query("select new com.study.blog.dto.postTag.TagCountDto(t.id, t.name, count(pt.tag.id)) "
+        + "from PostTag pt "
+        + "join pt.tag t "
+        + "join pt.post p "
+        + "join p.user u "
+        + "where u.username = :username "
+        + "and p.category.type = :categoryType "
+        + "and p.isTemp is false "
+        + "group by t.id, t.name "
+        + "order by count(pt.tag.id) desc"
+    )
+    List<TagCountDto> findTagCountByUsernameAndCategory(@Param("username") String username,
+        @Param("categoryType") String categoryType);
 
+    @Query("select new com.study.blog.dto.postTag.TagCountDto(t.id, t.name, count(pt.tag.id)) "
+        + "from PostTag pt "
+        + "join pt.tag t "
+        + "join pt.post p "
+        + "join p.user u "
+        + "where u.username = :username "
+        + "and p.isTemp is false "
+        + "group by t.id, t.name "
+        + "order by count(pt.tag.id) desc"
+    )
+    List<TagCountDto> findTagCountByUsernameOrderByCount(@Param("username") String username);
+
+    @Query("select new com.study.blog.dto.postTag.TagCountDto(t.id, t.name, count(pt.tag.id)) "
+        + "from PostTag pt "
+        + "join pt.tag t "
+        + "join pt.post p "
+        + "join Likes l on l.post.id = pt.post.id "
+        + "join l.user u "
+        + "where u.username = :username "
+        + "and p.category.type = :categoryType "
+        + "and p.isTemp is false "
+        + "group by t.id, t.name "
+        + "order by count(pt.tag.id) desc"
+    )
+    List<TagCountDto> findLikesTagCountByUsernameAndCategory(@Param("username") String username,
+        @Param("categoryType") String categoryType);
 
 }

@@ -13,6 +13,8 @@ import {usePopup} from "../context/PopupContext.jsx";
 import qs from "qs";
 import MyPageSearch from "../components/mypage/MyPageSearch.jsx";
 import axiosInstance from "../context/axiosInstance.js";
+import useCategoryList from "../hooks/useCategoryList.jsx";
+import MyPageStatistic from "../components/mypage/MyPageStatistic.jsx"
 
 const MyPage = () => {
   const [tagList, setTagList] = useState([]);
@@ -33,6 +35,11 @@ const MyPage = () => {
 //   const incomingNick = location.state ? location.state.nickname : " ";
   const [nickname, setNickname] = useState('');
   const [tabSelected, setTabSelected] = useState("my");
+  const {categoryList} = useCategoryList("SEARCH_CATEGORY");
+  const [subTabList, setSubTabList] = useState([]); // 카테고리 ex 문제풀이, 자유게시판
+  const [subTabSelected, setSubTabSelected] = useState("");
+  const subTabSelectedRef = useRef(subTabSelected);
+  const [searchValue, setSearchValue] = useState("");
   const [bioState, setBioState] = useState("");
   const [userImg, setUserImg] = useState({
       id:'',
@@ -43,6 +50,7 @@ const MyPage = () => {
   const username = params.username;
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const isStatistics = tabSelected === "statistics";
+  const statisticsList = [<MyPageStatistic/>];
   const pageCnt = 5; // 페이지 수
 
   useEffect(() => {
@@ -71,13 +79,33 @@ const MyPage = () => {
     getUserTagList();
     getUserPostList("전체보기");
     getUserInfo();
-  }, [username, user]);
+  }, [username, user, categoryList]);
 
   useEffect(()=> {
     tabSelectedRef.current = tabSelected;
+    if(subTabSelected !== subTabList[0]) {
+      setSubTabSelected(subTabList[0]);
+      setSearchValue("");
+      return;
+    }
     getTagList();
     onClickTag("전체보기");
   }, [tabSelected])
+
+  useEffect(()=> {
+    if (tabSelected === "statistics") return;
+    subTabSelectedRef.current = subTabSelected;
+    setSearchValue("");
+    getTagList();
+    onClickTag("전체보기");
+  }, [subTabSelected])
+
+  useEffect(()=> {
+    const categoryTypes = categoryList.map(category => category.type);
+    categoryTypes.unshift("전체");
+    setSubTabList(categoryTypes);
+    setSubTabSelected(categoryTypes[0]);
+  }, [categoryList])
 
   useEffect(() => {
     hasNextRef.current = hasNext;
@@ -128,7 +156,20 @@ const MyPage = () => {
 
   const getUserTagList = async () => {
     try {
-      const axiosResponse = await axios.get(`/api/getPostCountPerTagByUsername/${username}`);
+      let axiosResponse;
+      if (subTabSelectedRef.current == "전체") {
+        axiosResponse = await axios.get(`/api/getPostCountPerTagByUsername/${username}`);
+      } else {
+        axiosResponse = await axios.get(`/api/getPostCountPerTag`, {
+           params : {
+             // tagId: tagId !== "전체보기" ? tagId : "",
+             username: username,
+             categoryType: subTabSelectedRef.current
+           },
+           paramsSerializer : params =>
+               qs.stringify(params, { arrayFormat: "repeat" })
+        });
+      }
 
       setTotalCount(axiosResponse.data.totalCount);
       setTagList(axiosResponse.data.tagCountDtos);
@@ -140,7 +181,21 @@ const MyPage = () => {
 
   const getLikeTagList = async () => {
     try {
-      const axiosResponse = await axios.get(`/api/getLikePostCountPerTagByUsername/${username}`);
+      let axiosResponse;
+      if (subTabSelectedRef.current == "전체") {
+        axiosResponse = await axios.get(`/api/getLikePostCountPerTagByUsername/${username}`);
+      } else {
+        axiosResponse = await axios.get(`/api/getLikePostCountPerTag`, {
+           params : {
+             // tagId: tagId !== "전체보기" ? tagId : "",
+             username: username,
+             categoryType: subTabSelectedRef.current
+           },
+           paramsSerializer : params =>
+               qs.stringify(params, { arrayFormat: "repeat" })
+        });
+      }
+
 
       setTotalCount(axiosResponse.data.totalCount);
       setTagList(axiosResponse.data.tagCountDtos);
@@ -151,7 +206,7 @@ const MyPage = () => {
   }
 
   const onClickTag = async (tagId) => {
-
+    setSearchValue("");
     if (tabSelected === "my") {
       getUserPostList(tagId);
     } else if (tabSelected === "like") {
@@ -171,6 +226,9 @@ const MyPage = () => {
           username: username,
           page: 0,
           size: pageCnt,
+          ...(subTabSelectedRef.current !== "전체" && {
+            categoryType: subTabSelectedRef.current
+          })
         },
         paramsSerializer : params =>
             qs.stringify(params, { arrayFormat: "repeat" })
@@ -197,6 +255,9 @@ const MyPage = () => {
           username: username,
           page: 0,
           size: pageCnt,
+          ...(subTabSelectedRef.current !== "전체" && {
+            categoryType: subTabSelectedRef.current
+          })
         },
         paramsSerializer : params =>
             qs.stringify(params, { arrayFormat: "repeat" })
@@ -225,6 +286,9 @@ const MyPage = () => {
             username: username,
             page: nextPageRef.current,
             size: pageCnt,
+            ...(subTabSelectedRef.current !== "전체" && {
+              categoryType: subTabSelectedRef.current
+            })
           },
           paramsSerializer : params =>
               qs.stringify(params, { arrayFormat: "repeat" })
@@ -237,6 +301,9 @@ const MyPage = () => {
             username: username,
             page: nextPageRef.current,
             size: pageCnt,
+            ...(subTabSelectedRef.current !== "전체" && {
+              categoryType: subTabSelectedRef.current
+            })
           },
           paramsSerializer : params =>
               qs.stringify(params, { arrayFormat: "repeat" })
@@ -275,6 +342,9 @@ const MyPage = () => {
             searchType: "TITLE",
             tagIdList: tagIdList,
             username: username,
+            ...(subTabSelectedRef.current !== "전체" && {
+              categoryType: subTabSelectedRef.current
+            }),
             page: 0,
             size: 20,
           },
@@ -289,6 +359,9 @@ const MyPage = () => {
             searchType: "TITLE",
             tagIdList: tagIdList,
             username: username,
+            ...(subTabSelectedRef.current !== "전체" && {
+              categoryType: subTabSelectedRef.current
+            }),
             page: 0,
             size: 20,
           },
@@ -337,9 +410,14 @@ const MyPage = () => {
               isMyPage={isAuthentication && username === user.username}
               tabSelected={tabSelected}
               setTabSelected={setTabSelected}
+              subTabList={subTabList}
+              subTabSelected={subTabSelected}
+              setSubTabSelected={setSubTabSelected}
+              searchValue={searchValue}
+              setSearchValue={setSearchValue}
             />
           }
-          {...(!isStatistics && {
+          {...(!isStatistics ? {
             listTemplate: postList?.map(post => (
               <MyPagePostList
                 key={post.id}
@@ -365,6 +443,8 @@ const MyPage = () => {
                 onClickTag={onClickTag}
               />
             ),
+          }: {
+            listTemplate: [<MyPageStatistic username={username} categoryType={subTabSelected}/>]
           })}
         />
 

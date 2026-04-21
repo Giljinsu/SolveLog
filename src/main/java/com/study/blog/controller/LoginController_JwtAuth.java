@@ -145,7 +145,6 @@ public class LoginController_JwtAuth {
             refreshToken="";
         }
 
-
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
             .httpOnly(true)
             .secure(cookieSecure) // https  배포시 true

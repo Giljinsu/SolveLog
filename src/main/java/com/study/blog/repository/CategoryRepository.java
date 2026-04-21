@@ -12,5 +12,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     Category findByType(@Param("type") String type);
 
 
-    List<Category> findByParentCategoryIdOrderById(Long parentCategoryId);
+    List<Category> findByParentCategoryIdOrderBySortOrder(Long parentCategoryId);
 }

@@ -26,7 +26,7 @@
 .my-page-search-tab-section {
   display: flex;
   justify-content: center;
-  padding: 0 0 5rem 0;
+  padding: 0 0 2rem 0;
 }
 
 .my-page-search-tab {
@@ -46,6 +46,52 @@
 }
 
 .my-page-search-tab-item-selected {
+  font-weight: bolder;
+  /*border-bottom: 1px solid;*/
+}
+
+.my-page-search-sub-tab-section {
+  display: flex;
+  justify-content: center;
+  padding: 0 0 5rem 0;
+}
+
+.my-page-search-sub-tab {
+  display: flex;
+  width: 480px;
+  position: relative;
+}
+
+
+.my-page-search-sub-tab-item {
+  cursor: pointer;
+  font-size: 16px;
+  text-align: center;
+  padding: 0.5rem 0;
+  flex: 1;
+}
+
+/* 글자수 맞춤
+.my-page-search-sub-tab {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  width: auto;
+  position: relative;
+}
+
+.my-page-search-sub-tab-item {
+  flex: 0 0 auto;
+  width: auto;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0.5rem 0;
+  white-space: nowrap;
+}
+*/
+
+.my-page-search-sub-tab-item-selected {
   font-weight: bolder;
   /*border-bottom: 1px solid;*/
 }

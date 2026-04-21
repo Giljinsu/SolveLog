@@ -17,7 +17,7 @@ public class CategoryService {
     public List<CategoryResponseDto> getCategoryList(String parentType) {
         Category parentCategory = categoryRepository.findByType(parentType);
 
-        return categoryRepository.findByParentCategoryIdOrderById(parentCategory.getId())
+        return categoryRepository.findByParentCategoryIdOrderBySortOrder(parentCategory.getId())
             .stream().map(category ->
                 new CategoryResponseDto(category.getId(),
                     category.getParentCategory().getId(),

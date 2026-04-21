@@ -2,7 +2,8 @@ import './ListTemplate.css'
 import testImage from '../../assets/Logo-Test.png'
 import {useEffect} from "react";
 
-const ListTemplate = ({header, subHeader, listTemplate, listPlaceholder, leftMenuMax, leftMenuMin}) => {
+const ListTemplate = ({header, subHeader, listTemplate, listPlaceholder, leftMenuMax, leftMenuMin,
+  subSubHeader}) => {
 
   // 임시
   // title = "임시작성글";

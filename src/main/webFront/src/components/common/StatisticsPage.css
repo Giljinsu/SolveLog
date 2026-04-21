@@ -1,0 +1,323 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background-color: #f5f7fb;
+  color: #1f2937;
+  font-family: Arial, sans-serif;
+}
+
+.statistics-page {
+  min-height: 100vh;
+  padding: 40px 20px;
+}
+
+.statistics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-card,
+.heatmap-card,
+.chart-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.summary-card {
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.1);
+}
+
+.summary-label {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 10px;
+}
+
+.summary-value {
+  font-size: 34px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.heatmap-card {
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-header {
+  margin-bottom: 18px;
+}
+
+.section-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.section-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.heatmap-wrapper {
+  overflow-x: auto;
+  padding-bottom: 10px;
+}
+
+.heatmap-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-width: fit-content;
+}
+
+.heatmap-day-labels {
+  display: grid;
+  grid-template-rows: repeat(7, 16px);
+  gap: 6px;
+  padding-top: 28px;
+  flex-shrink: 0;
+}
+
+.day-label {
+  height: 16px;
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 16px;
+}
+
+.heatmap-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.heatmap-month-labels {
+  display: grid;
+  gap: 6px;
+  margin-left: 0;
+}
+
+.month-label {
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  min-width: 16px;
+}
+
+.heatmap-weeks {
+  display: flex;
+  gap: 6px;
+}
+
+.heatmap-week-column {
+  display: grid;
+  grid-template-rows: repeat(7, 16px);
+  gap: 6px;
+}
+
+.heat-cell {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  transition: transform 0.15s ease;
+}
+
+.heat-cell:hover {
+  transform: scale(1.12);
+}
+
+.empty-cell {
+  background: transparent;
+}
+
+.level-0 {
+  background-color: #e5e7eb;
+}
+
+.level-1 {
+  background-color: #c7f9cc;
+}
+
+.level-2 {
+  background-color: #80ed99;
+}
+
+.level-3 {
+  background-color: #38b000;
+}
+
+.level-4 {
+  background-color: #166534;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.legend-box {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.bottom-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.chart-card {
+  padding: 24px;
+}
+
+.bar-list {
+  margin-top: 20px;
+}
+
+.bar-item + .bar-item {
+  margin-top: 18px;
+}
+
+.bar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.bar-name {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 600;
+}
+
+.bar-count {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.bar-track {
+  width: 100%;
+  height: 12px;
+  background-color: #eef2f7;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #4f46e5, #818cf8);
+}
+
+.heatmap-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.year-select-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.year-select-label {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.year-select {
+  height: 40px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  background-color: #ffffff;
+  color: #111827;
+  font-size: 14px;
+  cursor: pointer;
+  outline: none;
+}
+
+.year-select:focus {
+  border-color: #4f46e5;
+}
+
+.heatmap-detail {
+  margin-top: 20px;
+  padding: 16px;
+  border-radius: 12px;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+}
+
+.detail-title {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.detail-count {
+  font-size: 14px;
+  color: #374151;
+}
+
+.detail-empty {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.stat-more-button {
+  margin-top: 16px;
+  border: none;
+  background: transparent;
+  color: #4f46e5;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.stat-more-button:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 900px) {
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -9,29 +9,17 @@ import static com.study.blog.entity.QPostTag.*;
 import static com.study.blog.entity.QUsers.*;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.study.blog.dto.comment.CommentResponseDto;
 import com.study.blog.dto.file.FileResponseDto;
 import com.study.blog.dto.post.PostResponseDto;
 import com.study.blog.dto.post.SearchCondition;
 import com.study.blog.dto.post.SearchOrderType;
 import com.study.blog.dto.post.SearchType;
-import com.study.blog.entity.PostTag;
-import com.study.blog.entity.QCategory;
-import com.study.blog.entity.QComment;
-import com.study.blog.entity.QFile;
-import com.study.blog.entity.QPostTag;
-import com.study.blog.entity.QUsers;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import org.springframework.data.domain.Page;
@@ -207,6 +195,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         query.where(
                 searchLikesUsername(searchCondition),
                 searchTagId(searchCondition),
+                searchCategory(searchCondition),
                 searchTypeCondition(searchCondition),
                 post.isTemp.isFalse()
             )
@@ -402,7 +391,7 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
     }
 
     private BooleanExpression searchCategory(SearchCondition searchCondition) {
-        if (searchCondition.getCategoryType().isEmpty()) {
+        if (searchCondition.getCategoryType() == null || searchCondition.getCategoryType().isEmpty()) {
             return null;
         }
 

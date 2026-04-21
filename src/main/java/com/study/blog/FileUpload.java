@@ -23,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class FileUpload {
     private final S3Uploader s3Uploader;
+    private final long maxSize = 5 * 1024 * 1024; // 5MB
 
     //파일 업로드
     //교육용 사용 X
@@ -56,8 +57,12 @@ public class FileUpload {
 
     //파일 업로드
     public String fileUpload2(MultipartFile file, String username, Long postId) {
-        // Paths Files 사용
 
+        if (file.getSize() > maxSize) {
+            throw new IllegalArgumentException("파일 크기는 5MB를 초과할 수 없습니다.");
+        }
+
+        // Paths Files 사용
         Path rootDir = Paths.get("upload");
         String year = String.valueOf(LocalDate.now().getYear());
         String month = String.format("%02d",LocalDate.now().getMonthValue());

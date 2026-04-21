@@ -25,4 +25,14 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
 
     @Query("select count(l.id) from Likes l where l.user.username = :username")
     Long getLikesCountByUsername(@Param("username") String username);
+
+    @Query(
+        "select count(l.id) "
+        + "from Likes l "
+            + "join l.post p "
+            + "join p.category c "
+            + "where l.user.username = :username "
+            + "and c.type = :categoryType")
+    Long getLikesCountByUsernameAndCategory(@Param("username") String username,
+        @Param("categoryType") String categoryType);
 }

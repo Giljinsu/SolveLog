@@ -1,5 +1,6 @@
 package com.study.blog.service;
 
+import com.study.blog.dto.postTag.PostTagRequestDto;
 import com.study.blog.dto.postTag.PostTagResponseDto;
 import com.study.blog.dto.postTag.TagCountDto;
 import com.study.blog.repository.LikesRepository;
@@ -29,6 +30,33 @@ public class PostTagService {
     public PostTagResponseDto getLikePostCountPerTagByUsername(String username) {
         List<TagCountDto> tagCountByUsername = postTagRepository.findLikesTagCountByUsername(username);
         Long totalPostCount = likesRepository.getLikesCountByUsername(username); // 유저의 전체 게시글 수
+        return new PostTagResponseDto(tagCountByUsername, totalPostCount);
+    }
+
+    // 유저이름 및 카테고리별, 태그 게시글 수
+    public PostTagResponseDto getPostCountPerTag(PostTagRequestDto postTagRequestDto) {
+        List<TagCountDto> tagCountByUsername = postTagRepository.findTagCountByUsernameAndCategory(
+            postTagRequestDto.getUsername(),
+            postTagRequestDto.getCategoryType()
+        );
+
+        Long totalPostCount = postRepository.getPostCount(
+            postTagRequestDto.getUsername(),
+            postTagRequestDto.getCategoryType()
+        ); // 유저의 전체 게시글 수
+        return new PostTagResponseDto(tagCountByUsername, totalPostCount);
+    }
+
+    // 유저이름 및 카테고리별 좋아요한 태그 게시글 수
+    public PostTagResponseDto getLikePostCountPerTag(PostTagRequestDto postTagRequestDto) {
+        List<TagCountDto> tagCountByUsername = postTagRepository.findLikesTagCountByUsernameAndCategory(
+            postTagRequestDto.getUsername(),
+            postTagRequestDto.getCategoryType()
+        );
+        Long totalPostCount = likesRepository.getLikesCountByUsernameAndCategory(
+            postTagRequestDto.getUsername(),
+            postTagRequestDto.getCategoryType()
+        ); // 유저의 전체 게시글 수
         return new PostTagResponseDto(tagCountByUsername, totalPostCount);
     }
 

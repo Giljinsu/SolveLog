@@ -31,6 +31,9 @@ public class Category {
     @Column(nullable = false, length = 50, unique = true)
     private String type;
 
+    @Column(name = "sort_order")
+    private Integer sortOrder;
+
     private Category(String type) {
         this.type = type;
     }

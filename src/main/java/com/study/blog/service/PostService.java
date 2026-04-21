@@ -182,6 +182,7 @@ public class PostService {
         return postDto;
     }
 
+    // 조회수 조회
     public int getViews(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
 
@@ -253,6 +254,7 @@ public class PostService {
         return new PostSliceResponseDto(content, postList.hasNext());
     }
 
+    // 게시물 id 별 태그들 조회
     private Map<Long, List<TagResponseDto>> getTagsPerPostIdMap(List<PostResponseDto> content) {
         Set<Long> postIdSet = content.stream().map(PostResponseDto::getId)
             .collect(Collectors.toSet());
@@ -269,6 +271,7 @@ public class PostService {
             ));
     }
 
+    // 조회수 증가
     @Transactional
     public int addView(Long postId) {
         Post post = postRepository.findById(postId).orElseThrow();
@@ -326,6 +329,7 @@ public class PostService {
         return newPost.getId();
     }
 
+    // 태그를 업서트
     private void upsertTag(Set<String> tagNameSet, Post newPost) {
         if (!tagNameSet.isEmpty()) {
             List<Tag> findTags = tagRepository.findByNameInIgnoreCase(tagNameSet);
@@ -383,7 +387,7 @@ public class PostService {
         }
     }
 
-    //게시글 생성
+    //게시글 생성 (태그를 문자열로 저장했을때) (사용안함)
     @Transactional
     public Long createPost_Old_TagsStringVer(PostRequestDto requestDto) {
         Users findUser = getFindUser(requestDto);
@@ -413,6 +417,7 @@ public class PostService {
 //        fileRepository.bulkUpdatePostIdWherePostIdIsNull(postId, username);
 //    }
 
+    // 내용에서 파일 id들을 추출
     private Set<Long> extractFileIdsFromMarkdown(String content) {
         Set<Long> fileIds = new HashSet<>();
         // hashset 사용 이유 : 중복 X 와 Contain 여부 빠르게 가능
