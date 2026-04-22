@@ -1,5 +1,5 @@
 import StatisticsPage from "../common/StatisticsPage.jsx";
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import axios from "../../context/axiosInstance.js";
 
 
@@ -35,9 +35,17 @@ const MyPageStatistic = ({username, categoryType}) => {
   const [categoryStats, setCategoryStats] = useState([]);
   const [dailyStatistic, setDailyStatistic] = useState([]);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const requestSeqRef = useRef(0);
 
   useEffect(() => {
-    getUserStatistic(selectedYear);
+    if (!categoryType) return;
+
+    const timer = setTimeout(() => {
+      const requestSeq = ++requestSeqRef.current;
+      getUserStatistic(selectedYear, requestSeq);
+    }, 80);
+
+    return () => clearTimeout(timer);
   }, [categoryType]);
 
   const getDailyStatistic = async(year) => {
@@ -64,7 +72,7 @@ const MyPageStatistic = ({username, categoryType}) => {
     }
   }
 
-  const getUserStatistic = async (year) => {
+  const getUserStatistic = async (year, requestSeq) => {
     try {
       const today = new Date();
       const localDate = new Date().toLocaleDateString('en-CA');
@@ -82,6 +90,9 @@ const MyPageStatistic = ({username, categoryType}) => {
           }),
         }
       });
+
+      // 가장 마지막 요청만 반영
+      if (requestSeq !== requestSeqRef.current) return;
 
       setSummaryData([
         { label: "전체 작성 수", value: axiosResponse.data.totalCount },

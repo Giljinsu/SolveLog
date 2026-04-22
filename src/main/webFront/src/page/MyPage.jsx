@@ -44,7 +44,7 @@ const MyPage = () => {
   const [userImg, setUserImg] = useState({
       id:'',
       src:''
-   })
+   });
   const tabSelectedRef = useRef(tabSelected);
   const {isAuthentication, user} = useAuth() || {};
   const username = params.username;
@@ -94,12 +94,15 @@ const MyPage = () => {
   }, [tabSelected])
 
   useEffect(()=> {
-    if (tabSelected === "statistics") return;
     subTabSelectedRef.current = subTabSelected;
     setSearchValue("");
+
+    if (tabSelected === "statistics") return;
     getTagList();
     onClickTag("전체보기");
+
   }, [subTabSelected])
+
 
   useEffect(()=> {
     const categoryTypes = categoryList.map(category => category.type);
@@ -445,7 +448,13 @@ const MyPage = () => {
               />
             ),
           }: {
-            listTemplate: [<MyPageStatistic username={username} categoryType={subTabSelected}/>]
+            listTemplate : [
+              <MyPageStatistic
+                key={0}
+                username={username}
+                categoryType={subTabSelected}
+              />
+            ]
           })}
         />
 
