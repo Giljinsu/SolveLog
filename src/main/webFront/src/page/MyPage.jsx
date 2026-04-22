@@ -83,11 +83,12 @@ const MyPage = () => {
 
   useEffect(()=> {
     tabSelectedRef.current = tabSelected;
-    if(subTabSelected !== subTabList[0]) {
+    if(subTabSelected !== subTabList[0]) { // 전체 카테고리가 아니면
       setSubTabSelected(subTabList[0]);
       setSearchValue("");
       return;
     }
+    if(tabSelected === "statistics") return;
     getTagList();
     onClickTag("전체보기");
   }, [tabSelected])
