@@ -43,7 +43,7 @@ const MyPageStatistic = ({username, categoryType}) => {
     const timer = setTimeout(() => {
       const requestSeq = ++requestSeqRef.current;
       getUserStatistic(selectedYear, requestSeq);
-    }, 80);
+    }, 150);
 
     return () => clearTimeout(timer);
   }, [categoryType]);
