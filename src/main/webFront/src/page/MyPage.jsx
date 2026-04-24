@@ -77,7 +77,7 @@ const MyPage = () => {
 
   useEffect(() => {
 //     if(!subTabSelected) return; // 서브 탭 카테고리 세팅이 안되면 리턴
-    if(!user) return;
+    if(!username) return;
     getUserInfo();
   }, [username, user]);
 
