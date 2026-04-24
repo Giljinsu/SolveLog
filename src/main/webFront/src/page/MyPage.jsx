@@ -46,11 +46,11 @@ const MyPage = () => {
       src:''
    });
   const tabSelectedRef = useRef(tabSelected);
+  const isFirstSubTabEffect = useRef(true); // 처음 페이지 접속시 메인과 서브 탭으로 인해 요청 2번 보내는것을 방지
   const {isAuthentication, user} = useAuth() || {};
   const username = params.username;
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
   const isStatistics = tabSelected === "statistics";
-  const statisticsList = [<MyPageStatistic/>];
   const pageCnt = 5; // 페이지 수
 
   useEffect(() => {
@@ -76,33 +76,43 @@ const MyPage = () => {
   }, []);
 
   useEffect(() => {
-    getUserTagList();
-    getUserPostList("전체보기");
+//     if(!subTabSelected) return; // 서브 탭 카테고리 세팅이 안되면 리턴
+    if(!user) return;
     getUserInfo();
-  }, [username, user, categoryList]);
+  }, [username, user]);
 
-  useEffect(()=> {
+  const resetTagFilter = () => {
+    setSearchValue("");
+
+    if (tabSelected === "statistics") return;
+
+    onClickTag("전체보기");
+    getTagList();
+  };
+
+  useEffect(() => {
     tabSelectedRef.current = tabSelected;
-    if(subTabSelected !== subTabList[0]) { // 전체 카테고리가 아니면
+
+    if (subTabSelected !== subTabList[0]) {
       setSubTabSelected(subTabList[0]);
       setSearchValue("");
       return;
     }
-    if(tabSelected === "statistics") return;
-    getTagList();
-    onClickTag("전체보기");
-  }, [tabSelected])
-
-  useEffect(()=> {
-    subTabSelectedRef.current = subTabSelected;
-    setSearchValue("");
-
     if (tabSelected === "statistics") return;
-    getTagList();
-    onClickTag("전체보기");
 
-  }, [subTabSelected])
+    resetTagFilter();
+  }, [tabSelected]);
 
+  useEffect(() => {
+    subTabSelectedRef.current = subTabSelected;
+
+    if (isFirstSubTabEffect.current) {
+      isFirstSubTabEffect.current = false;
+      return;
+    }
+
+    resetTagFilter();
+  }, [subTabSelected]);
 
   useEffect(()=> {
     const categoryTypes = categoryList.map(category => category.type);
