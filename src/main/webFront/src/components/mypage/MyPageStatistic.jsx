@@ -60,7 +60,7 @@ const MyPageStatistic = ({username, categoryType}) => {
           ...(year && {
             year: year
           }),
-          ...(categoryType !== "전체" && {
+          ...(categoryType !== "전체 글" && {
             categoryType: categoryType
           }),
         }
@@ -85,7 +85,7 @@ const MyPageStatistic = ({username, categoryType}) => {
           ...(year && {
             year: year
           }),
-          ...(categoryType !== "전체" && {
+          ...(categoryType !== "전체 글" && {
             categoryType: categoryType
           }),
         }

@@ -116,7 +116,7 @@ const MyPage = () => {
 
   useEffect(()=> {
     const categoryTypes = categoryList.map(category => category.type);
-    categoryTypes.unshift("전체");
+    categoryTypes.unshift("전체 글");
     setSubTabList(categoryTypes);
     setSubTabSelected(categoryTypes[0]);
   }, [categoryList])
@@ -171,7 +171,7 @@ const MyPage = () => {
   const getUserTagList = async () => {
     try {
       let axiosResponse;
-      if (subTabSelectedRef.current == "전체") {
+      if (subTabSelectedRef.current == "전체 글") {
         axiosResponse = await axios.get(`/api/getPostCountPerTagByUsername/${username}`);
       } else {
         axiosResponse = await axios.get(`/api/getPostCountPerTag`, {
@@ -196,7 +196,7 @@ const MyPage = () => {
   const getLikeTagList = async () => {
     try {
       let axiosResponse;
-      if (subTabSelectedRef.current == "전체") {
+      if (subTabSelectedRef.current == "전체 글") {
         axiosResponse = await axios.get(`/api/getLikePostCountPerTagByUsername/${username}`);
       } else {
         axiosResponse = await axios.get(`/api/getLikePostCountPerTag`, {
@@ -240,7 +240,7 @@ const MyPage = () => {
           username: username,
           page: 0,
           size: pageCnt,
-          ...(subTabSelectedRef.current !== "전체" && {
+          ...(subTabSelectedRef.current !== "전체 글" && {
             categoryType: subTabSelectedRef.current
           })
         },
@@ -269,7 +269,7 @@ const MyPage = () => {
           username: username,
           page: 0,
           size: pageCnt,
-          ...(subTabSelectedRef.current !== "전체" && {
+          ...(subTabSelectedRef.current !== "전체 글" && {
             categoryType: subTabSelectedRef.current
           })
         },
@@ -300,7 +300,7 @@ const MyPage = () => {
             username: username,
             page: nextPageRef.current,
             size: pageCnt,
-            ...(subTabSelectedRef.current !== "전체" && {
+            ...(subTabSelectedRef.current !== "전체 글" && {
               categoryType: subTabSelectedRef.current
             })
           },
@@ -315,7 +315,7 @@ const MyPage = () => {
             username: username,
             page: nextPageRef.current,
             size: pageCnt,
-            ...(subTabSelectedRef.current !== "전체" && {
+            ...(subTabSelectedRef.current !== "전체 글" && {
               categoryType: subTabSelectedRef.current
             })
           },
@@ -356,7 +356,7 @@ const MyPage = () => {
             searchType: "TITLE",
             tagIdList: tagIdList,
             username: username,
-            ...(subTabSelectedRef.current !== "전체" && {
+            ...(subTabSelectedRef.current !== "전체 글" && {
               categoryType: subTabSelectedRef.current
             }),
             page: 0,
@@ -373,7 +373,7 @@ const MyPage = () => {
             searchType: "TITLE",
             tagIdList: tagIdList,
             username: username,
-            ...(subTabSelectedRef.current !== "전체" && {
+            ...(subTabSelectedRef.current !== "전체 글" && {
               categoryType: subTabSelectedRef.current
             }),
             page: 0,
