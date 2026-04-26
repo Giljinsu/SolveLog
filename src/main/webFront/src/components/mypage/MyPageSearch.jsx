@@ -45,7 +45,7 @@ const MyPageSearch = ({onClickButton, isMyPage, tabSelected , setTabSelected
               </div>
             </div>
           )}
-         {isMyPage  ? (
+
            <div className={"my-page-search-sub-tab-section"}>
              <div className={"my-page-search-sub-tab"}>
                {subTabList?.map(subTab => (
@@ -68,7 +68,7 @@ const MyPageSearch = ({onClickButton, isMyPage, tabSelected , setTabSelected
                </div>
              </div>
            </div>
-         ):""}
+
          {tabSelected !== "statistics" ? (
           <span className={"my-page-search"}>
             <input
