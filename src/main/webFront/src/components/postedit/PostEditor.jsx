@@ -153,11 +153,15 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
 
   // 썸네일 변경 시
   const onChangeThumbnail = async (e) => {
+    if(prevThumbnailId.current !== '') {
+      deleteThumbnailFile(prevThumbnailId.current);
+    }
     const res = await uploadImage(e.target.files[0], "true");
 
     const fileId = res.data.fileId;
 
     isThumbnailChangedRef.current = true;
+    prevThumbnailId.current = fileId;
     // 백엔드 url
     //.env 파일에 서버 주소 저장
     const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
@@ -399,9 +403,11 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                         isSaveRef.current = true;
                         
                         //기존 썸네일 삭제
-                        if (postId && isThumbnailChangedRef.current) {
-                          deleteThumbnailFile(prevThumbnailId.current);
-                        }
+//                         if (postId && isThumbnailChangedRef.current) {
+//                           deleteThumbnailFile(prevThumbnailId.current);
+//                         }
+
+                        isThumbnailChangedRef.current = false;
 
                         !postId ? createPost({
                           username: user.username,
@@ -431,9 +437,9 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                       isSaveRef.current = true;
 
                       //기존 썸네일 삭제
-                      if (postId && isThumbnailChangedRef.current) {
-                        deleteThumbnailFile(prevThumbnailId.current);
-                      }
+//                       if (postId && isThumbnailChangedRef.current) {
+//                         deleteThumbnailFile(prevThumbnailId.current);
+//                       }
 
                       !postId ? createPost({
                         username: user.username,
