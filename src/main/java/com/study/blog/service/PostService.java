@@ -115,14 +115,16 @@ public class PostService {
         PostResponseDto postDto = postRepository.findDetailPostById(postId);
 
         // 게시글 작성자 이미지
-        File postUserImg = fileRepository.findUserImgByUsername(postDto.getUsername()).orElseThrow();
-        postDto.setUserImg(
-            new FileResponseDto(
-                postUserImg.getId(),
-                postUserImg.getOriginalFileName(),
-                postUserImg.getPath()
-            )
-        );
+        File postUserImg = fileRepository.findUserImgByUsername(postDto.getUsername()).orElse(null);
+        if (postUserImg != null) {
+            postDto.setUserImg(
+                new FileResponseDto(
+                    postUserImg.getId(),
+                    postUserImg.getOriginalFileName(),
+                    postUserImg.getPath()
+                )
+            );
+        }
 
         postDto.addTagList(postTagRepository.findByPostId(postDto.getId()).orElseThrow());
 

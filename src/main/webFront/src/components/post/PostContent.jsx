@@ -474,14 +474,16 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
           <section className={"post_footer_section"}>
             {/* 작성자 프로필 */}
             <div className={"post-footer"}>
-              <UserImg
-                  radius={120}
-                  nickname={author}
-                  userImg={authorImg && authorImg.fileId
-                      ? `${backendBaseUrl}/api/inlineFile/${authorImg.fileId}`
-                      : ""}
-                  onClickImg={onClickAuthor}
-              />
+              <div className={"author-img-section"}>
+                <UserImg
+                    radius={120}
+                    nickname={author}
+                    userImg={authorImg && authorImg.fileId
+                        ? `${backendBaseUrl}/api/inlineFile/${authorImg.fileId}`
+                        : ""}
+                    onClickImg={onClickAuthor}
+                />
+              </div>
               <div className="author-info">
                 <div className="name"
                      onClick={()=>onClickAuthor()}
