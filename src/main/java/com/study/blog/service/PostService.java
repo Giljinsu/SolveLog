@@ -28,6 +28,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.lang.module.ModuleDescriptor.Requires;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -145,7 +146,9 @@ public class PostService {
                     comment.getCreatedDate(),
                     comment.getParentComment() != null ? comment.getParentComment().getId() : null,
                     comment.getChildComments() != null ?
-                        comment.getChildComments().stream().map(childComment -> new CommentResponseDto(
+                        comment.getChildComments().stream()
+                            .sorted(Comparator.comparing(Comment::getCreatedDate))
+                            .map(childComment -> new CommentResponseDto(
                             childComment.getId(),
                             childComment.getUser().getNickname(),
                             childComment.getUser().getUsername(),
