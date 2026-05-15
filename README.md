@@ -44,6 +44,7 @@ Solvelog는 단순한 정답 저장소가 아니라,
 ![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)
 ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white)
+![Spring Batch](https://img.shields.io/badge/Spring%20Batch-6DB33F?style=for-the-badge&logo=spring&logoColor=white)
 ![JPA](https://img.shields.io/badge/JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white)
 ![QueryDSL](https://img.shields.io/badge/QueryDSL-4479A1?style=for-the-badge)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
@@ -117,6 +118,8 @@ Solvelog는 단순한 정답 저장소가 아니라,
 - 태그별 문제 풀이 분포 시각화
 - GitHub Contribution 스타일의 월별 풀이 히트맵 제공
 - 학습 흐름과 활동량을 직관적으로 확인할 수 있는 통계 화면 제공
+- Spring Batch를 활용해 매일 00시에 사용자별 통계 데이터를 집계
+- 집계 결과를 DB에 영구 저장하고 Redis에 캐싱하여 빠른 조회 지원
 
 [//]: # (---)
 
@@ -231,6 +234,19 @@ erDiagram
     LONG TAG_ID FK
   }
 
+ USERS ||--o{ USER_STATISTIC : has
+ USER_STATISTIC {
+    LONG USER_STATISTIC_ID PK
+    LONG USER_ID FK
+    STRING STATISTIC_TYPE "TOTAL, YEAR, MONTH, DAILY, TAG, CATEGORY"
+    LOCALDATE STATISTIC_DATE "통계 기준일"
+    STRING CATEGORY_NAME "카테고리명"
+    STRING TAG_NAME "태그명"
+    LONG STATISTIC_COUNT "통계 수"
+    LOCALDATETIME CREATED_DATE "생성일자"
+    LOCALDATETIME LAST_MODIFIED_DATE "수정일자"
+ }
+
 
 ```
 
@@ -272,11 +288,12 @@ DataIntegrityViolationException 발생 시
 → 재시도 실패 시 최종 조회
 ```
 
-### Redis 캐싱 적용 여부 판단
+### 게시글/태그 검색 Redis 캐싱 적용 여부 판단
 - 게시글 검색은 Slice 기반 20개 단위 페이징 사용
 - 게시글 10,000개 기준 성능 측정 결과 양호
 - 태그 자동완성 또한 동일 조건에서 문제 없음
-- 현 규모에서는 Redis 캐싱을 적용하지 않음
+- 검색 기능은 현 규모에서 Redis 캐싱을 적용하지 않음
+- 통계 데이터는 반복 조회 가능성이 높아 Redis 캐싱 적용
 
 
 ### 더 많은 트러블 슈팅
@@ -297,6 +314,8 @@ https://www.notion.so/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
 - Redis 캐싱 및 토큰 관리
 - 실서비스 관점의 성능 최적화
 - 프론트엔드-백엔드 협업 구조 이해
+- Spring Batch 기반 통계 집계 구조 설계
+- DB 저장 데이터와 Redis 캐시 데이터의 역할 분리 경험
 
 [//]: # (---)
 
@@ -308,7 +327,6 @@ https://www.notion.so/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
 
 [//]: # (---)
 
-n d
 
 ## 개발자
 - 길진수
