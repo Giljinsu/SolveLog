@@ -3,6 +3,7 @@ package com.study.blog.batch.reader;
 import com.study.blog.entity.Users;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.batch.item.database.builder.JpaPagingItemReaderBuilder;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +15,7 @@ public class UserStatisticReaderConfig {
     private final EntityManagerFactory entityManagerFactory;
 
     @Bean
+    @StepScope
     public JpaPagingItemReader<Users> notDeletedUserListReader() {
         return new JpaPagingItemReaderBuilder<Users>()
             .name("userListReader")
