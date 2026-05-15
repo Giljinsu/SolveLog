@@ -313,7 +313,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
             <div className={"editor-left-tags"}>
             <Tags
                   settings={{
-                    delimiters: ",",   // 스페이스와 콤마를 태그 구분자로
+                    delimiters: ",| ",   // 스페이스와 콤마를 태그 구분자로
                     maxTags: 5,
                     pattern: /^.{1,20}$/
                   }}
