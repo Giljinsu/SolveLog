@@ -34,6 +34,7 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
   const [likeBoolean, setLikeBoolean] = useState(false)
   const [likeVisible, setLikeVisible] = useState(false);
   const [postMenuIsOpen, setPostMenuIsOpen] = useState(false);
+  const [likesCount, setLikesCount] = useState(likes);
   const [curComment, setCurComment] = useState({
     postId : postId,
     // userId : "",
@@ -48,6 +49,9 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
   const titleListRef = useRef([]); // 2025 07 18 추가
   const [rightMenuSelectedIndex, setRightMenuSelectedIndex] = useState(-1);
   const rightMenuSelectedIndexRef = useRef(-1);
+  const timerRef = useRef(null);
+  const likeBooleanRef = useRef(false);
+  const prevLikeBooleanRef = useRef(false);
 
   const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
 
@@ -72,12 +76,30 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
 
 
   // 좋아요 버튼 클릭시
-  const onLikeButtonClicked = async () => {
+  const onLikeButtonClicked = () => {
     if (!isAuthentication) {
       setIsLoginOpen(true);
       return;
     }
 
+    setLikeBoolean(!likeBoolean);
+    likeBooleanRef.current = !likeBooleanRef.current;
+    setLikesCount(likeBooleanRef.current ? likesCount + 1 : likesCount - 1);
+
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+    }
+
+    timerRef.current = setTimeout(() => {
+      updateLikes();
+    }, 500);
+
+  }
+
+  const updateLikes = async () => {
+    if(likeBooleanRef.current === prevLikeBooleanRef.current) {
+      return;
+    }
     try {
       if (!likeBoolean) {
         await axios.post("/api/createLike",{
@@ -93,11 +115,11 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
 
     } catch (e) {
       setLikeBoolean(false);
+      likeBooleanRef.current = false;
     } finally {
       await getIsLiked();
       await getLikesCount();
     }
-
   }
 
   // 해당 유저 좋아요 여부
@@ -113,9 +135,13 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
       );
 
       setLikeBoolean(axiosResponse.data);
+      likeBooleanRef.current = axiosResponse.data;
+      prevLikeBooleanRef.current = axiosResponse.data;
     } catch (e) {
       console.log(e);
       setLikeBoolean(false);
+      likeBooleanRef.current = false;
+      prevLikeBooleanRef.current = false;
     }
 
   }
@@ -305,6 +331,7 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
     if (isLoading) return;
     if (!isAuthentication) {
       setLikeBoolean(false);
+      likeBooleanRef.current = false;
       return;
     }
 
@@ -411,14 +438,14 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
                         <span className="post_content_like_button"
                               onClick={() => onLikeButtonClicked()}>
                           {
-                            likeBoolean ?
+                            likeBooleanRef.current ?
                                 <AiFillHeart size={17} color="#e11d48"/> :
                                 <AiOutlineHeart size={17}/>
                           }
                         </span>
                         : <span className={"post_content_like_text"}>좋아요</span>
                   }
-                  <span> : {likes}</span>
+                  <span> : {likesCount}</span>
                 </div>
               </div>
             </div>
@@ -448,7 +475,7 @@ const PostContent = ({postId, title, author, authorImg, authorBio, postUsername,
             <div className={"post_left_menu"}>
               <LeftSideMenu
                   leftMenuRef={leftMenuRef}
-                  likes={likes}
+                  likes={likesCount}
                   onLikeButtonClicked={onLikeButtonClicked}
                   likeBoolean={likeBoolean}
               />

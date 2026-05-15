@@ -47,6 +47,9 @@ spring:
       timeout: 5000
       starttls.enable: true
 
+  batch.jdbc:
+      initialize-schema: never
+
 logging.level:
     org.hibernate.sql: debug
 #    org.hibernate.type: trace

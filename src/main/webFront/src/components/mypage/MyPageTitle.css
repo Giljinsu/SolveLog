@@ -87,6 +87,16 @@
   color: black;
 }
 
+.statistic-update-notice {
+  padding: 12px 23px;
+  /*border-radius: 10px;
+  background-color: #f8fafc;
+  border: 1px solid #e5e7eb;*/
+  color: red;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 /*.my-page-user-nickname-authorized {*/
 /*  position: relative;*/
 /*}*/

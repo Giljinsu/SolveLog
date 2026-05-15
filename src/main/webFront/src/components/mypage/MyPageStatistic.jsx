@@ -125,6 +125,9 @@ const MyPageStatistic = ({username, categoryType}) => {
 
   return (
     <div className={"my-page-statistic-section"}>
+      <div className="statistic-update-notice">
+        ⌘ 현재 통계는 캐시된 데이터 기준이며, 매일 00시에 자동 갱신됩니다.
+      </div>
       <StatisticsPage
         summaryData={summaryData}
         tagStats={tagStats}

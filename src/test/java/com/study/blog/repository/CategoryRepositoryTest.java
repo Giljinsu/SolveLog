@@ -35,7 +35,7 @@ class CategoryRepositoryTest {
         em.flush();
         em.clear();
 
-        List<Category> childCategories = categoryRepository.findByParentCategoryIdOrderById(
+        List<Category> childCategories = categoryRepository.findByParentCategoryIdOrderBySortOrder(
             parentCategory.getId());
 
         assertThat(childCategories.size()).isEqualTo(3);

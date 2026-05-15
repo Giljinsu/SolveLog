@@ -1,13 +1,11 @@
 spring:
-  profiles:
-    active: "test"
-#  datasource:
-#    url: "jdbc:h2:tcp://localhost/~/dbs/toy_blog"
-#    username: "sa"
-#    password:
-#    driver-class-name: org.h2.Driver
+  #  datasource:
+  #    url: "jdbc:h2:tcp://localhost/~/dbs/toy_blog"
+  #    username: "sa"
+  #    password:
+  #    driver-class-name: org.h2.Driver
   flyway:
-    enabled: false
+    enabled: true
     locations: classpath:db/migration
     baseline-on-migrate: true
   datasource:
@@ -26,17 +24,49 @@ spring:
 
   jpa:
     hibernate:
+      #      ddl-auto: create
       ddl-auto: none
     properties.hibernate:
       show_sql: true
       format_sql: true
       dialect: org.hibernate.dialect.PostgreSQLDialect
 
-logging.level:
-    org.hibernate.sql: debug
-#    org.hibernate.type: trace
+  mail:
+    #    host: smtp.gmail.com
+    host: email-smtp.ap-northeast-2.amazonaws.com
+    port: 587
+    #    username: therin234@gmail.com
+    #    password: ${SMTP_PASSWORD}
+    username: ${SES_SMTP_USERNAME}
+    password: ${SES_SMTP_PASSWORD}
+    properties.mail.smtp:
+      auth: true
+      timeout: 5000
+      starttls.enable: true
 
+  batch.jdbc:
+    initialize-schema: always
+
+logging.level:
+  org.hibernate.sql: debug
+#    org.hibernate.type: trace
 
 cookie:
   secure: false
   same-site: Lax
+
+cloud:
+  aws:
+    s3:
+      bucket: ${SOLVELOG_BUCKET}
+    #      bucket: solvelog-local
+    region:
+      static: ap-northeast-2
+    credentials:
+      access-key: ${SOLVELOG_ACCESS_KEY}
+      secret-key: ${SOLVELOG_SECRET_KEY}
+
+
+
+app:
+  base-url: http://localhost:5173

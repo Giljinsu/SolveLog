@@ -61,6 +61,9 @@ dependencies {
 	// Hibernate logging 누락 보완
 	implementation 'org.jboss.logging:jboss-logging:3.6.1.Final'
 
+	// Spring Batch
+	implementation 'org.springframework.boot:spring-boot-starter-batch'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

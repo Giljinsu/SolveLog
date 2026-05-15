@@ -5,8 +5,10 @@ import java.time.LocalDate;
 import java.sql.Date;
 import java.util.List;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class SolveStatisticResponseDto {
     // 추가
     private String categoryType;

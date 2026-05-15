@@ -1,5 +1,6 @@
 package com.study.blog.controller;
 
+import com.study.blog.batch.service.UserStatisticBatchService;
 import com.study.blog.dto.statistic.SolveStatisticRequestDto;
 import com.study.blog.dto.statistic.SolveStatisticResponseDto;
 import com.study.blog.dto.statistic.UserDailyStatisticDto;
@@ -15,18 +16,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class StatisticController {
     private final StatisticService statisticService;
+    private final UserStatisticBatchService statisticBatchService;
 
     // 유저별 년도별 일일 게시글 수 통계
     @GetMapping("/api/statistic/getDailySolveCountByYearAndUser")
     public Result<List<UserDailyStatisticDto>> getDailySolveCountByYearAndUser(
         @ModelAttribute SolveStatisticRequestDto solveStatisticRequestDto) {
-        return Result.of(statisticService.getDailySolveCountByYearAndUser(solveStatisticRequestDto));
+//        return Result.of(statisticService.getDailySolveCountByYearAndUser(solveStatisticRequestDto));
+        return Result.of(statisticBatchService.getDailyStatistic(solveStatisticRequestDto));
     }
 
     // 통계
     @GetMapping("/api/statistic/getUserStatistic")
     public SolveStatisticResponseDto getUserStatistic(
         @ModelAttribute SolveStatisticRequestDto requestDto) {
-        return statisticService.getUserStatistic(requestDto);
+//        return statisticService.getUserStatistic(requestDto);
+        return statisticBatchService.getUserStatisticFromRedis(requestDto);
     }
 }

@@ -89,7 +89,8 @@ public class SecurityConfig {
                         "/api/sendResetPwEmail/**",
                         "/api/getEmailByResetToken/{token}",
                         "/api/getEmailByResetToken/**",
-                        "/api/getPostCountPerTag/**"
+                        "/api/getPostCountPerTag/**",
+                        "/api/batch/**"
                     ).permitAll()
                     .anyRequest().authenticated()
     //                .anyRequest().permitAll()

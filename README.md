@@ -308,8 +308,7 @@ https://www.notion.so/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
 
 [//]: # (---)
 
-## 업데이트 내역
-- 2026.04.21 통계 기능 추가
+n d
 
 ## 개발자
 - 길진수
