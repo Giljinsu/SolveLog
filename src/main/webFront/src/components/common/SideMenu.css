@@ -75,6 +75,15 @@
   padding: 0.5rem;
   cursor: pointer;
   font-size: 14px;
+  max-height: calc(100vh - 500px);
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* Firefox */
+  scrollbar-width: none;
+
+  /* IE, Edge old */
+  -ms-overflow-style: none;
 }
 
 .right-menu-selected {
@@ -114,4 +123,15 @@
 .title_list_H6 {
   padding-left: 5rem;
   transition: color 0.2s ease;
+}
+
+.title_list_H1,
+.title_list_H2,
+.title_list_H3,
+.title_list_H4,
+.title_list_H5,
+.title_list_H6 {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
