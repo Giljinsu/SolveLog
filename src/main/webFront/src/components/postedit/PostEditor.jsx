@@ -313,9 +313,9 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
             <div className={"editor-left-tags"}>
             <Tags
                   settings={{
-                    delimiters: ",| ",   // 스페이스와 콤마를 태그 구분자로
+                    delimiters: ",",   // 스페이스와 콤마를 태그 구분자로
                     maxTags: 5,
-                    pattern: /^.{1,10}$/
+                    pattern: /^.{1,20}$/
                   }}
                   value={tags}
                   name={"tags"}
@@ -335,7 +335,7 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                         createAlarm("태그가 이미 존재합니다.", "bad");
                         break;
                       case "pattern mismatch":
-                        createAlarm("태그는 최대 10자까지 입력 가능합니다.", "bad");
+                        createAlarm("태그는 최대 20자까지 입력 가능합니다.", "bad");
                         break;
                       case "number of tags exceeded":
                         createAlarm("태그는 최대 5개까지 생성 가능합니다.", "bad");
