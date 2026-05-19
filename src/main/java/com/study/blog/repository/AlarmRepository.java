@@ -23,4 +23,9 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     @Modifying(clearAutomatically = true)
     @Query("update Alarm a set a.isViewed = true where a.users.username = :username and a.isViewed = false")
     void bulkUpdateAlarmIsViewTrue(@Param("username") String username);
+
+    List<Alarm> findByUsersIdAndIdGreaterThanOrderByIdAsc(
+        Long receiverId,
+        Long alarmId
+    );
 }

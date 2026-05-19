@@ -1,10 +1,7 @@
 package com.study.blog.service;
 
 import com.study.blog.dto.alarm.AlarmResponseDto;
-import com.study.blog.entity.Users;
-import com.study.blog.exception.NotExistUserException;
 import com.study.blog.repository.SseRepository;
-import com.study.blog.repository.UsersRepository;
 import java.io.IOException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +12,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 @RequiredArgsConstructor
 public class SseService {
     private final SseRepository sseRepository;
-    private final UsersRepository usersRepository;
 
     public SseEmitter connect(Long userId, String lastEventId) {
         SseEmitter emitter = sseRepository.save(userId);
@@ -36,13 +32,12 @@ public class SseService {
                 .id(String.valueOf(System.currentTimeMillis()))
                 .name("connect")
                 .data("connected"));
+
+            // Last-Event-Id 기반 누락 확장 가능
         } catch (IOException e) {
             sseRepository.delete(userId);
         }
 
-        if (!lastEventId.isEmpty()) {
-
-        }
 
         return emitter;
     }
@@ -56,7 +51,6 @@ public class SseService {
 
         try {
             emitter.send(SseEmitter.event()
-                .id(userId.toString())
                 .name("alarm")
                 .data(responseDto));
 
