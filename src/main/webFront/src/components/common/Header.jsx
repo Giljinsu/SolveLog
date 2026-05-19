@@ -12,6 +12,7 @@ import {useNavigate} from "react-router-dom";
 import axios from "../../context/axiosInstance.js";
 import axiosInstance from "../../context/axiosInstance.js";
 import {usePopup} from "../../context/PopupContext.jsx";
+import {useAlarmStore} from "../../hooks/useAlarmStore.js";
 
 // menu : 헤더 밑 카테고리 등 하위 메뉴들 표시 여부
 const Header = ({menu}) => {
@@ -19,13 +20,20 @@ const Header = ({menu}) => {
   const {setIsLoginOpen, setIsSearchOpen} = useContext(LoginDispatchContext)
   const {user, isLoading, isAuthentication} = useAuth();
   const nav = useNavigate();
-  const [alarmCount, setAlarmCount] = useState(0);
+//   const [alarmCount, setAlarmCount] = useState(0);
   const [isAlarmOpen, setIsAlarmOpen] = useState(false);
-  const [alarmList, setAlarmList] = useState([]);
+//   const [alarmList, setAlarmList] = useState([]);
   const alarmRef = useRef('');
   const confirm = usePopup();
   // const [isLoginOpen, setIsLoginOpen] = useState(false);
   // const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const {
+    alarmList,
+    alarmCount,
+    getAlarm,
+    setAlarms,
+    clearAlarms,
+  } = useAlarmStore();
 
   const onLoginButtonClick = () => {
     setIsLoginOpen(true);
@@ -44,27 +52,27 @@ const Header = ({menu}) => {
   }
 
   // 알림 조회
-  const getAlarm = async () => {
-    try {
-      const axiosResponse = await axios.get(`/api/getAlarmList/${user.username}`);
-
-      if (axiosResponse.data.data.length > 0) {
-        setAlarmCount(axiosResponse.data.data[0].alarmCnt);
-        setAlarmList(axiosResponse.data.data);
-      } else {
-        setAlarmCount(0);
-        setAlarmList([]);
-      }
-    } catch (e) {
-      console.log(e)
-    }
-  }
+//   const getAlarm = async () => {
+//     try {
+//       const axiosResponse = await axios.get(`/api/getAlarmList/${user.username}`);
+//
+//       if (axiosResponse.data.data.length > 0) {
+//         setAlarmCount(axiosResponse.data.data[0].alarmCnt);
+//         setAlarmList(axiosResponse.data.data);
+//       } else {
+//         setAlarmCount(0);
+//         setAlarmList([]);
+//       }
+//     } catch (e) {
+//       console.log(e)
+//     }
+//   }
 
   // 알림 삭제
   const deleteAlarm = async (alarmId) => {
     try {
       await axiosInstance.post(`/api/deleteAlarm/${alarmId}`)
-      getAlarm();
+      getAlarm(user.username);
     } catch (e) {
       console.log(e);
     }
@@ -74,7 +82,7 @@ const Header = ({menu}) => {
   const updateAllAlarmIsViewed = async () => {
     try {
       await axiosInstance.post(`/api/updateAlarmsIsTrue/${user.username}`)
-      getAlarm();
+      getAlarm(user.username);
     } catch (e) {
       console.log(e);
     }
@@ -99,14 +107,15 @@ const Header = ({menu}) => {
 
   useEffect(() => {
     if (!isAuthentication || isLoading) {
-      setAlarmCount(0);
+//       setAlarmCount(0);
+      clearAlarms();
       return;
     }
     // if (!isLoading) return;
     // 알림 가져오기
 
 
-    getAlarm();
+    getAlarm(user.username);
 
   }, [isLoading ,isAuthentication, user]);
 

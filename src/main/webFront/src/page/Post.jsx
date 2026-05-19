@@ -55,7 +55,7 @@ const Post = () => {
   useEffect(() => {
     if (isLoading || !postId) return;
     addViewCnt();
-  }, [isLoading, postId]);
+  }, [isLoading, postId, location.state?.refreshKey]);
 
   // 상세조회
   const getPostDetail = async () => {

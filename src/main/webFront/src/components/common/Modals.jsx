@@ -6,6 +6,7 @@ import axiosInstance from "../../context/axiosInstance.js";
 import {useAuth} from "../../context/AuthContext.jsx";
 import {useSearchContext} from "../../context/SearchContext.jsx";
 import {useNavigate} from "react-router-dom";
+import {useAlarmStore} from "../../hooks/useAlarmStore.js";
 
 export const LoginModal = ({setIsLoginOpen}) => {
   const [inputInfo, setInputInfo] = useState({
@@ -478,12 +479,13 @@ export const SearchModal = ({setIsSearchOpen}) => {
 export const AlarmModal = ({alarmList, getAlarm, deleteAlarm,
   updateAllAlarmIsViewed, deleteAllAlarm}) => {
   const nav = useNavigate();
+  const {user} = useAuth();
 
   //알림 조회
   const viewAlarm = async (alarmId) => {
     try {
       await axiosInstance.post(`/api/viewAlarm/${alarmId}`)
-      getAlarm();
+      getAlarm(user.username);
     } catch (e) {
       console.log(e);
     }
@@ -493,7 +495,8 @@ export const AlarmModal = ({alarmList, getAlarm, deleteAlarm,
   const onClickAlarmItem = (alarm) => {
     nav(alarm.link, {
       state : {
-        postId : alarm.postId
+        postId : alarm.postId,
+        refreshKey: Date.now(),
       }
     })
   }

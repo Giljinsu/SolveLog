@@ -20,6 +20,8 @@ import java.util.Map.Entry;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,6 +31,7 @@ public class AlarmService {
     private final UsersRepository usersRepository;
     private final AlarmTypeRepository alarmTypeRepository;
     private final ObjectMapper objectMapper;
+    private final SseService sseService;
 
     // 알림 조회 (유조별)
     public List<AlarmResponseDto> getAlarmsByUser(String username) {
@@ -68,6 +71,9 @@ public class AlarmService {
             }
 
         }
+        alarmResponseDtos.sort((o1,o2) -> {
+            return o2.getAlarmId().intValue() - o1.getAlarmId().intValue();
+        });
 
         return alarmResponseDtos;
     }
@@ -113,6 +119,15 @@ public class AlarmService {
         Alarm newAlarm = Alarm.createAlarm(findUser, findAlarmType, newMetaData);
 
         alarmRepository.save(newAlarm);
+
+        TransactionSynchronizationManager.registerSynchronization(
+            new TransactionSynchronization() {
+                @Override
+                public void afterCommit() {
+                    sseService.sendAlarm(findUser.getId(), getAlarmsByUser(findUser.getUsername()));
+                }
+            }
+        );
 
         return newAlarm.getId();
     }

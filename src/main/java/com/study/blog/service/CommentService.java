@@ -15,6 +15,7 @@ import com.study.blog.repository.CommentRepository;
 import com.study.blog.repository.FileRepository;
 import com.study.blog.repository.PostRepository;
 import com.study.blog.repository.UsersRepository;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +60,9 @@ public class CommentService {
                 comment.getCreatedDate(),
                 comment.getParentComment() != null ? comment.getParentComment().getId() : null,
                 comment.getChildComments() != null ?
-                    comment.getChildComments().stream().map(childComment -> new CommentResponseDto(
+                    comment.getChildComments().stream()
+                        .sorted(Comparator.comparing(Comment::getCreatedDate))
+                        .map(childComment -> new CommentResponseDto(
                         childComment.getId(),
                         childComment.getUser().getNickname(),
                         childComment.getUser().getUsername(),

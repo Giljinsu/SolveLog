@@ -34,8 +34,6 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-
-
     public PostRepositoryCustomImpl(EntityManager em) {
         queryFactory = new JPAQueryFactory(em);
     }

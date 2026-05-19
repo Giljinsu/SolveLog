@@ -1,9 +1,9 @@
 import axios,{registerLogout} from "./axiosInstance.js"
-import {createContext, useContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState, useRef} from "react";
 import {useNavigate} from "react-router-dom";
 import {useSearchContext} from "./SearchContext.jsx";
+import {useAlarmStore} from "../hooks/useAlarmStore.js";
 // import axios from "axios";
-
 const AuthContext = createContext();
 
 // 타입스크립트 -> 대규모 사이트는 사용한다 -> 타입을 지정해므로써 오류를 사전에 컴파일 에러로 발견가능하여 사용한다
@@ -14,6 +14,9 @@ export const AuthProvider = ({children}) => {
   const [isLoading, setIsLoading] = useState(true)
   const nav = useNavigate();
   const {resetSearchCondition, reloadCategories} = useSearchContext();
+  const eventSourceRef = useRef(null);
+  const setAlarms = useAlarmStore((state) => state.setAlarms);
+  const clearAlarms = useAlarmStore((state) => state.clearAlarms);
 
   const fetchUser = async () => {
     try {
@@ -37,10 +40,47 @@ export const AuthProvider = ({children}) => {
     }
   }
 
+  const connectSse = () => {
+    if (eventSourceRef.current) return;
+
+    const eventSource = new EventSource("/api/sse/connect", {
+      withCredentials: true,
+    });
+
+    eventSource.addEventListener("connect", () => {
+      console.log("SSE connected");
+    });
+
+    eventSource.addEventListener("ping", (event) => {
+      // 무시
+    });
+
+    eventSource.addEventListener("alarm", (event) => {
+      const alarms = JSON.parse(event.data);
+      setAlarms(alarms);
+    });
+
+    eventSource.onerror = () => {
+      console.log("SSE reconnecting...");
+      // close 하지 말기
+    };
+
+    eventSourceRef.current = eventSource;
+  };
+
+  const disconnectSse = () => {
+    if (!eventSourceRef.current) return;
+
+    eventSourceRef.current.close();
+    eventSourceRef.current = null;
+  };
+
+
   const logout = async () => {
     try {
       await axios.post("/api/logout");
-
+      disconnectSse();
+      clearAlarms();
       setUser(null)
       // resetSearchCondition();
       // reloadCategories();
@@ -60,6 +100,21 @@ export const AuthProvider = ({children}) => {
     fetchUser();
     registerLogout(logout);
   }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+
+    if (user) {
+      connectSse();
+    } else {
+      disconnectSse();
+      clearAlarms();
+    }
+
+    return () => {
+      disconnectSse();
+    };
+  }, [user, isLoading]);
 
   return (
       <AuthContext.Provider
