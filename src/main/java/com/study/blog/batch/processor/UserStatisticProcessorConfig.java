@@ -41,11 +41,17 @@ public class UserStatisticProcessorConfig {
     // 전체, 년별, 일별 게시글 수 통계
     @Bean
     public ItemProcessor<Users, List<UserStatistic>> postCountSummaryProcessor() {
-        LocalDate now = LocalDate.now();
+        /*LocalDate now = LocalDate.now();
         int year = now.getYear();
         int month = now.getMonthValue();
 
+        여기에 넣으면 해당 빈이 생성됐을 시점에 고정 따라서 user 안에 넣어놓자
+         */
+
         return user -> {
+            LocalDate now = LocalDate.now();
+            int year = now.getYear();
+            int month = now.getMonthValue();
             // 카테고리 없이 전체 게시글 통계
             SolveStatisticResponseDto userStatistics = postRepository.getUserStatistics(
                 user.getUsername(),
