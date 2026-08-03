@@ -351,6 +351,7 @@ export const SearchModal = ({setIsSearchOpen}) => {
   const debounced = useDebounced(tag);
   const abortRef = useRef(null); // 이전요청 취소
   const lastRef = useRef(""); // 이전값 요청
+  const nav = useNavigate();
 
   //검색입력값 변경 시
   const onSearchValueChanged = (e) => {
@@ -379,6 +380,7 @@ export const SearchModal = ({setIsSearchOpen}) => {
     if (searchValue === "") return;
     setSearchInput("searchValue",searchValue);
     setIsSearchOpen(false);
+    nav("/");
   }
 
   //엔터키 클릭 시

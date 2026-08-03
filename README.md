@@ -7,8 +7,8 @@ Solvelog는 특정 문제 플랫폼에 종속되지 않고,
 기록하고 관리할 수 있도록 만든 풀스택 개인 프로젝트입니다.
 
 단순히 풀이 결과만 저장하는 것이 아니라  
-태그·카테고리 기반 관리, 사용자 인증, 검색 기능, 알림 기능, 배포 자동화까지 직접 구현하며  
-실제 서비스 운영 경험을 목표로 개발했습니다.
+태그·카테고리 기반 관리, 사용자 인증, 검색, SSE 기반 실시간 알림, 통계 및 배포 자동화까지 직접 구현하며  
+실제 서비스를 개발하고 운영하는 경험을 목표로 했습니다.
 
 블로그 주소 : https://www.solvelog.site
 
@@ -25,6 +25,7 @@ Solvelog는 단순한 정답 저장소가 아니라,
 
 ## 프로젝트 기간
 - 2025.07 ~ 2025.11
+- 기능 개선 및 운영: 2025.11 ~ 현재
 
 [//]: # (---)
 
@@ -52,6 +53,7 @@ Solvelog는 단순한 정답 저장소가 아니라,
 ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
 ![AWS S3](https://img.shields.io/badge/AWS%20S3-569A31?style=for-the-badge&logo=amazons3&logoColor=white)
 ![AWS SES](https://img.shields.io/badge/AWS%20SES-FF9900?style=for-the-badge&logo=amazonaws&logoColor=white)
+![Server-Sent Events](https://img.shields.io/badge/SSE-FF6B35?style=for-the-badge&logoColor=white)
 
 ---
 
@@ -103,9 +105,14 @@ Solvelog는 단순한 정답 저장소가 아니라,
 - 작성자 정보 표시
 - 사용자 프로필 관리
 
-### 알림
-- 댓글 / 대댓글 / 좋아요 발생 시 알림 생성
-- AlarmType 기반 알림 템플릿 구조
+### 실시간 알림
+- 댓글 / 대댓글 / 좋아요 발생 시 알림 데이터 생성
+- SSE(Server-Sent Events)를 활용한 실시간 알림 전송
+- AlarmType과 JSON Metadata를 이용한 알림 템플릿 구조
+- 트랜잭션 커밋 이후 알림을 전송하여 데이터 정합성 보장
+- 사용자별 SseEmitter 저장 및 연결 생명주기 관리
+- 주기적인 Ping 이벤트를 전송하여 SSE 연결 유지
+- 알림 확인 여부 관리 및 클릭 시 관련 게시글로 이동
 
 ### 메일 시스템
 - AWS SES 기반 메일 전송
@@ -310,12 +317,14 @@ https://www.notion.so/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
 
 ## 프로젝트를 통해 배운 점
 - Spring Security 인증 흐름 이해
-- 세션 vs JWT 인증 방식 비교 경험
+- 세션과 JWT 인증 방식 비교 경험
 - Redis 캐싱 및 토큰 관리
+- SSE 기반 단방향 실시간 통신과 연결 생명주기 관리
+- 트랜잭션 커밋 이후 이벤트를 전송하는 데이터 정합성 처리
 - 실서비스 관점의 성능 최적화
-- 프론트엔드-백엔드 협업 구조 이해
+- 프론트엔드와 백엔드 간 인증·알림 상태 관리
 - Spring Batch 기반 통계 집계 구조 설계
-- DB 저장 데이터와 Redis 캐시 데이터의 역할 분리 경험
+- DB 저장 데이터와 Redis 캐시 데이터의 역할 분리
 
 [//]: # (---)
 
