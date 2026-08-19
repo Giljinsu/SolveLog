@@ -304,8 +304,7 @@ DataIntegrityViolationException 발생 시
 
 
 ### 더 많은 트러블 슈팅
-https://www.notion.so/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
-[//]: # (---)
+https://alert-cheddar-c21.notion.site/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link
 
 ## 배포 및 CI/CD
 - Docker 기반 컨테이너화

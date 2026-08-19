@@ -33,6 +33,12 @@ public class UserStatisticRepositoryCustomImpl implements UserStatisticRepositor
         QUserStatistic us = userStatistic;
         QUserStatistic subUs = new QUserStatistic("subUs");
 
+        LocalDate startOfMonth = LocalDate.now().withDayOfMonth(1);
+        LocalDate startOfNextMonth = startOfMonth.plusMonths(1);
+
+        LocalDate startOfYear = LocalDate.now().withDayOfYear(1);
+        LocalDate startOfNextYear = startOfYear.plusYears(1);
+
         return queryFactory
             .select(Projections.constructor(SolveStatisticResponseDto.class,
                 us.categoryName,
@@ -43,26 +49,27 @@ public class UserStatisticRepositoryCustomImpl implements UserStatisticRepositor
                         subUs.statisticType.eq(StatisticType.TOTAL),
                         subUs.categoryName.eq(categoryType),
                         subUs.user.id.eq(userId)
-                        )
-                    .limit(1),
+                    ),
                 JPAExpressions
                     .select(subUs.statisticCount)
                     .from(subUs)
                     .where(
                         subUs.statisticType.eq(StatisticType.YEAR),
                         subUs.categoryName.eq(categoryType),
-                        subUs.user.id.eq(userId)
-                    )
-                    .limit(1),
+                        subUs.user.id.eq(userId),
+                        subUs.statisticDate.goe(startOfYear),
+                        subUs.statisticDate.lt(startOfNextYear)
+                    ),
                 JPAExpressions
                     .select(subUs.statisticCount)
                     .from(subUs)
                     .where(
                         subUs.statisticType.eq(StatisticType.MONTH),
                         subUs.categoryName.eq(categoryType),
-                        subUs.user.id.eq(userId)
+                        subUs.user.id.eq(userId),
+                        subUs.statisticDate.goe(startOfMonth),
+                        subUs.statisticDate.lt(startOfNextMonth)
                     )
-                    .limit(1)
             ))
             .from(us)
             .where(
