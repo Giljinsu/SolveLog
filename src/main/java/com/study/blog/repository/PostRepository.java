@@ -23,6 +23,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, PostRepositor
     @Query("select count(p.id) from Post p where p.user.username = :username and p.isTemp is false ")
     Long getPostCountByUsername(@Param("username") String username);
 
+    // 관리자 Dashboard - 전체 유효 게시글 수 (임시저장 제외, Post는 하드 삭제라 별도 삭제 조건 불필요)
+    @Query("select count(p.id) from Post p where p.isTemp is false")
+    long countByIsTempFalse();
+
     @Query(
         "select count(p.id) "
         + "from Post p "

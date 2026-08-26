@@ -10,6 +10,7 @@ import com.study.blog.entity.Alarm;
 import com.study.blog.entity.AlarmType;
 import com.study.blog.entity.Users;
 import com.study.blog.entity.enums.AlarmTypeEnum;
+import com.study.blog.exception.NotExistUserException;
 import com.study.blog.repository.AlarmRepository;
 import com.study.blog.repository.AlarmTypeRepository;
 import com.study.blog.repository.UsersRepository;
@@ -109,7 +110,7 @@ public class AlarmService {
     // 알림 생성
     public Long createAlarm(AlarmRequestDto alarmRequestDto) {
         Users findUser = usersRepository.findUsersByUsername(alarmRequestDto.getUsername())
-            .orElseThrow();
+            .orElseThrow(NotExistUserException::new);
 
         List<AlarmType> alarmTypes = alarmTypeRepository.findByType(alarmRequestDto.getAlarmType());
         AlarmType findAlarmType = alarmTypes.getFirst();

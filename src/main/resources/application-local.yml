@@ -21,6 +21,10 @@ spring:
       ssl:
         enabled: false
   #      password:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   jpa:
     hibernate:
@@ -70,3 +74,19 @@ cloud:
 
 app:
   base-url: http://localhost:5173
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-5-mini}
+  connect-timeout-ms: 5000
+  read-timeout-ms: 90000
+
+thumbnail:
+  worker:
+    token: ${THUMBNAIL_WORKER_TOKEN}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+monitoring:
+  error-event-retention-days: 90

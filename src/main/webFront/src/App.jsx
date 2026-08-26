@@ -16,6 +16,13 @@ import MyPage from "./page/MyPage.jsx";
 import LoadingPopup from "./components/loading/LoadingPopup.jsx";
 import {useLoadingStore} from "./hooks/useLoadingStore.js";
 import ResetPassword from "./page/ResetPassword.jsx";
+import AdminDashboard from "./page/admin/AdminDashboard.jsx";
+import AdminUsers from "./page/admin/AdminUsers.jsx";
+import AdminPosts from "./page/admin/AdminPosts.jsx";
+import AdminComments from "./page/admin/AdminComments.jsx";
+import AdminMonitoring from "./page/admin/AdminMonitoring.jsx";
+import AdminMonitoringDetail from "./page/admin/AdminMonitoringDetail.jsx";
+import AdminOperations from "./page/admin/AdminOperations.jsx";
 
 // export const PostStateContext = createContext();
 // export const PostSDispatchContext = createContext();
@@ -56,6 +63,13 @@ function App() {
                       <Route path={"/tempPost"} element={<TempPost />}></Route>
                       <Route path={"/myPage/:username"} element={<MyPage />}></Route>
                       <Route path={"/resetPw?"} element={<ResetPassword />}></Route>
+                      <Route path={"/admin"} element={<AdminDashboard />}></Route>
+                      <Route path={"/admin/users"} element={<AdminUsers />}></Route>
+                      <Route path={"/admin/posts"} element={<AdminPosts />}></Route>
+                      <Route path={"/admin/comments"} element={<AdminComments />}></Route>
+                      <Route path={"/admin/monitoring"} element={<AdminMonitoring />}></Route>
+                      <Route path={"/admin/monitoring/:issueId"} element={<AdminMonitoringDetail />}></Route>
+                      <Route path={"/admin/operations"} element={<AdminOperations />}></Route>
                       {/*<Route path={"/postNew"} element={<PostNew />}></Route>*/}
                     </Routes>
                   </LoginDispatchContext.Provider>

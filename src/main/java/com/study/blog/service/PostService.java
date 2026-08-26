@@ -14,9 +14,13 @@ import com.study.blog.entity.Post;
 import com.study.blog.entity.PostTag;
 import com.study.blog.entity.Tag;
 import com.study.blog.entity.Users;
+import com.study.blog.exception.NotExistUserException;
+import com.study.blog.exception.PostAccessDeniedException;
+import com.study.blog.exception.PostNotFoundException;
 import com.study.blog.repository.CategoryRepository;
 import com.study.blog.repository.CommentRepository;
 import com.study.blog.repository.FileRepository;
+import com.study.blog.repository.LikesRepository;
 import com.study.blog.repository.PostRepository;
 import com.study.blog.repository.PostTagRepository;
 import com.study.blog.repository.TagRepository;
@@ -63,6 +67,7 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final TagRepository tagRepository;
     private final PostTagRepository postTagRepository;
+    private final LikesRepository likesRepository;
 
     private final EntityManager em;
     private final FileService fileService;
@@ -190,7 +195,7 @@ public class PostService {
 
     // 조회수 조회
     public int getViews(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         return post.getViewCount();
     }
@@ -280,7 +285,7 @@ public class PostService {
     // 조회수 증가
     @Transactional
     public int addView(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow();
+        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
 
         int newViewCount = post.getViewCount();
         post.setViews(++newViewCount);
@@ -476,7 +481,8 @@ public class PostService {
     //게시글 수정
     @Transactional
     public Long updatePost(PostRequestDto requestDto) {
-        Post findPost = postRepository.findById(requestDto.getPostId()).orElseThrow();
+        Post findPost = postRepository.findById(requestDto.getPostId())
+            .orElseThrow(PostNotFoundException::new);
         Category findCategory = getFindCategory(requestDto);
 
         // 세로운 태그들
@@ -511,26 +517,54 @@ public class PostService {
     }
 
     private Users getFindUser(PostRequestDto requestDto) {
-        return usersRepository.findUsersByUsername(requestDto.getUsername()).orElseThrow();
+        return usersRepository.findUsersByUsername(requestDto.getUsername())
+            .orElseThrow(NotExistUserException::new);
     }
 
     private Category getFindCategory(PostRequestDto requestDto) {
         return categoryRepository.findByType(requestDto.getCategoryType());
     }
 
-    //게시글 삭제
+    //게시글 삭제 (일반 사용자) - 작성자 본인만 삭제 가능
+    @Transactional
+    public void deletePost(Long id, Long currentUserId) {
+        Post findPost = postRepository.findById(id)
+            .orElseThrow(PostNotFoundException::new);
+
+        if (!findPost.getUser().getId().equals(currentUserId)) {
+            throw new PostAccessDeniedException();
+        }
+
+        deletePostInternal(id);
+    }
+
+    //게시글 삭제 (관리자) - 작성자 검사 없이 삭제, /api/admin/** 보호를 최종 권한으로 신뢰한다
+    @Transactional
+    public void deletePostByAdmin(Long id) {
+        if (!postRepository.existsById(id)) {
+            throw new PostNotFoundException();
+        }
+
+        deletePostInternal(id);
+    }
+
+    //게시글 실제 삭제 공통 로직
     /*
         벌크성 삭제를 사용해야함
         그냥 스프링 데이터 jpa 가 만들어주는 건 조회 후 삭제가 일어나기 때문에 n+1이 발생
+
+        likes.post_id FK는 CASCADE가 없어 댓글/태그와 마찬가지로 Post 삭제 전에
+        먼저 정리해야 한다 (정리하지 않으면 좋아요가 있는 게시글 삭제 시 FK 위반 발생).
      */
-    @Transactional
-    public void deletePost(Long id) {
+    private void deletePostInternal(Long id) {
         // 댓글 삭제
         List<Comment> comments = commentRepository.findCommentByPostId(id);
 
         if (!comments.isEmpty()) {
             commentRepository.deleteByPostId(id);
         }
+
+        likesRepository.deleteByPostId(id);
 
         postTagRepository.deleteByPostId(id);
 

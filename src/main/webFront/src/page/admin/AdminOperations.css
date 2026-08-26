@@ -1,0 +1,50 @@
+.admin-operations-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.admin-operations-card {
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 1.5rem;
+  background-color: white;
+  max-width: 420px;
+}
+
+.admin-operations-card-title {
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.admin-operations-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.4rem 0;
+  color: #333;
+}
+
+.admin-operations-row-label {
+  color: #999;
+}
+
+.admin-operations-status-running {
+  color: #b45309;
+  font-weight: bold;
+}
+
+.admin-operations-status-success {
+  color: #15803d;
+  font-weight: bold;
+}
+
+.admin-operations-status-failed {
+  color: #b91c1c;
+  font-weight: bold;
+}
+
+.admin-operations-run-button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.6rem 1rem;
+}

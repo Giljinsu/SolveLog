@@ -1,0 +1,156 @@
+.admin-monitoring-back {
+  border: none;
+  background: none;
+  color: #555;
+  cursor: pointer;
+  padding: 0;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.admin-monitoring-detail-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  font-family: monospace;
+  margin-bottom: 0.4rem;
+  word-break: break-all;
+}
+
+.admin-monitoring-detail-message {
+  color: #555;
+  margin-bottom: 1.2rem;
+}
+
+.admin-monitoring-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
+  background-color: #fafafa;
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.admin-monitoring-detail-meta div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.admin-monitoring-detail-meta span {
+  font-size: 0.78rem;
+  color: #999;
+}
+
+.admin-monitoring-ai-section {
+  margin-bottom: 2rem;
+}
+
+.admin-monitoring-ai-section h2,
+section h2 {
+  font-size: 1.1rem;
+  margin-bottom: 0.8rem;
+}
+
+.admin-monitoring-ai-content h3 {
+  font-size: 0.85rem;
+  color: #999;
+  margin-bottom: 0.2rem;
+  margin-top: 0.9rem;
+}
+
+.admin-monitoring-ai-content p {
+  white-space: pre-wrap;
+  line-height: 1.5;
+}
+
+.admin-monitoring-ai-content ul {
+  padding-left: 1.2rem;
+}
+
+.admin-monitoring-analyzed-at {
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.admin-monitoring-ai-empty {
+  color: #999;
+}
+
+.admin-monitoring-event-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-monitoring-event-table th,
+.admin-monitoring-event-table td {
+  text-align: left;
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid #eee;
+  font-size: 0.85rem;
+}
+
+.admin-monitoring-event-table th {
+  color: #999;
+  font-weight: normal;
+}
+
+.admin-monitoring-event-uri {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: monospace;
+}
+
+.admin-monitoring-event-trace {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.admin-monitoring-event-table button {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.25rem 0.6rem;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.admin-monitoring-stack-trace {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  white-space: pre;
+}
+
+.admin-monitoring-pagination {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.admin-monitoring-pagination button {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.admin-monitoring-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-monitoring-pagination button.active {
+  background-color: #111;
+  color: white;
+}

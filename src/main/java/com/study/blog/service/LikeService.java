@@ -6,6 +6,8 @@ import com.study.blog.entity.Post;
 import com.study.blog.entity.Users;
 import com.study.blog.entity.enums.AlarmTypeEnum;
 import com.study.blog.exception.DuplicateLikeException;
+import com.study.blog.exception.NotExistUserException;
+import com.study.blog.exception.PostNotFoundException;
 import com.study.blog.repository.LikesRepository;
 import com.study.blog.repository.PostRepository;
 import com.study.blog.repository.UsersRepository;
@@ -27,7 +29,8 @@ public class LikeService {
     //좋아요 여부
     @Transactional(readOnly = true)
     public boolean isLiked(LikesRequestDto requestDto) {
-        Users users = usersRepository.findUsersByUsername(requestDto.getUsername()).orElseThrow();
+        Users users = usersRepository.findUsersByUsername(requestDto.getUsername())
+            .orElseThrow(NotExistUserException::new);
         return likesRepository.existsByUser_IdAndPost_Id(users.getId(), requestDto.getPostId());
     }
 
@@ -46,8 +49,10 @@ public class LikeService {
             throw new DuplicateLikeException();
         }
 
-        Post findPost = postRepository.findById(requestDto.getPostId()).orElseThrow();
-        Users findUser = usersRepository.findUsersByUsername(requestDto.getUsername()).orElseThrow();
+        Post findPost = postRepository.findById(requestDto.getPostId())
+            .orElseThrow(PostNotFoundException::new);
+        Users findUser = usersRepository.findUsersByUsername(requestDto.getUsername())
+            .orElseThrow(NotExistUserException::new);
 
 
         Likes newLike = new Likes(findUser, findPost);
@@ -72,7 +77,8 @@ public class LikeService {
 
     // 좋아요 취소
     public void deleteLike(LikesRequestDto requestDto) {
-        Users users = usersRepository.findUsersByUsername(requestDto.getUsername()).orElseThrow();
+        Users users = usersRepository.findUsersByUsername(requestDto.getUsername())
+            .orElseThrow(NotExistUserException::new);
         likesRepository.deleteByUser_IdAndPost_Id(users.getId(), requestDto.getPostId());
 //        likesRepository.deleteById(likeId);
     }

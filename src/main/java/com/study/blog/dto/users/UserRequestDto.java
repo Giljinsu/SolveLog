@@ -1,6 +1,5 @@
 package com.study.blog.dto.users;
 
-import com.study.blog.entity.enums.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ public class UserRequestDto {
     private String password;
     private String nickName;
     private String bio;
-    private Role role;
     private String authCode;
 
     public UserRequestDto(String username, String password, String nickName) {

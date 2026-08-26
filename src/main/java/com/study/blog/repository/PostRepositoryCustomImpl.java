@@ -15,6 +15,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.study.blog.admin.dto.AdminPostResponseDto;
 import com.study.blog.dto.file.FileResponseDto;
 import com.study.blog.dto.post.PostResponseDto;
 import com.study.blog.dto.post.SearchCondition;
@@ -451,5 +452,60 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         }
 
         return likes.user.username.eq(searchCondition.getUsername());
+    }
+
+    // 관리자 Posts 목록 - 임시글 포함(isTemp 강제 없음), 제목/작성자 개별 AND 검색, category는 목록에 불필요하므로 조회하지 않는다.
+    @Override
+    public Page<AdminPostResponseDto> findPostsForAdmin(String title, String author, Pageable pageable) {
+        List<AdminPostResponseDto> content = queryFactory
+            .select(Projections.constructor(AdminPostResponseDto.class,
+                post.id,
+                post.title,
+                post.user.username,
+                post.user.nickname,
+                post.isTemp,
+                post.createdDate,
+                post.viewCount,
+                users.isDeleted.eq("y")
+            ))
+            .from(post)
+            .leftJoin(post.user, users)
+            .where(
+                adminTitleContains(title),
+                adminAuthorContains(author)
+            )
+            .orderBy(post.createdDate.desc())
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+
+        Long total = queryFactory
+            .select(post.id.count())
+            .from(post)
+            .leftJoin(post.user, users)
+            .where(
+                adminTitleContains(title),
+                adminAuthorContains(author)
+            )
+            .fetchOne();
+
+        return new PageImpl<>(content, pageable, total != null ? total : 0);
+    }
+
+    private BooleanExpression adminTitleContains(String title) {
+        if (!StringUtils.hasText(title)) {
+            return null;
+        }
+
+        return post.title.containsIgnoreCase(title);
+    }
+
+    private BooleanExpression adminAuthorContains(String author) {
+        if (!StringUtils.hasText(author)) {
+            return null;
+        }
+
+        return post.user.username.containsIgnoreCase(author)
+            .or(post.user.nickname.containsIgnoreCase(author));
     }
 }

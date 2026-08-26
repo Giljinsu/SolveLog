@@ -1,42 +1,35 @@
 package com.study.blog.batch.controller;
 
+import com.study.blog.batch.dto.BatchStatusResponseDto;
+import com.study.blog.batch.service.StatisticBatchRunner;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.batch.core.Job;
-import org.springframework.batch.core.JobExecution;
-import org.springframework.batch.core.JobParameters;
-import org.springframework.batch.core.JobParametersBuilder;
-import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// 관리자 전용 - SecurityConfig에서 /api/admin/** 는 ADMIN만 접근 가능
 @Slf4j
 @RestController
+@RequestMapping("/api/admin/batch/statistic")
 @RequiredArgsConstructor
 public class StatisticBatchAdminController {
 
-    private final JobLauncher jobLauncher;
-    private final Job statisticJob;
+    private final StatisticBatchRunner statisticBatchRunner;
 
-//    @PostMapping("/api/batch/runStatisticJob")
-//    public ResponseEntity<String> runStatisticBatch(@RequestParam int year) {
-//        try {
-//            JobParameters jobParameters = new JobParametersBuilder()
-//                .addLong("runTime", System.currentTimeMillis())
-//                .addLong("year", (long) year)
-//                .toJobParameters();
-//
-//            JobExecution jobExecution = jobLauncher.run(statisticJob, jobParameters);
-//
-//            return ResponseEntity.ok("통계 배치 실행 완료" + jobExecution.getStatus());
-//        } catch (Exception e) {
-//            log.error("통계 배치 수동 실행 실패", e);
-//            return ResponseEntity.internalServerError()
-//                .body("통계 배치 실행 실패");
-//        }
-//    }
+    @GetMapping
+    public ResponseEntity<BatchStatusResponseDto> getStatus() {
+        return ResponseEntity.ok(statisticBatchRunner.getLatestStatus());
+    }
 
+    @PostMapping("/run")
+    public ResponseEntity<Void> run() {
+        // 이미 실행 중이면 statisticBatchRunner.run()이 BatchJobAlreadyRunningException을 던지고
+        // GlobalExceptionHandler가 409로 응답한다.
+        statisticBatchRunner.run();
+        return ResponseEntity.status(HttpStatus.ACCEPTED).build();
+    }
 }

@@ -5,10 +5,13 @@ import {useNavigate} from "react-router-dom";
 import {useSearchContext} from "../../context/SearchContext.jsx";
 import useCategoryList from "../../hooks/useCategoryList.jsx";
 import {useAuth} from "../../context/AuthContext.jsx";
+import {usePopup} from "../../context/PopupContext.jsx";
 import Tags from '@yaireo/tagify/react' // React-wrapper file
 import '@yaireo/tagify/dist/tagify.css';
 import axios from "../../context/axiosInstance.js";
 import MarkdownRenderer from "../common/MarkdownRenderer.jsx";
+import AiPostGenerateModal from "./AiPostGenerateModal.jsx";
+import usePostEditorLock from "../../hooks/usePostEditorLock.js";
 
 const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
   postDetail, updatePost, isTempButtonVisible, createAlarm}) => {
@@ -19,14 +22,21 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
   const [content, setContent] = useState('');
   const [thumbnail, setThumbnail] = useState('');
   const [summary, setSummary] = useState('');
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isGeneratingThumbnail, setIsGeneratingThumbnail] = useState(false);
+  const [thumbnailJobStatus, setThumbnailJobStatus] = useState('');
+  const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
   // const [alarmList, setAlarmList] = useState('');
   const isSaveRef = useRef(false) // 저장인지 여부
   const prevThumbnailId = useRef('');
   const isThumbnailChangedRef = useRef(false); // 썸네일 변경 여부
+  const thumbnailPollTimeoutRef = useRef(null);
   const nav = useNavigate();
   const {resetSearchCondition} = useSearchContext();
   const {categoryList} = useCategoryList("SEARCH_CATEGORY");
-  const {user, isAuthentication, isLoading} = useAuth();
+  const {user, isAuthentication, isLoading, canUseAi} = useAuth();
+  const confirm = usePopup();
+  const {isLockOwner, retryLock} = usePostEditorLock();
 
 
   const textAreaRef = useRef();
@@ -153,27 +163,42 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
 
   // 썸네일 변경 시
   const onChangeThumbnail = async (e) => {
-    if(prevThumbnailId.current !== '') {
-      deleteThumbnailFile(prevThumbnailId.current);
+    // AI 생성 중이거나 이미 업로드가 진행 중이면 무시 (race condition 방지)
+    // - UI에서 input/label을 disabled 처리해도, 프로그램적 트리거 등을 대비해 handler에서도 방어
+    if (isGeneratingThumbnail || isUploadingThumbnail) {
+      e.target.value = '';
+      return;
     }
-    const res = await uploadImage(e.target.files[0], "true");
 
-    const fileId = res.data.fileId;
+    const file = e.target.files[0];
+    if (!file) return;
 
-    isThumbnailChangedRef.current = true;
-    prevThumbnailId.current = fileId;
-    // 백엔드 url
-    //.env 파일에 서버 주소 저장
-    const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    setIsUploadingThumbnail(true);
+    try {
+      if (prevThumbnailId.current !== '') {
+        deleteThumbnailFile(prevThumbnailId.current);
+      }
+      const res = await uploadImage(file, "true");
 
-    // const mdImage = `![](${backendBaseUrl}/api/inlineFile/${fileId})\n`;
-    const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
+      const fileId = res.data.fileId;
 
-    setThumbnail({
-      mdImage: mdImage,
-      fileId: fileId,
-      imageTitle: e.target.files[0].name,
-    })
+      isThumbnailChangedRef.current = true;
+      prevThumbnailId.current = fileId;
+      // 백엔드 url
+      //.env 파일에 서버 주소 저장
+      const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
+
+      // const mdImage = `![](${backendBaseUrl}/api/inlineFile/${fileId})\n`;
+      const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`
+
+      setThumbnail({
+        mdImage: mdImage,
+        fileId: fileId,
+        imageTitle: file.name,
+      })
+    } finally {
+      setIsUploadingThumbnail(false);
+    }
   }
 
   const deleteThumbnailFile = async (thumbnailId) => {
@@ -184,11 +209,145 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
     }
   }
 
+  const THUMBNAIL_JOB_POLL_INTERVAL_MS = 1500;
+  const THUMBNAIL_JOB_MAX_WAIT_MS = 3 * 60 * 1000; // 3분
+
+  const THUMBNAIL_JOB_STATUS_LABEL = {
+    QUEUED: 'AI 썸네일 생성 대기 중...',
+    PROCESSING: 'AI 썸네일 그리는 중...',
+  };
+
+  const stopThumbnailPolling = () => {
+    if (thumbnailPollTimeoutRef.current) {
+      clearTimeout(thumbnailPollTimeoutRef.current);
+      thumbnailPollTimeoutRef.current = null;
+    }
+  }
+
+  // Worker가 생성한 썸네일을 현재 form state에 반영 (수동 업로드와 동일한 방식 재사용)
+  // - postId=null인 temp 파일이므로, 게시글 저장 시 기존 fileService.updateFilePostId()가
+  //   username 기준으로 자동 연결한다. 별도로 fileId를 저장 요청에 실어 보낼 필요가 없다.
+  const applyGeneratedThumbnail = (fileId) => {
+    if (prevThumbnailId.current !== '') {
+      deleteThumbnailFile(prevThumbnailId.current);
+    }
+
+    isThumbnailChangedRef.current = true;
+    prevThumbnailId.current = fileId;
+
+    const backendBaseUrl = import.meta.env.VITE_API_BASE_URL;
+    const mdImage = `<img alt="이미지 없음" class="md-thumbnail" src="${backendBaseUrl}/api/inlineFile/${fileId}" />\n\n`;
+
+    setThumbnail({
+      mdImage: mdImage,
+      fileId: fileId,
+      imageTitle: 'AI 생성 썸네일',
+    });
+  }
+
+  const finishThumbnailGeneration = () => {
+    stopThumbnailPolling();
+    setIsGeneratingThumbnail(false);
+    setThumbnailJobStatus('');
+  }
+
+  // jobId를 주기적으로 GET하여 QUEUED/PROCESSING -> COMPLETED/FAILED까지 대기
+  const pollThumbnailJob = (jobId, startedAt) => {
+    const checkStatus = async () => {
+      let res;
+      try {
+        res = await axios.get(`/api/thumbnail-jobs/${jobId}`);
+      } catch {
+        finishThumbnailGeneration();
+        createAlarm('썸네일 상태 확인에 실패했습니다. 다시 시도해 주세요.', 'bad');
+        return;
+      }
+
+      const {status, fileId, errorMessage} = res.data;
+
+      if (status === 'COMPLETED') {
+        finishThumbnailGeneration();
+        applyGeneratedThumbnail(fileId);
+        createAlarm('AI 썸네일이 생성되었습니다.', 'positive');
+        return;
+      }
+
+      if (status === 'FAILED') {
+        finishThumbnailGeneration();
+        createAlarm(errorMessage || '썸네일 생성에 실패했습니다. 다시 시도해 주세요.', 'bad');
+        return;
+      }
+
+      // QUEUED / PROCESSING -> 계속 대기
+      if (Date.now() - startedAt > THUMBNAIL_JOB_MAX_WAIT_MS) {
+        finishThumbnailGeneration();
+        createAlarm('썸네일 생성이 너무 오래 걸립니다. 다시 시도해 주세요.', 'bad');
+        return;
+      }
+
+      setThumbnailJobStatus(status);
+      thumbnailPollTimeoutRef.current = setTimeout(checkStatus, THUMBNAIL_JOB_POLL_INTERVAL_MS);
+    }
+
+    checkStatus();
+  }
+
+  // AI 썸네일 생성 버튼 클릭 시
+  const onClickGenerateThumbnail = async () => {
+    // 중복 클릭 방지 + 수동 업로드가 진행 중이면 함께 진행되지 않도록 방지 (race condition 방지)
+    if (isGeneratingThumbnail || isUploadingThumbnail) return;
+
+    if (!content || content.trim() === '') {
+      createAlarm('썸네일을 생성하려면 먼저 내용을 입력해주세요.', 'bad');
+      return;
+    }
+
+    // 혹시 남아있는 이전 polling이 있다면 정리 후 새로 시작 (중복 polling 방지)
+    stopThumbnailPolling();
+    setIsGeneratingThumbnail(true);
+    setThumbnailJobStatus('QUEUED');
+
+    try {
+      const res = await axios.post('/api/thumbnail-jobs', {
+        problemTitle: (title || '').slice(0, 100),
+        problemDescription: content.slice(0, 5000),
+      });
+
+      pollThumbnailJob(res.data.jobId, Date.now());
+    } catch (e) {
+      finishThumbnailGeneration();
+      const message = e.response?.data?.message
+          || '썸네일 생성에 실패했습니다. 다시 시도해 주세요.';
+      createAlarm(message, 'bad');
+    }
+  }
+
   const onTabKeyDown = (event) => {
     if(event.keyCode===9) {
       event.preventDefault();
       insertAtCursor(textAreaRef.current, '  ')
     }
+  }
+
+  // AI로 작성 버튼 클릭 시
+  const onClickAiGenerateButton = async () => {
+    if (content && content.trim() !== '') {
+      const confirmed = await confirm({
+        header: "AI 초안 생성",
+        body: "현재 작성 중인 내용이 AI 생성 결과로 변경됩니다.\n계속하시겠습니까?",
+        leftButtonText: "아니요",
+        rightButtonText: "예"
+      });
+      if (!confirmed) return;
+    }
+
+    setIsAiModalOpen(true);
+  }
+
+  // AI 초안 생성 완료 시
+  const onAiPostGenerated = (generatedMarkdown) => {
+    setContent(generatedMarkdown);
+    createAlarm("AI 초안이 생성되었습니다.", "positive");
   }
 
   const deleteTempFiles = async () => {
@@ -201,6 +360,10 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
 
 
   useEffect(() => {
+    // lock을 획득하지 못한(다른 탭이 사용 중인) 탭은 애초에 이 화면을 사용하지 않으므로
+    // temp 파일을 건드리면 안 된다 - 다른 탭의 작업 중인 temp 파일을 삭제해버리는 것을 방지.
+    if (!isLockOwner) return;
+
     // 혹시 남아있을 임시파일 삭제
     deleteTempFiles();
 
@@ -209,8 +372,10 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
       if (!isSaveRef.current) {
           deleteTempFiles();
         }
+
+      stopThumbnailPolling();
     }
-  }, []);
+  }, [isLockOwner]);
 
   useEffect(() => {
     if (!postDetail) return;
@@ -277,6 +442,32 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
           + "</div>");
     }
   }, [category]);
+
+  // 다른 탭이 이미 게시글 작성 화면을 사용 중이면 폼 자체를 렌더링하지 않고 차단 화면만 보여준다.
+  if (!isLockOwner) {
+    return (
+        <div className="post-editor-container post-editor-locked">
+          <h1 className="post-editor-title">글 작성하기</h1>
+          <div className="post-editor-locked-message">
+            <p>다른 탭에서 게시글을 작성 중입니다.</p>
+            <p>기존 작성 페이지를 종료한 후 다시 시도해주세요.</p>
+          </div>
+          <div className="post-editor-locked-actions">
+            <Button2
+                buttonText={"다시 확인"}
+                buttonEvent={retryLock}
+            />
+            <Button2
+                buttonText={"돌아가기"}
+                buttonEvent={() => {
+                  nav("/");
+                  resetSearchCondition();
+                }}
+            />
+          </div>
+        </div>
+    );
+  }
 
   return (
       <div className="post-editor-container">
@@ -361,14 +552,36 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
             </select>
 
             <div className={"thumbnail-button-section"}>
-              <label className={"thumbnail-button"} htmlFor={"input_thumbnail"}>썸네일 업로드</label>
-              <div>{thumbnail ? thumbnail.imageTitle : 'none'}</div>
+              <label
+                  className={`thumbnail-button${isGeneratingThumbnail || isUploadingThumbnail ? ' thumbnail-button-disabled' : ''}`}
+                  htmlFor={"input_thumbnail"}
+              >
+                썸네일 업로드
+              </label>
+              {canUseAi && (
+                  <button
+                      type={"button"}
+                      className={"thumbnail-button"}
+                      onClick={onClickGenerateThumbnail}
+                      disabled={isGeneratingThumbnail || isUploadingThumbnail}
+                  >
+                    {isGeneratingThumbnail ? 'AI 썸네일 생성 중...' : 'AI 썸네일 생성'}
+                  </button>
+              )}
+              <div>
+                {isGeneratingThumbnail
+                    ? (THUMBNAIL_JOB_STATUS_LABEL[thumbnailJobStatus] || 'AI 썸네일 생성 중...')
+                    : isUploadingThumbnail
+                        ? '썸네일 업로드 중...'
+                        : (thumbnail ? thumbnail.imageTitle : 'none')}
+              </div>
             </div>
 
             <input type={"file"}
                    id={"input_thumbnail"}
                    accept={"image/jpeg, image/png, image/gif, image/bmp, image/webp"}
                    style={{display:"none"}}
+                   disabled={isGeneratingThumbnail || isUploadingThumbnail}
                    onChange={(e) => {
                      // if (thumbnail) deleteThumbnailFile(thumbnail.fileId)
                      onChangeThumbnail(e);
@@ -394,6 +607,12 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
                   }}
               />
               <div className={"post-editor-save-btn-right"}>
+                {canUseAi && (
+                    <Button2
+                        buttonText={"AI로 작성"}
+                        buttonEvent={onClickAiGenerateButton}
+                    />
+                )}
                 {
                   // postDetail.isTemp === false || !postDetail.isTemp && (
                     isTempButtonVisible === true || (isTempButtonVisible !== "" && isTempButtonVisible !== false) && (
@@ -496,6 +715,14 @@ const PostEditor = ({createPost, alarmList, setAlarmList, alarmId, closeAlarm,
           </div>
 
         </div>
+
+        {isAiModalOpen && (
+            <AiPostGenerateModal
+                onClose={() => setIsAiModalOpen(false)}
+                onGenerated={onAiPostGenerated}
+                createAlarm={createAlarm}
+            />
+        )}
 
       </div>
   );

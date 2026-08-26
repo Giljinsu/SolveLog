@@ -50,9 +50,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (!passwordEncoder.matches(rawPassword, userDetails.getPassword())) {
 //            attemptService.loginFailed(ip);
             attemptService.loginFailed(username);
-//            throw new BadCredentialsException("the password doesn't match");
-            throw new IllegalStateException("wrong password");
-//            throw new BadCredentialsException("wrong password", null);
+            throw new BadCredentialsException("wrong password");
         }
 
 //        attemptService.loginSucceeded(ip);

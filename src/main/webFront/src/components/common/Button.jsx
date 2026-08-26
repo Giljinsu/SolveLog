@@ -12,12 +12,13 @@ export const Button1 = ({buttonText, buttonEvent}) => {
   )
 }
 
-export const Button2 = ({buttonText, buttonEvent, buttonType}) => {
+export const Button2 = ({buttonText, buttonEvent, buttonType, disabled}) => {
   return (
       <>
         <button className={"button2"}
                 type={buttonType}
                 onClick={buttonEvent}
+                disabled={disabled}
         >
           {buttonText}
         </button>

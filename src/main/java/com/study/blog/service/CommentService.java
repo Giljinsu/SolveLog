@@ -11,6 +11,10 @@ import com.study.blog.entity.File;
 import com.study.blog.entity.Post;
 import com.study.blog.entity.Users;
 import com.study.blog.entity.enums.AlarmTypeEnum;
+import com.study.blog.exception.CommentAccessDeniedException;
+import com.study.blog.exception.CommentNotFoundException;
+import com.study.blog.exception.NotExistUserException;
+import com.study.blog.exception.PostNotFoundException;
 import com.study.blog.repository.CommentRepository;
 import com.study.blog.repository.FileRepository;
 import com.study.blog.repository.PostRepository;
@@ -19,7 +23,6 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -104,15 +107,15 @@ public class CommentService {
     //댓글 추가
     public Long createComment(CommentRequestDto commentRequestDto) {
         Users findUser = usersRepository.findUsersByUsername(commentRequestDto.getUsername())
-            .orElseThrow(() -> new NoSuchElementException("사용자를 찾을 수 없습니다.")); // 댓글 작성자
+            .orElseThrow(NotExistUserException::new); // 댓글 작성자
         Post findPost = postRepository.findById(commentRequestDto.getPostId())
-            .orElseThrow(() -> new NoSuchElementException("게시글을 찾을 수 없습니다.")); // 댓글 작성한 게시글
+            .orElseThrow(PostNotFoundException::new); // 댓글 작성한 게시글
 
         Comment newComment;
         Comment parentComment = null; // 부모 댓글
         if (commentRequestDto.getParentCommentId() != null) { // 대댓글 여부
             parentComment = commentRepository.findById(commentRequestDto.getParentCommentId())
-                .orElseThrow(() -> new NoSuchElementException("부모 댓글을 찾을 수 없습니다."));
+                .orElseThrow(CommentNotFoundException::new);
 
             newComment = Comment.createComment(commentRequestDto.getComment(), findUser,
                 findPost, parentComment);
@@ -136,7 +139,7 @@ public class CommentService {
             if (commentRequestDto.getMentionCommentId() != null) {
                 Comment findComment = commentRepository.findById(
                     commentRequestDto.getMentionCommentId())
-                    .orElseThrow(() -> new NoSuchElementException("해당하는 댓글이 없습니다")); // 멘션된 댓글
+                    .orElseThrow(CommentNotFoundException::new); // 멘션된 댓글
 
                 mentionTargetUser = findComment.getUser(); // 멘션된 유저
                 if (!mentionTargetUser.equals(findUser)) {
@@ -188,12 +191,15 @@ public class CommentService {
     //수정
     public CommentResponseDto updateComment(CommentRequestDto commentRequestDto) {
         Comment findComment = commentRepository.findById(commentRequestDto.getCommentId())
-            .orElseThrow();
+            .orElseThrow(CommentNotFoundException::new);
 
         findComment.updateComment(commentRequestDto.getComment());
 
+        // 프로필 이미지를 업로드하지 않은 사용자가 대부분이라 없는 것이 정상이다 - getComments()의
+        // userImgMap과 동일하게 없으면 null로 둔다(bare orElseThrow() 리팩터링에서 발견된 버그 수정,
+        // 이전에는 프로필 이미지가 없는 사용자의 댓글을 수정할 때마다 500이 발생했다).
         File userImg = fileRepository.findUserImgByUsername(findComment.getUser().getUsername())
-            .orElseThrow();
+            .orElse(null);
 
         return new CommentResponseDto(
             findComment.getId(),
@@ -202,12 +208,35 @@ public class CommentService {
             findComment.getComment(),
             findComment.getCreatedDate(),
             findComment.getParentComment() != null ? findComment.getParentComment().getId() : null,
-            new FileResponseDto(userImg.getId(), userImg.getOriginalFileName(), userImg.getPath())
+            userImg != null
+                ? new FileResponseDto(userImg.getId(), userImg.getOriginalFileName(), userImg.getPath())
+                : null
         );
     }
 
-    //삭제
-    public void deleteComment(Long commentId) {
+    //삭제 (일반 사용자) - 작성자 본인만 삭제 가능
+    public void deleteComment(Long commentId, Long currentUserId) {
+        Comment findComment = commentRepository.findById(commentId)
+            .orElseThrow(CommentNotFoundException::new);
+
+        if (!findComment.getUser().getId().equals(currentUserId)) {
+            throw new CommentAccessDeniedException();
+        }
+
+        deleteCommentInternal(commentId);
+    }
+
+    //삭제 (관리자) - 작성자 검사 없이 삭제, /api/admin/** 보호를 최종 권한으로 신뢰한다
+    public void deleteCommentByAdmin(Long commentId) {
+        if (!commentRepository.existsById(commentId)) {
+            throw new CommentNotFoundException();
+        }
+
+        deleteCommentInternal(commentId);
+    }
+
+    // 댓글 실제 삭제 공통 로직 - 대댓글이 있으면 함께 삭제한다 (기존 정책 그대로 유지)
+    private void deleteCommentInternal(Long commentId) {
         commentRepository.deleteCommentsByParentCommentId(commentId);
         commentRepository.deleteById(commentId);
     }

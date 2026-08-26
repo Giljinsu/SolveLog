@@ -1,0 +1,58 @@
+.admin-blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 60vh;
+  text-align: center;
+  color: #999;
+}
+
+.admin-container {
+  display: flex;
+  gap: 2rem;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.admin-nav {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-nav-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.admin-nav-item {
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #555;
+}
+
+.admin-nav-item:hover {
+  background-color: #f5f7fb;
+}
+
+.admin-nav-item.active {
+  background-color: #111;
+  color: white;
+}
+
+.admin-nav-divider {
+  border: none;
+  border-top: 1px solid #d1d5db;
+  margin: 0.5rem 0;
+}
+
+.admin-content {
+  flex: 1;
+  min-width: 0;
+}

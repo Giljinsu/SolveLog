@@ -4,6 +4,7 @@ import com.study.blog.entity.Likes;
 import com.study.blog.entity.Users;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -13,6 +14,11 @@ public interface LikesRepository extends JpaRepository<Likes, Long> {
         + "from Likes l join l.user u join l.post p "
         + "where u.id = :userId and p.id = :postId")
     Boolean chkDuplicate(@Param("userId") Long userId, @Param("postId") Long postId);
+
+    // 게시글 삭제 시 좋아요를 먼저 정리하지 않으면 likes.post_id FK 제약 위반이 발생한다.
+    @Modifying
+    @Query("delete from Likes l where l.post.id = :postId")
+    void deleteByPostId(@Param("postId") Long postId);
 
     //좋아요 여부
     boolean existsByUser_IdAndPost_Id(Long userId, Long postId);

@@ -185,8 +185,7 @@ const MyPageTitle = ({isMyPage, nickname, bioState, setBioState, userImg, setUse
 
       await axiosInstance.post("/api/updateUser", {
         username: username,
-        nickName: inputNickname,
-        role: "USER"
+        nickName: inputNickname
       });
 
       await reFetchUser();
@@ -223,8 +222,7 @@ const MyPageTitle = ({isMyPage, nickname, bioState, setBioState, userImg, setUse
 
       await axiosInstance.post("/api/updateUser", {
         username: username,
-        bio: innerBio,
-        role: "USER"
+        bio: innerBio
       });
 
       await reFetchUser();

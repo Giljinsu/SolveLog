@@ -1,0 +1,89 @@
+.admin-posts-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+}
+
+.admin-posts-search {
+  margin-bottom: 1rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-posts-search input {
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  width: 220px;
+}
+
+.admin-posts-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.admin-posts-table th,
+.admin-posts-table td {
+  text-align: left;
+  padding: 0.6rem 0.8rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+.admin-posts-table th {
+  color: #999;
+  font-weight: normal;
+  font-size: 0.9rem;
+}
+
+.admin-posts-title-cell {
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-posts-deleted-hint {
+  color: #d33;
+  font-size: 0.85rem;
+}
+
+.admin-posts-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.admin-posts-actions button {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.admin-posts-pagination {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.admin-posts-pagination button {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+}
+
+.admin-posts-pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-posts-pagination button.active {
+  background-color: #111;
+  color: white;
+}

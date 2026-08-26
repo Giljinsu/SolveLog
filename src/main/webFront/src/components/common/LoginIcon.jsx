@@ -7,7 +7,7 @@ import UserImg from "./UserImg.jsx";
 const LoginIcon = ({menu}) => {
   const [open, setOpen] = useState(false)
   const loginMenuRef = useRef();
-  const {logout, isLoading, user} = useAuth();
+  const {logout, isLoading, user, isAdmin} = useAuth();
 
   const username = user?.username;
   const nickname = user?.nickname;
@@ -56,6 +56,9 @@ const LoginIcon = ({menu}) => {
               <li onClick={() => nav("/tempPost")}>임시작성글</li>
               {!menu && (
                   <li onClick={()=>nav("/postEdit")}>글 작성하기</li>
+              )}
+              {isAdmin && (
+                  <li onClick={() => nav("/admin")}>관리자</li>
               )}
               <li onClick={() => {
                 logout();

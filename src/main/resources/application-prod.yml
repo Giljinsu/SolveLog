@@ -24,13 +24,17 @@ spring:
       ssl:
         enabled: false
   #      password:
+  servlet:
+    multipart:
+      max-file-size: 5MB
+      max-request-size: 5MB
 
   jpa:
     hibernate:
       ddl-auto: none
     properties.hibernate:
-      show_sql: true
-      format_sql: true
+      show_sql: false
+      format_sql: false
       dialect: org.hibernate.dialect.PostgreSQLDialect
       jdbc.time_zone: Asia/Seoul
 
@@ -51,7 +55,7 @@ spring:
       initialize-schema: never
 
 logging.level:
-    org.hibernate.sql: debug
+    org.hibernate.sql: info
 #    org.hibernate.type: trace
 
 cookie:
@@ -66,4 +70,20 @@ cloud:
       static: ap-northeast-2
 
 app:
-  base-url: https://solvelog.site
+  base-url: https://www.solvelog.site
+
+openai:
+  api-key: ${OPENAI_API_KEY}
+  model: ${OPENAI_MODEL:gpt-5-mini}
+  connect-timeout-ms: 5000
+  read-timeout-ms: 90000
+
+thumbnail:
+  worker:
+    token: ${THUMBNAIL_WORKER_TOKEN}
+
+jwt:
+  secret: ${JWT_SECRET}
+
+monitoring:
+  error-event-retention-days: 90

@@ -10,7 +10,8 @@ export const registerLogout = (fn) => {
 const noLoadingApi = [
     "/api/me",
     "/api/refresh",
-    "/api/getAlarmList"
+    "/api/getAlarmList",
+    "/api/thumbnail-jobs" // AI 썸네일 생성 job polling 중 전역 로딩 오버레이가 깜빡이지 않도록 제외
 ];
 
 const showLoading = (url) => {

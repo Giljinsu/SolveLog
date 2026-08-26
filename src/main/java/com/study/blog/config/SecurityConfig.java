@@ -2,9 +2,12 @@ package com.study.blog.config;
 
 import com.study.blog.service.CustomAuthenticationProvider;
 import com.study.blog.service.JwtAuthenticationFilter;
+import com.study.blog.ai.thumbnail.security.WorkerTokenAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -51,7 +54,31 @@ public class SecurityConfig {
 //        return http.build();
 //    }
 
+    // Mac Worker 전용 - /api/internal/thumbnail-jobs/** 는 사용자 JWT 인증과 완전히 분리된
+    // Worker Token 인증만 사용한다. 기존 filterChain(@Order(2))에는 영향을 주지 않는다.
     @Bean
+    @Order(1)
+    public SecurityFilterChain internalWorkerFilterChain(HttpSecurity http,
+        @Value("${thumbnail.worker.token}") String workerToken) throws Exception {
+        // Spring이 관리하는 Bean으로 등록하지 않고 여기서 직접 생성한다 -
+        // Filter 타입 Bean이 되면 Spring Boot가 서블릿 컨테이너에 이중 등록하기 때문.
+        WorkerTokenAuthenticationFilter workerTokenAuthenticationFilter =
+            new WorkerTokenAuthenticationFilter(workerToken);
+
+        http
+            .securityMatcher("/api/internal/thumbnail-jobs/**")
+            .csrf(AbstractHttpConfigurer::disable)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+            .addFilterBefore(workerTokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http,
         JwtAuthenticationFilter jwtAuthenticationFilter) throws Exception {
         http
@@ -91,6 +118,10 @@ public class SecurityConfig {
                         "/api/getEmailByResetToken/**",
                         "/api/getPostCountPerTag/**"
                     ).permitAll()
+                    .requestMatchers("/api/admin/**").hasAuthority("ADMIN")
+                    .requestMatchers("/api/ai/**").hasAnyAuthority("AI_USER", "ADMIN")
+                    .requestMatchers("/api/thumbnail-jobs", "/api/thumbnail-jobs/**")
+                        .hasAnyAuthority("AI_USER", "ADMIN")
                     .anyRequest().authenticated()
     //                .anyRequest().permitAll()
             )

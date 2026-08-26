@@ -8,6 +8,7 @@ import com.study.blog.entity.File;
 import com.study.blog.entity.Users;
 import com.study.blog.entity.enums.FileType;
 import com.study.blog.exception.NotExistUserException;
+import com.study.blog.exception.UnsupportedFileTypeException;
 import com.study.blog.repository.FileRepository;
 import com.study.blog.repository.UsersRepository;
 import java.io.FileNotFoundException;
@@ -72,7 +73,7 @@ public class FileService {
         java.io.File physicalFile = new java.io.File(savePath);
         try {
             String extension = fileUpload.getExtension(file.getOriginalFilename());
-            FileType fileType = FileType.getFileType(extension).orElseThrow();
+            FileType fileType = FileType.getFileType(extension).orElseThrow(UnsupportedFileTypeException::new);
 
             File newFile = File.createFile(
                 savePath,
@@ -242,7 +243,7 @@ public class FileService {
         java.io.File physicalFile = new java.io.File(savePath);
         try {
             String extension = fileUpload.getExtension(file.getOriginalFilename());
-            FileType fileType = FileType.getFileType(extension).orElseThrow();
+            FileType fileType = FileType.getFileType(extension).orElseThrow(UnsupportedFileTypeException::new);
 
             File newFile = File.createFile(
                 savePath,

@@ -50,7 +50,7 @@ public class UsersService implements UserDetailsService{
     // 유저 검색
     public UsersResponseDto getOne(String username) {
         Optional<Users> byId = usersRepository.findUsersByUsername(username);
-        Users user = byId.orElseThrow();
+        Users user = byId.orElseThrow(NotExistUserException::new);
         Optional<File> optionalUserImg = fileRepository.findUserImgByUsername(username);
 
         FileResponseDto fileResponseDto = optionalUserImg
@@ -108,15 +108,16 @@ public class UsersService implements UserDetailsService{
     public UsersResponseDto updateUser(UserRequestDto userRequestDto) {
 //        Users findUser = usersRepository.findById(userRequestDto.getUserId()).orElseThrow();
         Users findUser = usersRepository.findUsersByUsername(userRequestDto.getUsername())
-            .orElseThrow();
+            .orElseThrow(NotExistUserException::new);
 
 
+        // 일반 프로필 수정 API에서는 Role을 변경하지 않는다 - Role 변경은 관리자 전용 API에서만 가능하다.
         // 닉네임 변경
         if (userRequestDto.getNickName() != null) {
             findUser.updateUser(
                 userRequestDto.getNickName(),
                 findUser.getBio(),
-                userRequestDto.getRole()
+                findUser.getRole()
             );
         }
 
@@ -125,7 +126,7 @@ public class UsersService implements UserDetailsService{
             findUser.updateUser(
                 findUser.getNickname(),
                 userRequestDto.getBio(),
-                userRequestDto.getRole()
+                findUser.getRole()
             );
         }
 

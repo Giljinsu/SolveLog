@@ -49,3 +49,12 @@ out/
 
 ### pem ###
 .pem*.pem
+
+### Worker (Python) ###
+worker/.env.local
+worker/.env.prod
+worker/__pycache__/
+worker/.venv/
+worker/venv/
+worker/output/
+worker/outputs/

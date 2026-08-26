@@ -116,6 +116,14 @@ export const AuthProvider = ({children}) => {
     };
   }, [user, isLoading]);
 
+  // user.roles는 Backend의 GrantedAuthority 목록을 그대로 내려받는다.
+  // 형태: [{ authority: "ADMIN" }] - 혹시 단순 문자열 배열로 내려오는 경우까지 방어적으로 처리한다.
+  const roleNames = (user?.roles || []).map((role) =>
+      typeof role === "string" ? role : role?.authority
+  );
+  const isAdmin = roleNames.includes("ADMIN");
+  const canUseAi = isAdmin || roleNames.includes("AI_USER");
+
   return (
       <AuthContext.Provider
           value={{
@@ -124,6 +132,8 @@ export const AuthProvider = ({children}) => {
             isLoading,
             logout,
             reFetchUser,
+            isAdmin,
+            canUseAi,
           }}
       >
         {children}
