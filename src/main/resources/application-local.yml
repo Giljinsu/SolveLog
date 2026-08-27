@@ -70,8 +70,6 @@ cloud:
       access-key: ${SOLVELOG_ACCESS_KEY}
       secret-key: ${SOLVELOG_SECRET_KEY}
 
-
-
 app:
   base-url: http://localhost:5173
 

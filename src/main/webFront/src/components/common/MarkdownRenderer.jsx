@@ -81,20 +81,42 @@ const MermaidBlock = memo(({ code }) => {
 const MarkdownRenderer = ({ content, headingRenderer }) => {
   // headingRenderer : 헤더들의 id 를 만들어줌
 
+  const [lightboxSrc, setLightboxSrc] = useState(null);
+
+  useEffect(() => {
+    if (!lightboxSrc) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setLightboxSrc(null);
+    };
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [lightboxSrc]);
+
+  const renderImg = ({ node, ...props }) => {
+    return (
+      <img
+        loading={"lazy"}
+        alt={"no-image"}
+        style={{ maxWidth: "100%", display: "block", margin: "0 auto 3rem auto", cursor: "zoom-in" }}
+        onClick={() => setLightboxSrc(props.src)}
+        {...props}
+      />
+    );
+  };
+
   const imgComponents = useMemo(
     () => ({
-      img: ({ node, ...props }) => {
-        return (
-          <img
-            loading={"lazy"}
-            alt={"no-image"}
-            style={{ maxWidth: "100%", display: "block", margin: "0 auto 3rem auto" }}
-            {...props}
-          />
-        );
-      },
+      img: renderImg,
     }),
     []
+  );
+
+  const lightbox = lightboxSrc && (
+    <div className={"markdown-image-lightbox"} onClick={() => setLightboxSrc(null)}>
+      <img src={lightboxSrc} alt={"원본 이미지"} />
+    </div>
   );
 
   const codeComponent = useMemo(() => {
@@ -115,46 +137,43 @@ const MarkdownRenderer = ({ content, headingRenderer }) => {
   }, []);
 
   return headingRenderer ? (
-    <div className={"markdown-body"}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight, rehypeRaw]}
-        components={{
-          h1: headingRenderer("h1"),
-          h2: headingRenderer("h2"),
-          h3: headingRenderer("h3"),
-          h4: headingRenderer("h4"),
-          h5: headingRenderer("h5"),
-          h6: headingRenderer("h6"),
-          code: codeComponent,
-          img: ({ node, ...props }) => {
-            return (
-              <img
-                loading={"lazy"}
-                alt={"no-image"}
-                style={{ maxWidth: "100%", display: "block", margin: "0 auto 3rem auto" }}
-                {...props}
-              />
-            );
-          },
-        }}
-      >
-        {content}
-      </ReactMarkdown>
-    </div>
+    <>
+      <div className={"markdown-body"}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight, rehypeRaw]}
+          components={{
+            h1: headingRenderer("h1"),
+            h2: headingRenderer("h2"),
+            h3: headingRenderer("h3"),
+            h4: headingRenderer("h4"),
+            h5: headingRenderer("h5"),
+            h6: headingRenderer("h6"),
+            code: codeComponent,
+            img: renderImg,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
+      {lightbox}
+    </>
   ) : (
-    <div className={"markdown-body"}>
-      <ReactMarkdown
-        remarkPlugins={[remarkGfm]}
-        rehypePlugins={[rehypeHighlight, rehypeRaw]}
-        components={{
-          ...imgComponents,
-          code: codeComponent,
-        }}
-      >
-        {content}
-      </ReactMarkdown>
-    </div>
+    <>
+      <div className={"markdown-body"}>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          rehypePlugins={[rehypeHighlight, rehypeRaw]}
+          components={{
+            ...imgComponents,
+            code: codeComponent,
+          }}
+        >
+          {content}
+        </ReactMarkdown>
+      </div>
+      {lightbox}
+    </>
   );
 };
 
