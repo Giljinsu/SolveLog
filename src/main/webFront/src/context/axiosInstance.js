@@ -7,6 +7,11 @@ export const registerLogout = (fn) => {
   logoutCallback = fn;
 }
 
+// 여러 API가 거의 동시에 401을 받아도 /api/refresh 네트워크 요청은 한 번만 나가도록 하는
+// single-flight promise. 진행 중인 refresh가 있으면 새로 요청을 만들지 않고 이 Promise를
+// 그대로 공유해서 기다린다.
+let refreshPromise = null;
+
 const noLoadingApi = [
     "/api/me",
     "/api/refresh",
@@ -65,38 +70,32 @@ instance.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          // const refreshToken = localStorage.getItem("refreshToken");
+          // 이미 진행 중인 refresh가 있으면 새로 호출하지 않고 그 결과를 공유해서 기다린다
+          // (여러 API가 동시에 401을 받아도 /api/refresh는 한 번만 나간다).
+          if (!refreshPromise) {
+            refreshPromise = instance.post("/api/refresh", {})
+                .finally(() => {
+                  refreshPromise = null;
+                });
+          }
 
-          const res = await instance.post(
-              "/api/refresh",
-              {},
-              // {
-              //   headers: {
-              //     Authorization: `Bearer ${refreshToken}`,
-              //   },
-              // }
-          );
-
-          // const newAccessToken = res.data.accessToken;
-          // const newRefreshToken = res.data.refreshToken;
-
-          // localStorage.setItem("accessToken", newAccessToken);
-          // localStorage.setItem("refreshToken", newRefreshToken);
-
-          // originalRequest.headers.Authorization = `bearer ${newAccessToken}`;
+          await refreshPromise;
 
           if (showLoading(error.config?.url)){
             setLoading(false);
           }
           return instance(originalRequest);
         } catch (refreshError) {
-          // console.error("리프레시 토큰 만료됨");
-          // 강제 로그아웃 로직
-          if (logoutCallback) {
-            logoutCallback();
-          }  else {
-            // localStorage.removeItem("accessToken");
-            // localStorage.removeItem("refreshToken");
+          // refresh 자체가 실패한 이유를 구분한다.
+          // - 401(INVALID_TOKEN): refresh token 자체가 없거나 만료/위조 - 진짜 로그인 만료이므로 로그아웃 처리
+          // - 그 외(5xx, 네트워크 오류 등 응답이 없는 경우): 일시적 오류일 수 있으므로 강제 로그아웃하지 않고
+          //   호출한 쪽에 오류만 전달한다.
+          const refreshStatus = refreshError.response?.status;
+
+          if (refreshStatus === 401) {
+            if (logoutCallback) {
+              logoutCallback();
+            }
           }
 
           if (showLoading(error.config?.url)){
