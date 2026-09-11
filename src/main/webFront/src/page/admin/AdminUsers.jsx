@@ -1,6 +1,7 @@
 import './AdminUsers.css';
 import {useEffect, useState} from 'react';
 import AdminLayout from '../../components/admin/AdminLayout.jsx';
+import AdminPagination from '../../components/admin/AdminPagination.jsx';
 import axios from '../../context/axiosInstance.js';
 import {getKorDate} from '../../utils/DateUtils.js';
 import {useAuth} from '../../context/AuthContext.jsx';
@@ -119,21 +120,7 @@ const AdminUsers = () => {
           </tbody>
         </table>
 
-        {totalPages > 1 && (
-            <div className="admin-users-pagination">
-              <button disabled={page === 0} onClick={() => setPage(page - 1)}>이전</button>
-              {Array.from({length: totalPages}, (_, i) => i).map((p) => (
-                  <button
-                      key={p}
-                      className={p === page ? 'active' : ''}
-                      onClick={() => setPage(p)}
-                  >
-                    {p + 1}
-                  </button>
-              ))}
-              <button disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)}>다음</button>
-            </div>
-        )}
+        <AdminPagination page={page} totalPages={totalPages} onPageChange={setPage} />
       </AdminLayout>
   );
 };

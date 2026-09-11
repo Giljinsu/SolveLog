@@ -1,0 +1,35 @@
+.admin-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.admin-pagination__button {
+  border: 1px solid #d1d5db;
+  background-color: white;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  min-width: 2.25rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.admin-pagination__button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-pagination__button--active {
+  background-color: #111;
+  color: white;
+  border-color: #111;
+}
+
+.admin-pagination__ellipsis {
+  padding: 0.4rem 0.3rem;
+  color: #9ca3af;
+  user-select: none;
+}

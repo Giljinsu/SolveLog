@@ -77,7 +77,7 @@ openai:
   api-key: ${OPENAI_API_KEY}
   model: ${OPENAI_MODEL:gpt-5-mini}
   connect-timeout-ms: 5000
-  read-timeout-ms: 90000
+  read-timeout-ms: 180000
 
 thumbnail:
   worker:

@@ -23,6 +23,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 /**
  * "이 예외를 Error Monitoring에 저장할지"를 결정하는 유일한 지점(analysis.md §7).
@@ -58,7 +59,8 @@ public class ErrorClassifier {
         InvalidTokenException.class,
         MonitoringIssueNotFoundException.class,
         UnsupportedFileTypeException.class,
-        AsyncRequestTimeoutException.class
+        AsyncRequestTimeoutException.class,
+        MethodArgumentTypeMismatchException.class
     );
 
     // 매핑된 핸들러가 있어도 인프라성 실패라 기록 가치가 있는 예외 (analysis.md §7).

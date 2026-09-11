@@ -62,28 +62,3 @@
   cursor: pointer;
   font-size: 0.85rem;
 }
-
-.admin-posts-pagination {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  justify-content: center;
-}
-
-.admin-posts-pagination button {
-  border: 1px solid #d1d5db;
-  background-color: white;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-}
-
-.admin-posts-pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-posts-pagination button.active {
-  background-color: #111;
-  color: white;
-}

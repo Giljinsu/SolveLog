@@ -1,0 +1,77 @@
+[
+  {
+    "username": "loadtest_user_0957",
+    "postCount": 557,
+    "tier": "heavy"
+  },
+  {
+    "username": "loadtest_user_0956",
+    "postCount": 577,
+    "tier": "heavy"
+  },
+  {
+    "username": "loadtest_user_0985",
+    "postCount": 701,
+    "tier": "heavy"
+  },
+  {
+    "username": "loadtest_user_0979",
+    "postCount": 767,
+    "tier": "heavy"
+  },
+  {
+    "username": "loadtest_user_0963",
+    "postCount": 786,
+    "tier": "heavy"
+  },
+  {
+    "username": "loadtest_user_0509",
+    "postCount": 11,
+    "tier": "light"
+  },
+  {
+    "username": "loadtest_user_0201",
+    "postCount": 21,
+    "tier": "light"
+  },
+  {
+    "username": "loadtest_user_0135",
+    "postCount": 24,
+    "tier": "light"
+  },
+  {
+    "username": "loadtest_user_0193",
+    "postCount": 24,
+    "tier": "light"
+  },
+  {
+    "username": "loadtest_user_0407",
+    "postCount": 31,
+    "tier": "light"
+  },
+  {
+    "username": "loadtest_user_0772",
+    "postCount": 186,
+    "tier": "medium"
+  },
+  {
+    "username": "loadtest_user_0883",
+    "postCount": 203,
+    "tier": "medium"
+  },
+  {
+    "username": "loadtest_user_0862",
+    "postCount": 263,
+    "tier": "medium"
+  },
+  {
+    "username": "loadtest_user_0791",
+    "postCount": 267,
+    "tier": "medium"
+  },
+  {
+    "username": "loadtest_user_0706",
+    "postCount": 295,
+    "tier": "medium"
+  }
+]

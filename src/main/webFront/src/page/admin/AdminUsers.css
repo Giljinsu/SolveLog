@@ -48,31 +48,6 @@
   color: #9ca3af;
 }
 
-.admin-users-pagination {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  justify-content: center;
-}
-
-.admin-users-pagination button {
-  border: 1px solid #d1d5db;
-  background-color: white;
-  border-radius: 6px;
-  padding: 0.4rem 0.8rem;
-  cursor: pointer;
-}
-
-.admin-users-pagination button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.admin-users-pagination button.active {
-  background-color: #111;
-  color: white;
-}
-
 .admin-users-self-hint {
   color: #999;
   font-size: 0.85rem;
