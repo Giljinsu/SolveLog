@@ -422,7 +422,7 @@ DB Transaction은 외부 Storage 작업까지 Rollback할 수 없기 때문에
 
 ### 더 많은 트러블 슈팅
 
-[Solvelog Troubleshooting](https://alert-cheddar-c21.notion.site/Solvelog-1f99df4168ec80ddad6adafed3a7b552?source=copy_link)
+[Solvelog Troubleshooting](https://dear-pressure-763.notion.site/SolveLog-3f23f8615c6a814cb39cf9ddb6305c5c?source=copy_link)
 
 ## 배포 및 CI/CD
 
